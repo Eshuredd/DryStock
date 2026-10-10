@@ -1,5 +1,24 @@
 # Verification record
 
+## Phase 2 — final verification, 10 October 2026
+
+The sections below this Phase 2 record retain the historical 37-test MVP evidence. Current final results supersede its test counts and compute architecture.
+
+- Backend: **62 passed, 0 failed**, one upstream Starlette HTTPX-adapter deprecation warning. The original 37 passed before edits. New checks cover the shared contract, invalid Lambda events, status handling, time-budget errors, tampered task/summary/baseline rejection, no fallback or persistence on SAM failure, old SQLite migration, stale approval, and deterministic benchmark/statistical calculations.
+- Frontend: explicit `tsc --noEmit` passed; ESLint passed with zero warnings; final production build passed. `npm audit` returned zero vulnerabilities. ESLint uses TypeScript and React Hooks checks; it does not use the Next-specific ESLint plugin.
+- Real AWS SAM CLI **1.168.0**, Docker Desktop 4.47 / Linux engine 28.4: template validation, image build, **two real `sam local invoke` calls**, and `sam local start-api` plus actual HTTP invocation all passed. No credentials or deployment were used. Direct handler tests and stub transport tests are separate from this execution evidence.
+- Successful root command: `rtk proxy powershell -NoProfile -File sam\Invoke-Verify.ps1`. API: `rtk proxy powershell -NoProfile -File sam\Start-Api.ps1`. Exact expanded commands and package/runtime configuration: [SAM guide](sam/README.md).
+- SAM runtime Python 3.12.15 / OR-Tools 9.15.6755; local Python 3.14.6 / same OR-Tools. Modelled outcomes match for optimiser and every baseline. Worker identities/timings may differ across operating systems; no byte-identical schedule or performance claim is made.
+- Original: **₹35,809 vs ₹35,550**, gain **₹259 (0.73%)**, residual ₹18,421. Historical disruption: **₹16,821 vs ₹14,985**, gain **₹1,836 (12.25%)**, completed ₹5,850, residual ₹31,559. Both OPTIMAL and independently validated.
+- Expanded benchmark actually executed: **29 OPTIMAL**, 0 FEASIBLE/unproven, 0 time-budget exits; 14 improvements (48.28%), 15 ties (51.72%), no baseline wins. Mean gain ₹1,089.34, median ₹0, best ₹7,150, worst ₹0. Relative mean 5.56%, median 0.18% over 27 nonzero-baseline cases; the other two are undefined, not zero. Fixed generated seeds 1101–1110. Original fixtures were not retuned.
+- Real browser workflow ran against Next.js on 3002, FastAPI on 8001, SAM API on 3001, isolated `artifacts/phase2-demo.sqlite3`. Generate/approve/L02-completion/disrupt/regenerate/compare passed. The original plan was superseded, L02/T2 preserved, forklift unavailable, all new work in minutes 12–35, four new tasks and six exposed lots. New weight metrics: 1,530 kg scheduled, 500 kg simulated complete, 3,650 kg unscheduled exposed. Read-only capture independently validated the actual stored SAM response and matching local outcomes.
+- Desktop 1440×1000 and mobile 390×844 inspected. At mobile size, document client and scroll widths both 375 pixels (scrollbar excluded); tables scroll within their containers. Action detail expanded to actual L03 inputs (600 kg, ₹2,160 risk, 14 minutes, 85% effectiveness, T1 capacity 1,500 kg, finish 26 ≤ cutoff 35). No browser error/warning entries observed. Temporary viewport override restored.
+- User's running port-8000 service and original database were preserved. Owned verification servers were stopped after checks. No commit, push or cloud deployment occurred.
+
+Evidence: [original runtime log](artifacts/sam-original-runtime.log), [disruption runtime log](artifacts/sam-disruption-runtime.log), [original comparison](artifacts/sam-original-comparison.json), [disruption comparison](artifacts/sam-disruption-comparison.json), [actual SAM API comparison](artifacts/sam-api-comparison.json), [real UI state/history](artifacts/phase2/end-to-end.json), [29-case report](artifacts/phase2/BENCHMARKS.md), [full benchmark JSON](artifacts/phase2/benchmarks.json), [desktop](artifacts/phase2/sam-replanned-desktop.jpg), [strategies](artifacts/phase2/sam-strategies.jpg), [mobile plan](artifacts/phase2/sam-mobile-plan.jpg).
+
+Two correctness discrepancies found during audit were fixed: stored baseline/summary metrics were not previously independently checked, and new provenance needed a non-destructive SQLite migration. The launcher now reports the actual database path. All completion remains scheduled-time simulated attestation; no partial work, measured environmental savings, forecast integration or adoption is claimed.
+
 Verified locally on 10 October 2026 (Asia/Kolkata). No deployment, commit or push was performed.
 
 ## Automated checks

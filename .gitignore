@@ -9,3 +9,7 @@ frontend/next-env.d.ts
 frontend/*.tsbuildinfo
 .env*
 !.env.example
+.sam-venv/
+.aws-sam/
+sam/__pycache__/
+.dependency-resolution/

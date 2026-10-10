@@ -1,0 +1,83 @@
+{
+  "event": "original.json",
+  "outcomes_match": true,
+  "local": {
+    "CP-SAT": {
+      "status": "OPTIMAL",
+      "additional_inr": 35809,
+      "completed_inr": 0,
+      "residual_inr": 18421,
+      "scheduled_lots": 5,
+      "unprotected_lots": 6
+    },
+    "Highest value first": {
+      "status": "GREEDY",
+      "additional_inr": 34308,
+      "completed_inr": 0,
+      "residual_inr": 19922,
+      "scheduled_lots": 5,
+      "unprotected_lots": 6
+    },
+    "Highest loss first": {
+      "status": "GREEDY",
+      "additional_inr": 35550,
+      "completed_inr": 0,
+      "residual_inr": 18680,
+      "scheduled_lots": 5,
+      "unprotected_lots": 6
+    },
+    "Loss per worker-minute": {
+      "status": "GREEDY",
+      "additional_inr": 27855,
+      "completed_inr": 0,
+      "residual_inr": 26375,
+      "scheduled_lots": 5,
+      "unprotected_lots": 6
+    }
+  },
+  "sam": {
+    "CP-SAT": {
+      "status": "OPTIMAL",
+      "additional_inr": 35809,
+      "completed_inr": 0,
+      "residual_inr": 18421,
+      "scheduled_lots": 5,
+      "unprotected_lots": 6
+    },
+    "Highest value first": {
+      "status": "GREEDY",
+      "additional_inr": 34308,
+      "completed_inr": 0,
+      "residual_inr": 19922,
+      "scheduled_lots": 5,
+      "unprotected_lots": 6
+    },
+    "Highest loss first": {
+      "status": "GREEDY",
+      "additional_inr": 35550,
+      "completed_inr": 0,
+      "residual_inr": 18680,
+      "scheduled_lots": 5,
+      "unprotected_lots": 6
+    },
+    "Loss per worker-minute": {
+      "status": "GREEDY",
+      "additional_inr": 27855,
+      "completed_inr": 0,
+      "residual_inr": 26375,
+      "scheduled_lots": 5,
+      "unprotected_lots": 6
+    }
+  },
+  "independent_validation": true,
+  "local_runtime": {
+    "python": "3.14.6",
+    "ortools": "9.15.6755"
+  },
+  "sam_runtime": {
+    "python": "3.12.15",
+    "ortools": "9.15.6755"
+  },
+  "sam_solve_seconds": 0.021,
+  "scenario_sha256": "41ffb9f5864da6d8fbc659fae145508447c7e1ad9f76acb7b0d21637deb40ed7"
+}

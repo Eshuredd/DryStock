@@ -1,5 +1,6 @@
 """Independent validation: never imports CP-SAT or assignment enumeration."""
-from .models import Scenario, Task, Validation
+from math import isfinite
+from .models import Scenario, Task, Validation, Plan
 
 
 def validate(s: Scenario, tasks: list[Task], *, history: bool = False) -> Validation:
@@ -73,3 +74,27 @@ def validate(s: Scenario, tasks: list[Task], *, history: bool = False) -> Valida
                 if left.forklift_id and left.forklift_id == right.forklift_id:
                     errors.append(f'{left.lot_id}/{right.lot_id}: overlapping forklift assignment')
     return Validation(valid=not errors, errors=errors)
+
+
+def validate_plan(s: Scenario, plan: Plan) -> Validation:
+    """Recompute summary values as well as checking the raw schedule."""
+    result = validate(s, plan.tasks)
+    initial = sum(l.exposed_loss_inr for l in s.lots if l.protection_status == 'exposed')
+    completed = sum(t.saved_loss_inr for t in s.completed)
+    planned = sum(t.saved_loss_inr for t in plan.tasks)
+    protected = {t.lot_id for t in s.completed + plan.tasks}
+    unprotected = [l.id for l in s.lots if l.protection_status == 'exposed' and l.id not in protected]
+    for field, expected in [('initial_loss_inr', initial), ('completed_saved_inr', completed),
+                            ('planned_saved_inr', planned), ('residual_loss_inr', initial-completed-planned)]:
+        if getattr(plan, field) != expected:
+            result.errors.append('Incorrect summary: ' + field)
+    if plan.unprotected_lot_ids != unprotected:
+        result.errors.append('Incorrect unprotected lots')
+    if not isfinite(plan.solve_seconds) or plan.solve_seconds < 0:
+        result.errors.append('Invalid solve duration')
+    if plan.best_bound_inr is not None and plan.best_bound_inr < planned:
+        result.errors.append('Solver upper bound is below incumbent')
+    if plan.solver_status == 'OPTIMAL' and plan.best_bound_inr != planned:
+        result.errors.append('Optimal solution must match its upper bound')
+    result.valid = not result.errors
+    return result

@@ -7,7 +7,7 @@ from pathlib import Path
 from uuid import uuid4
 from .models import Scenario, Plan
 from .scenarios import sample
-from .validator import validate
+from .validator import validate, validate_plan
 
 
 class Conflict(Exception):
@@ -24,6 +24,9 @@ class Store:
                 CREATE TABLE IF NOT EXISTS plans (id TEXT PRIMARY KEY, revision INTEGER NOT NULL, state TEXT NOT NULL, data TEXT NOT NULL, comparisons TEXT NOT NULL, created TEXT NOT NULL, scenario TEXT NOT NULL);
                 CREATE TABLE IF NOT EXISTS events (id INTEGER PRIMARY KEY, at TEXT NOT NULL, kind TEXT NOT NULL, detail TEXT NOT NULL);
             ''')
+            columns = {r['name'] for r in db.execute('PRAGMA table_info(plans)')}
+            if 'execution' not in columns:
+                db.execute("ALTER TABLE plans ADD COLUMN execution TEXT NOT NULL DEFAULT '{}'")
             db.execute('INSERT OR IGNORE INTO yard VALUES (1, 0, ?)', (sample().model_dump_json(),))
 
     @contextmanager
@@ -51,7 +54,8 @@ class Store:
         if row is None:
             return None
         return {'id': row['id'], 'revision': row['revision'], 'state': row['state'], 'created': row['created'],
-                'plan': json.loads(row['data']), 'comparisons': json.loads(row['comparisons']), 'scenario': json.loads(row['scenario'])}
+                'plan': json.loads(row['data']), 'comparisons': json.loads(row['comparisons']), 'scenario': json.loads(row['scenario']),
+                'execution': json.loads(row['execution'])}
 
     def state(self):
         with self.connection() as db:
@@ -66,15 +70,16 @@ class Store:
             raise Conflict('Yard changed. Refresh and try again.')
         return s, rev
 
-    def save_plan(self, revision: int, plan: Plan, comparisons: list[Plan]):
+    def save_plan(self, revision: int, plan: Plan, comparisons: list[Plan], execution: dict | None = None):
         with self.connection() as db:
             s, rev = self.check(db, revision)
-            if not validate(s, plan.tasks).valid:
-                raise ValueError('Cannot save invalid plan')
+            if any(not validate_plan(s, p).valid for p in [plan, *comparisons]):
+                raise ValueError('Cannot save invalid plan or baseline summary')
             db.execute("UPDATE plans SET state='superseded' WHERE state IN ('draft','approved')")
             pid = uuid4().hex[:12]
-            db.execute('INSERT INTO plans VALUES (?,?,?,?,?,?,?)', (pid, rev, 'draft', plan.model_dump_json(),
-                       json.dumps([p.model_dump() for p in comparisons]), datetime.now(timezone.utc).isoformat(), s.model_dump_json()))
+            db.execute('INSERT INTO plans VALUES (?,?,?,?,?,?,?,?)', (pid, rev, 'draft', plan.model_dump_json(),
+                       json.dumps([p.model_dump() for p in comparisons]), datetime.now(timezone.utc).isoformat(), s.model_dump_json(),
+                       json.dumps(execution or {'execution_backend': plan.execution_backend})))
             self.event(db, 'plan_generated', f'{pid}: {plan.solver_status}, {len(plan.tasks)} tasks')
             return pid
 
@@ -85,7 +90,7 @@ class Store:
             if not row or row['state'] != 'draft' or row['revision'] != rev:
                 raise Conflict('Only a current draft can be approved')
             p = Plan.model_validate_json(row['data'])
-            if not validate(s, p.tasks).valid:
+            if not validate_plan(s, p).valid:
                 raise Conflict('Plan failed independent validation')
             db.execute("UPDATE plans SET state='approved' WHERE id=?", (pid,))
             self.event(db, 'manager_approved', pid)

@@ -95,14 +95,43 @@ Frontend dependencies are pinned by `frontend/package-lock.json`; exact tested P
 | `POST /api/validate` | Independently check supplied `{scenario, tasks}` |
 | `POST /api/reset` | Restore sample yard with revision; retain audit history |
 
-No endpoint sends messages, accesses weather providers, deploys, or touches AWS.
+No endpoint sends messages, accesses weather providers or deploys. In SAM mode, generation calls the loopback AWS SAM API and independently checks the actual Lambda-compatible response before persistence; failed calls never silently fall back to local compute.
 
-## Structure and future AWS path
+## Structure and implemented AWS SAM path
 
 `frontend/`: Next.js App Router, TypeScript, Tailwind CSS, responsive operational UI.
 `backend/app/`: Pydantic schemas, CP-SAT optimiser, independent validator, baseline schedules, SQLite store and FastAPI routes.
 `backend/tests/`: Pytest tests. `sample-data/`: reproducible fictional fixture. `Start-DryStock.ps1`: local launcher.
 
-An optional later AWS architecture can run the FastAPI service in an ECS/Fargate container, serve the frontend behind a managed HTTPS endpoint, and migrate SQLite to an appropriate managed database. A weather-provider adapter, event ingestion and scheduler can be added behind explicit forecast/scenario schemas. The optimiser and validator remain ordinary Python functions with no AWS imports. This is a future architecture option, not a deployed integration.
+`backend/app/engine.py` provides the shared stateless compute contract; `compute.py` selects local or SAM execution; `lambda_handler.py` handles stateless Lambda requests. `sam/` contains the Linux image, SAM template, events and real-execution verification scripts. `backend/benchmarks/` defines 29 fixed benchmark cases. The frontend adds result provenance, separate weight metrics, actual handling-input details and a before/after disruption view.
+
+**AWS SAM actually executed the real optimiser locally.** Both historical outcomes match local execution, including all three baselines. The image uses Linux Python 3.12, x86_64 and OR-Tools 9.15.6755, with 2,048 MB and a 30-second timeout. SQLite and workflow state remain local. Nothing is deployed to an AWS account. The actual architecture, installation, exact build/invoke/API commands and failure semantics are in [sam/README.md](sam/README.md).
+
+After building with `rtk proxy powershell -NoProfile -File sam\Invoke-Verify.ps1`, run these in two terminals from the project root:
+
+```powershell
+rtk proxy powershell -NoProfile -File sam\Start-Api.ps1
+```
+
+```powershell
+rtk proxy powershell -NoProfile -File .\Start-DryStock.ps1 -ComputeBackend sam -Database artifacts\phase2-demo.sqlite3 -BackendPort 8001 -FrontendPort 3002
+```
+
+Open [SAM demo](http://127.0.0.1:3002). Use the separate demonstration database; reset it if a prior run is present. Generate → compare → approve → record L02 → trigger demo disruption → generate → compare revised results. Restart the launcher with `-ComputeBackend local` to switch compute mode. The original launcher defaults remain local. Stop both terminals with Ctrl+C when finished.
+
+Reproduce the expanded evidence and frontend checks:
+
+```powershell
+rtk proxy .\.venv\Scripts\python.exe backend\benchmarks\run.py
+rtk proxy .\.venv\Scripts\python.exe -m pytest backend\tests -q
+rtk proxy npm.cmd --prefix frontend run typecheck
+rtk proxy npm.cmd --prefix frontend run lint
+rtk proxy npm.cmd --prefix frontend run build
+rtk proxy npm.cmd --prefix frontend audit
+```
+
+The predefined suite contains 29 independently validated cases: 14 improvements, 15 ties, mean absolute gain ₹1,089.34 and median ₹0. All 29 were OPTIMAL; no timeouts occurred. Relative mean is 5.56% and median 0.18% over 27 cases with nonzero baseline benefit. Original and historical disruption fixtures remain unchanged. See [benchmark report](artifacts/phase2/BENCHMARKS.md), [full machine-readable inputs/results](artifacts/phase2/benchmarks.json), [Phase 2 report](PHASE2_REPORT.md) and [2:50 demo script](DEMO_SCRIPT.md).
+
+A cloud deployment is optional for the user-specified AWS open-source SAM pathway and needs separate permission. Before any public deployment, add authentication and suitable hosting/persistence; local SAM execution does not establish cloud readiness or event acceptance.
 
 CP-SAT implementation follows Google's [optional interval and resource scheduling documentation](https://github.com/google/or-tools/blob/stable/ortools/sat/docs/scheduling.md) and [solver status documentation](https://developers.google.com/optimization/cp/cp_solver).

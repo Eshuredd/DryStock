@@ -1,0 +1,3066 @@
+{
+  "source": "http://127.0.0.1:8001/api",
+  "actual_http_response": true,
+  "outcomes_match": true,
+  "independent_validation": true,
+  "local": {
+    "CP-SAT": {
+      "status": "OPTIMAL",
+      "additional_inr": 16821,
+      "completed_inr": 5850,
+      "residual_inr": 31559,
+      "scheduled_lots": 4,
+      "unprotected_lots": 6
+    },
+    "Highest value first": {
+      "status": "GREEDY",
+      "additional_inr": 14059,
+      "completed_inr": 5850,
+      "residual_inr": 34321,
+      "scheduled_lots": 2,
+      "unprotected_lots": 8
+    },
+    "Highest loss first": {
+      "status": "GREEDY",
+      "additional_inr": 14059,
+      "completed_inr": 5850,
+      "residual_inr": 34321,
+      "scheduled_lots": 2,
+      "unprotected_lots": 8
+    },
+    "Loss per worker-minute": {
+      "status": "GREEDY",
+      "additional_inr": 14985,
+      "completed_inr": 5850,
+      "residual_inr": 33395,
+      "scheduled_lots": 3,
+      "unprotected_lots": 7
+    }
+  },
+  "sam": {
+    "CP-SAT": {
+      "status": "OPTIMAL",
+      "additional_inr": 16821,
+      "completed_inr": 5850,
+      "residual_inr": 31559,
+      "scheduled_lots": 4,
+      "unprotected_lots": 6
+    },
+    "Highest value first": {
+      "status": "GREEDY",
+      "additional_inr": 14059,
+      "completed_inr": 5850,
+      "residual_inr": 34321,
+      "scheduled_lots": 2,
+      "unprotected_lots": 8
+    },
+    "Highest loss first": {
+      "status": "GREEDY",
+      "additional_inr": 14059,
+      "completed_inr": 5850,
+      "residual_inr": 34321,
+      "scheduled_lots": 2,
+      "unprotected_lots": 8
+    },
+    "Loss per worker-minute": {
+      "status": "GREEDY",
+      "additional_inr": 14985,
+      "completed_inr": 5850,
+      "residual_inr": 33395,
+      "scheduled_lots": 3,
+      "unprotected_lots": 7
+    }
+  },
+  "state": {
+    "scenario": {
+      "id": "monsoon-yard",
+      "name": "Surat Paper Recovery Yard",
+      "weather_label": "SIMULATED \u00b7 heavy rain approaching",
+      "rain_arrival_minute": 45,
+      "safety_buffer_minutes": 10,
+      "deadline": 35,
+      "now_minute": 12,
+      "lots": [
+        {
+          "id": "L01",
+          "category": "cardboard",
+          "description": "Corrugated cardboard",
+          "weight_kg": 800,
+          "location": "East apron",
+          "exposure": "high",
+          "condition": "Dry, loose stack",
+          "value_inr": 14400,
+          "vulnerability": 4,
+          "exposed_loss_inr": 5760,
+          "restrictions": [],
+          "actions": [
+            {
+              "kind": "cover",
+              "duration": 16,
+              "workers": 2,
+              "forklift": false,
+              "required_skills": [],
+              "effectiveness_bps": 8000
+            },
+            {
+              "kind": "relocate",
+              "duration": 22,
+              "workers": 1,
+              "forklift": true,
+              "required_skills": [
+                "forklift"
+              ],
+              "effectiveness_bps": 10000
+            }
+          ],
+          "protection_status": "exposed"
+        },
+        {
+          "id": "L02",
+          "category": "newsprint",
+          "description": "Sorted newspapers",
+          "weight_kg": 500,
+          "location": "North fence",
+          "exposure": "high",
+          "condition": "Dry, bundled",
+          "value_inr": 10000,
+          "vulnerability": 5,
+          "exposed_loss_inr": 6500,
+          "restrictions": [],
+          "actions": [
+            {
+              "kind": "cover",
+              "duration": 12,
+              "workers": 2,
+              "forklift": false,
+              "required_skills": [],
+              "effectiveness_bps": 9000
+            },
+            {
+              "kind": "relocate",
+              "duration": 16,
+              "workers": 1,
+              "forklift": true,
+              "required_skills": [
+                "forklift"
+              ],
+              "effectiveness_bps": 10000
+            }
+          ],
+          "protection_status": "exposed"
+        },
+        {
+          "id": "L03",
+          "category": "paper",
+          "description": "Mixed paper",
+          "weight_kg": 600,
+          "location": "Sorting pad",
+          "exposure": "medium",
+          "condition": "Dry, bagged",
+          "value_inr": 7200,
+          "vulnerability": 3,
+          "exposed_loss_inr": 2160,
+          "restrictions": [],
+          "actions": [
+            {
+              "kind": "cover",
+              "duration": 14,
+              "workers": 1,
+              "forklift": false,
+              "required_skills": [],
+              "effectiveness_bps": 8500
+            },
+            {
+              "kind": "relocate",
+              "duration": 18,
+              "workers": 1,
+              "forklift": true,
+              "required_skills": [
+                "forklift"
+              ],
+              "effectiveness_bps": 10000
+            }
+          ],
+          "protection_status": "exposed"
+        },
+        {
+          "id": "L04",
+          "category": "paper",
+          "description": "White office paper",
+          "weight_kg": 300,
+          "location": "East apron",
+          "exposure": "high",
+          "condition": "Dry, loose bags",
+          "value_inr": 9000,
+          "vulnerability": 5,
+          "exposed_loss_inr": 6300,
+          "restrictions": [],
+          "actions": [
+            {
+              "kind": "cover",
+              "duration": 8,
+              "workers": 1,
+              "forklift": false,
+              "required_skills": [],
+              "effectiveness_bps": 9000
+            },
+            {
+              "kind": "relocate",
+              "duration": 10,
+              "workers": 2,
+              "forklift": false,
+              "required_skills": [],
+              "effectiveness_bps": 10000
+            }
+          ],
+          "protection_status": "exposed"
+        },
+        {
+          "id": "L05",
+          "category": "cardboard",
+          "description": "Dense cardboard bales",
+          "weight_kg": 1200,
+          "location": "Loading lane",
+          "exposure": "high",
+          "condition": "Dry, strapped",
+          "value_inr": 24000,
+          "vulnerability": 4,
+          "exposed_loss_inr": 9600,
+          "restrictions": [
+            "Only certified operator may relocate; heavy bales require forklift"
+          ],
+          "actions": [
+            {
+              "kind": "cover",
+              "duration": 42,
+              "workers": 3,
+              "forklift": false,
+              "required_skills": [
+                "bale_handling"
+              ],
+              "effectiveness_bps": 7500
+            },
+            {
+              "kind": "relocate",
+              "duration": 48,
+              "workers": 1,
+              "forklift": true,
+              "required_skills": [
+                "forklift"
+              ],
+              "effectiveness_bps": 10000
+            }
+          ],
+          "protection_status": "exposed"
+        },
+        {
+          "id": "L06",
+          "category": "paper",
+          "description": "Kraft paper rolls",
+          "weight_kg": 650,
+          "location": "West apron",
+          "exposure": "high",
+          "condition": "Dry, palletised",
+          "value_inr": 15600,
+          "vulnerability": 4,
+          "exposed_loss_inr": 7800,
+          "restrictions": [],
+          "actions": [
+            {
+              "kind": "cover",
+              "duration": 14,
+              "workers": 2,
+              "forklift": false,
+              "required_skills": [],
+              "effectiveness_bps": 9000
+            },
+            {
+              "kind": "relocate",
+              "duration": 18,
+              "workers": 1,
+              "forklift": true,
+              "required_skills": [
+                "forklift"
+              ],
+              "effectiveness_bps": 10000
+            }
+          ],
+          "protection_status": "exposed"
+        },
+        {
+          "id": "L07",
+          "category": "newsprint",
+          "description": "Magazine returns",
+          "weight_kg": 250,
+          "location": "Sorting pad",
+          "exposure": "medium",
+          "condition": "Coated, bundled",
+          "value_inr": 5000,
+          "vulnerability": 2,
+          "exposed_loss_inr": 1500,
+          "restrictions": [],
+          "actions": [
+            {
+              "kind": "cover",
+              "duration": 9,
+              "workers": 1,
+              "forklift": false,
+              "required_skills": [],
+              "effectiveness_bps": 8500
+            },
+            {
+              "kind": "relocate",
+              "duration": 12,
+              "workers": 2,
+              "forklift": false,
+              "required_skills": [],
+              "effectiveness_bps": 10000
+            }
+          ],
+          "protection_status": "exposed"
+        },
+        {
+          "id": "L08",
+          "category": "cardboard",
+          "description": "Flattened carton sheets",
+          "weight_kg": 450,
+          "location": "North fence",
+          "exposure": "high",
+          "condition": "Dry, stacked",
+          "value_inr": 8100,
+          "vulnerability": 4,
+          "exposed_loss_inr": 4050,
+          "restrictions": [],
+          "actions": [
+            {
+              "kind": "cover",
+              "duration": 10,
+              "workers": 2,
+              "forklift": false,
+              "required_skills": [],
+              "effectiveness_bps": 8500
+            },
+            {
+              "kind": "relocate",
+              "duration": 15,
+              "workers": 1,
+              "forklift": true,
+              "required_skills": [
+                "forklift"
+              ],
+              "effectiveness_bps": 10000
+            }
+          ],
+          "protection_status": "exposed"
+        },
+        {
+          "id": "L09",
+          "category": "paper",
+          "description": "Shredded office paper",
+          "weight_kg": 200,
+          "location": "Bagging area",
+          "exposure": "high",
+          "condition": "Dry, porous sacks",
+          "value_inr": 4000,
+          "vulnerability": 5,
+          "exposed_loss_inr": 2800,
+          "restrictions": [
+            "Move sacks by hand; no safe tarp attachment"
+          ],
+          "actions": [
+            {
+              "kind": "relocate",
+              "duration": 14,
+              "workers": 2,
+              "forklift": false,
+              "required_skills": [],
+              "effectiveness_bps": 10000
+            }
+          ],
+          "protection_status": "exposed"
+        },
+        {
+          "id": "L10",
+          "category": "cardboard",
+          "description": "Wax-coated packaging",
+          "weight_kg": 350,
+          "location": "West apron",
+          "exposure": "low",
+          "condition": "Coated, dry",
+          "value_inr": 3500,
+          "vulnerability": 1,
+          "exposed_loss_inr": 350,
+          "restrictions": [],
+          "actions": [
+            {
+              "kind": "cover",
+              "duration": 10,
+              "workers": 1,
+              "forklift": false,
+              "required_skills": [],
+              "effectiveness_bps": 8000
+            },
+            {
+              "kind": "relocate",
+              "duration": 12,
+              "workers": 2,
+              "forklift": false,
+              "required_skills": [],
+              "effectiveness_bps": 10000
+            }
+          ],
+          "protection_status": "exposed"
+        },
+        {
+          "id": "L11",
+          "category": "paper",
+          "description": "Print-shop offcuts",
+          "weight_kg": 380,
+          "location": "East apron",
+          "exposure": "high",
+          "condition": "Dry, boxed",
+          "value_inr": 11400,
+          "vulnerability": 5,
+          "exposed_loss_inr": 7410,
+          "restrictions": [],
+          "actions": [
+            {
+              "kind": "cover",
+              "duration": 11,
+              "workers": 1,
+              "forklift": false,
+              "required_skills": [],
+              "effectiveness_bps": 9500
+            },
+            {
+              "kind": "relocate",
+              "duration": 13,
+              "workers": 2,
+              "forklift": false,
+              "required_skills": [],
+              "effectiveness_bps": 10000
+            }
+          ],
+          "protection_status": "exposed"
+        },
+        {
+          "id": "L12",
+          "category": "cardboard",
+          "description": "Sheltered carton stock",
+          "weight_kg": 700,
+          "location": "Existing shed",
+          "exposure": "low",
+          "condition": "Dry, sheltered",
+          "value_inr": 12600,
+          "vulnerability": 2,
+          "exposed_loss_inr": 0,
+          "restrictions": [],
+          "actions": [],
+          "protection_status": "already_protected"
+        }
+      ],
+      "workers": [
+        {
+          "id": "W1",
+          "name": "Asha",
+          "skills": [
+            "forklift",
+            "bale_handling"
+          ],
+          "available_from": 0,
+          "available_until": 240,
+          "enabled": true
+        },
+        {
+          "id": "W2",
+          "name": "Imran",
+          "skills": [
+            "bale_handling"
+          ],
+          "available_from": 0,
+          "available_until": 240,
+          "enabled": true
+        },
+        {
+          "id": "W3",
+          "name": "Meera",
+          "skills": [
+            "bale_handling"
+          ],
+          "available_from": 0,
+          "available_until": 240,
+          "enabled": true
+        }
+      ],
+      "forklifts": [
+        {
+          "id": "F1",
+          "name": "Forklift 01",
+          "available_from": 0,
+          "available_until": 240,
+          "enabled": false
+        }
+      ],
+      "tarps": [
+        {
+          "id": "T1",
+          "name": "Large tarp",
+          "capacity_kg": 1500,
+          "categories": [
+            "cardboard",
+            "paper",
+            "newsprint"
+          ],
+          "enabled": true
+        },
+        {
+          "id": "T2",
+          "name": "Medium tarp",
+          "capacity_kg": 800,
+          "categories": [
+            "cardboard",
+            "paper",
+            "newsprint"
+          ],
+          "enabled": true
+        },
+        {
+          "id": "T3",
+          "name": "Small tarp",
+          "capacity_kg": 400,
+          "categories": [
+            "paper",
+            "newsprint"
+          ],
+          "enabled": true
+        }
+      ],
+      "storage": [
+        {
+          "id": "S1",
+          "name": "Covered bay A",
+          "capacity_kg": 1500,
+          "categories": [
+            "cardboard",
+            "paper",
+            "newsprint"
+          ],
+          "enabled": true
+        },
+        {
+          "id": "S2",
+          "name": "Covered bay B",
+          "capacity_kg": 700,
+          "categories": [
+            "cardboard",
+            "paper",
+            "newsprint"
+          ],
+          "enabled": true
+        }
+      ],
+      "completed": [
+        {
+          "lot_id": "L02",
+          "action": "cover",
+          "start": 0,
+          "end": 12,
+          "worker_ids": [
+            "W1",
+            "W3"
+          ],
+          "forklift_id": null,
+          "tarp_id": "T2",
+          "storage_id": null,
+          "saved_loss_inr": 5850
+        }
+      ]
+    },
+    "revision": 2,
+    "latest": {
+      "id": "35fb6812f315",
+      "revision": 2,
+      "state": "draft",
+      "created": "2026-10-10T07:22:02.045093+00:00",
+      "plan": {
+        "execution_backend": "sam",
+        "strategy": "CP-SAT",
+        "solver_status": "OPTIMAL",
+        "tasks": [
+          {
+            "lot_id": "L03",
+            "action": "cover",
+            "start": 12,
+            "end": 26,
+            "worker_ids": [
+              "W1"
+            ],
+            "forklift_id": null,
+            "tarp_id": "T1",
+            "storage_id": null,
+            "saved_loss_inr": 1836
+          },
+          {
+            "lot_id": "L04",
+            "action": "relocate",
+            "start": 12,
+            "end": 22,
+            "worker_ids": [
+              "W2",
+              "W3"
+            ],
+            "forklift_id": null,
+            "tarp_id": null,
+            "storage_id": "S2",
+            "saved_loss_inr": 6300
+          },
+          {
+            "lot_id": "L11",
+            "action": "relocate",
+            "start": 22,
+            "end": 35,
+            "worker_ids": [
+              "W2",
+              "W3"
+            ],
+            "forklift_id": null,
+            "tarp_id": null,
+            "storage_id": "S1",
+            "saved_loss_inr": 7410
+          },
+          {
+            "lot_id": "L07",
+            "action": "cover",
+            "start": 26,
+            "end": 35,
+            "worker_ids": [
+              "W1"
+            ],
+            "forklift_id": null,
+            "tarp_id": "T3",
+            "storage_id": null,
+            "saved_loss_inr": 1275
+          }
+        ],
+        "unprotected_lot_ids": [
+          "L01",
+          "L05",
+          "L06",
+          "L08",
+          "L09",
+          "L10"
+        ],
+        "initial_loss_inr": 54230,
+        "completed_saved_inr": 5850,
+        "planned_saved_inr": 16821,
+        "residual_loss_inr": 31559,
+        "solve_seconds": 0.027,
+        "best_bound_inr": 16821,
+        "validation": {
+          "valid": true,
+          "errors": []
+        }
+      },
+      "comparisons": [
+        {
+          "execution_backend": "sam",
+          "strategy": "Highest value first",
+          "solver_status": "GREEDY",
+          "tasks": [
+            {
+              "lot_id": "L06",
+              "action": "cover",
+              "start": 12,
+              "end": 26,
+              "worker_ids": [
+                "W1",
+                "W2"
+              ],
+              "forklift_id": null,
+              "tarp_id": "T1",
+              "storage_id": null,
+              "saved_loss_inr": 7020
+            },
+            {
+              "lot_id": "L11",
+              "action": "cover",
+              "start": 12,
+              "end": 23,
+              "worker_ids": [
+                "W3"
+              ],
+              "forklift_id": null,
+              "tarp_id": "T3",
+              "storage_id": null,
+              "saved_loss_inr": 7039
+            }
+          ],
+          "unprotected_lot_ids": [
+            "L01",
+            "L03",
+            "L04",
+            "L05",
+            "L07",
+            "L08",
+            "L09",
+            "L10"
+          ],
+          "initial_loss_inr": 54230,
+          "completed_saved_inr": 5850,
+          "planned_saved_inr": 14059,
+          "residual_loss_inr": 34321,
+          "solve_seconds": 0.0,
+          "best_bound_inr": null,
+          "validation": {
+            "valid": true,
+            "errors": []
+          }
+        },
+        {
+          "execution_backend": "sam",
+          "strategy": "Highest loss first",
+          "solver_status": "GREEDY",
+          "tasks": [
+            {
+              "lot_id": "L06",
+              "action": "cover",
+              "start": 12,
+              "end": 26,
+              "worker_ids": [
+                "W1",
+                "W2"
+              ],
+              "forklift_id": null,
+              "tarp_id": "T1",
+              "storage_id": null,
+              "saved_loss_inr": 7020
+            },
+            {
+              "lot_id": "L11",
+              "action": "cover",
+              "start": 12,
+              "end": 23,
+              "worker_ids": [
+                "W3"
+              ],
+              "forklift_id": null,
+              "tarp_id": "T3",
+              "storage_id": null,
+              "saved_loss_inr": 7039
+            }
+          ],
+          "unprotected_lot_ids": [
+            "L01",
+            "L03",
+            "L04",
+            "L05",
+            "L07",
+            "L08",
+            "L09",
+            "L10"
+          ],
+          "initial_loss_inr": 54230,
+          "completed_saved_inr": 5850,
+          "planned_saved_inr": 14059,
+          "residual_loss_inr": 34321,
+          "solve_seconds": 0.0,
+          "best_bound_inr": null,
+          "validation": {
+            "valid": true,
+            "errors": []
+          }
+        },
+        {
+          "execution_backend": "sam",
+          "strategy": "Loss per worker-minute",
+          "solver_status": "GREEDY",
+          "tasks": [
+            {
+              "lot_id": "L04",
+              "action": "relocate",
+              "start": 12,
+              "end": 22,
+              "worker_ids": [
+                "W1",
+                "W2"
+              ],
+              "forklift_id": null,
+              "tarp_id": null,
+              "storage_id": "S1",
+              "saved_loss_inr": 6300
+            },
+            {
+              "lot_id": "L07",
+              "action": "cover",
+              "start": 12,
+              "end": 21,
+              "worker_ids": [
+                "W3"
+              ],
+              "forklift_id": null,
+              "tarp_id": "T1",
+              "storage_id": null,
+              "saved_loss_inr": 1275
+            },
+            {
+              "lot_id": "L11",
+              "action": "relocate",
+              "start": 22,
+              "end": 35,
+              "worker_ids": [
+                "W1",
+                "W2"
+              ],
+              "forklift_id": null,
+              "tarp_id": null,
+              "storage_id": "S2",
+              "saved_loss_inr": 7410
+            }
+          ],
+          "unprotected_lot_ids": [
+            "L01",
+            "L03",
+            "L05",
+            "L06",
+            "L08",
+            "L09",
+            "L10"
+          ],
+          "initial_loss_inr": 54230,
+          "completed_saved_inr": 5850,
+          "planned_saved_inr": 14985,
+          "residual_loss_inr": 33395,
+          "solve_seconds": 0.0,
+          "best_bound_inr": null,
+          "validation": {
+            "valid": true,
+            "errors": []
+          }
+        }
+      ],
+      "scenario": {
+        "id": "monsoon-yard",
+        "name": "Surat Paper Recovery Yard",
+        "weather_label": "SIMULATED \u00b7 heavy rain approaching",
+        "rain_arrival_minute": 45,
+        "safety_buffer_minutes": 10,
+        "deadline": 35,
+        "now_minute": 12,
+        "lots": [
+          {
+            "id": "L01",
+            "category": "cardboard",
+            "description": "Corrugated cardboard",
+            "weight_kg": 800,
+            "location": "East apron",
+            "exposure": "high",
+            "condition": "Dry, loose stack",
+            "value_inr": 14400,
+            "vulnerability": 4,
+            "exposed_loss_inr": 5760,
+            "restrictions": [],
+            "actions": [
+              {
+                "kind": "cover",
+                "duration": 16,
+                "workers": 2,
+                "forklift": false,
+                "required_skills": [],
+                "effectiveness_bps": 8000
+              },
+              {
+                "kind": "relocate",
+                "duration": 22,
+                "workers": 1,
+                "forklift": true,
+                "required_skills": [
+                  "forklift"
+                ],
+                "effectiveness_bps": 10000
+              }
+            ],
+            "protection_status": "exposed"
+          },
+          {
+            "id": "L02",
+            "category": "newsprint",
+            "description": "Sorted newspapers",
+            "weight_kg": 500,
+            "location": "North fence",
+            "exposure": "high",
+            "condition": "Dry, bundled",
+            "value_inr": 10000,
+            "vulnerability": 5,
+            "exposed_loss_inr": 6500,
+            "restrictions": [],
+            "actions": [
+              {
+                "kind": "cover",
+                "duration": 12,
+                "workers": 2,
+                "forklift": false,
+                "required_skills": [],
+                "effectiveness_bps": 9000
+              },
+              {
+                "kind": "relocate",
+                "duration": 16,
+                "workers": 1,
+                "forklift": true,
+                "required_skills": [
+                  "forklift"
+                ],
+                "effectiveness_bps": 10000
+              }
+            ],
+            "protection_status": "exposed"
+          },
+          {
+            "id": "L03",
+            "category": "paper",
+            "description": "Mixed paper",
+            "weight_kg": 600,
+            "location": "Sorting pad",
+            "exposure": "medium",
+            "condition": "Dry, bagged",
+            "value_inr": 7200,
+            "vulnerability": 3,
+            "exposed_loss_inr": 2160,
+            "restrictions": [],
+            "actions": [
+              {
+                "kind": "cover",
+                "duration": 14,
+                "workers": 1,
+                "forklift": false,
+                "required_skills": [],
+                "effectiveness_bps": 8500
+              },
+              {
+                "kind": "relocate",
+                "duration": 18,
+                "workers": 1,
+                "forklift": true,
+                "required_skills": [
+                  "forklift"
+                ],
+                "effectiveness_bps": 10000
+              }
+            ],
+            "protection_status": "exposed"
+          },
+          {
+            "id": "L04",
+            "category": "paper",
+            "description": "White office paper",
+            "weight_kg": 300,
+            "location": "East apron",
+            "exposure": "high",
+            "condition": "Dry, loose bags",
+            "value_inr": 9000,
+            "vulnerability": 5,
+            "exposed_loss_inr": 6300,
+            "restrictions": [],
+            "actions": [
+              {
+                "kind": "cover",
+                "duration": 8,
+                "workers": 1,
+                "forklift": false,
+                "required_skills": [],
+                "effectiveness_bps": 9000
+              },
+              {
+                "kind": "relocate",
+                "duration": 10,
+                "workers": 2,
+                "forklift": false,
+                "required_skills": [],
+                "effectiveness_bps": 10000
+              }
+            ],
+            "protection_status": "exposed"
+          },
+          {
+            "id": "L05",
+            "category": "cardboard",
+            "description": "Dense cardboard bales",
+            "weight_kg": 1200,
+            "location": "Loading lane",
+            "exposure": "high",
+            "condition": "Dry, strapped",
+            "value_inr": 24000,
+            "vulnerability": 4,
+            "exposed_loss_inr": 9600,
+            "restrictions": [
+              "Only certified operator may relocate; heavy bales require forklift"
+            ],
+            "actions": [
+              {
+                "kind": "cover",
+                "duration": 42,
+                "workers": 3,
+                "forklift": false,
+                "required_skills": [
+                  "bale_handling"
+                ],
+                "effectiveness_bps": 7500
+              },
+              {
+                "kind": "relocate",
+                "duration": 48,
+                "workers": 1,
+                "forklift": true,
+                "required_skills": [
+                  "forklift"
+                ],
+                "effectiveness_bps": 10000
+              }
+            ],
+            "protection_status": "exposed"
+          },
+          {
+            "id": "L06",
+            "category": "paper",
+            "description": "Kraft paper rolls",
+            "weight_kg": 650,
+            "location": "West apron",
+            "exposure": "high",
+            "condition": "Dry, palletised",
+            "value_inr": 15600,
+            "vulnerability": 4,
+            "exposed_loss_inr": 7800,
+            "restrictions": [],
+            "actions": [
+              {
+                "kind": "cover",
+                "duration": 14,
+                "workers": 2,
+                "forklift": false,
+                "required_skills": [],
+                "effectiveness_bps": 9000
+              },
+              {
+                "kind": "relocate",
+                "duration": 18,
+                "workers": 1,
+                "forklift": true,
+                "required_skills": [
+                  "forklift"
+                ],
+                "effectiveness_bps": 10000
+              }
+            ],
+            "protection_status": "exposed"
+          },
+          {
+            "id": "L07",
+            "category": "newsprint",
+            "description": "Magazine returns",
+            "weight_kg": 250,
+            "location": "Sorting pad",
+            "exposure": "medium",
+            "condition": "Coated, bundled",
+            "value_inr": 5000,
+            "vulnerability": 2,
+            "exposed_loss_inr": 1500,
+            "restrictions": [],
+            "actions": [
+              {
+                "kind": "cover",
+                "duration": 9,
+                "workers": 1,
+                "forklift": false,
+                "required_skills": [],
+                "effectiveness_bps": 8500
+              },
+              {
+                "kind": "relocate",
+                "duration": 12,
+                "workers": 2,
+                "forklift": false,
+                "required_skills": [],
+                "effectiveness_bps": 10000
+              }
+            ],
+            "protection_status": "exposed"
+          },
+          {
+            "id": "L08",
+            "category": "cardboard",
+            "description": "Flattened carton sheets",
+            "weight_kg": 450,
+            "location": "North fence",
+            "exposure": "high",
+            "condition": "Dry, stacked",
+            "value_inr": 8100,
+            "vulnerability": 4,
+            "exposed_loss_inr": 4050,
+            "restrictions": [],
+            "actions": [
+              {
+                "kind": "cover",
+                "duration": 10,
+                "workers": 2,
+                "forklift": false,
+                "required_skills": [],
+                "effectiveness_bps": 8500
+              },
+              {
+                "kind": "relocate",
+                "duration": 15,
+                "workers": 1,
+                "forklift": true,
+                "required_skills": [
+                  "forklift"
+                ],
+                "effectiveness_bps": 10000
+              }
+            ],
+            "protection_status": "exposed"
+          },
+          {
+            "id": "L09",
+            "category": "paper",
+            "description": "Shredded office paper",
+            "weight_kg": 200,
+            "location": "Bagging area",
+            "exposure": "high",
+            "condition": "Dry, porous sacks",
+            "value_inr": 4000,
+            "vulnerability": 5,
+            "exposed_loss_inr": 2800,
+            "restrictions": [
+              "Move sacks by hand; no safe tarp attachment"
+            ],
+            "actions": [
+              {
+                "kind": "relocate",
+                "duration": 14,
+                "workers": 2,
+                "forklift": false,
+                "required_skills": [],
+                "effectiveness_bps": 10000
+              }
+            ],
+            "protection_status": "exposed"
+          },
+          {
+            "id": "L10",
+            "category": "cardboard",
+            "description": "Wax-coated packaging",
+            "weight_kg": 350,
+            "location": "West apron",
+            "exposure": "low",
+            "condition": "Coated, dry",
+            "value_inr": 3500,
+            "vulnerability": 1,
+            "exposed_loss_inr": 350,
+            "restrictions": [],
+            "actions": [
+              {
+                "kind": "cover",
+                "duration": 10,
+                "workers": 1,
+                "forklift": false,
+                "required_skills": [],
+                "effectiveness_bps": 8000
+              },
+              {
+                "kind": "relocate",
+                "duration": 12,
+                "workers": 2,
+                "forklift": false,
+                "required_skills": [],
+                "effectiveness_bps": 10000
+              }
+            ],
+            "protection_status": "exposed"
+          },
+          {
+            "id": "L11",
+            "category": "paper",
+            "description": "Print-shop offcuts",
+            "weight_kg": 380,
+            "location": "East apron",
+            "exposure": "high",
+            "condition": "Dry, boxed",
+            "value_inr": 11400,
+            "vulnerability": 5,
+            "exposed_loss_inr": 7410,
+            "restrictions": [],
+            "actions": [
+              {
+                "kind": "cover",
+                "duration": 11,
+                "workers": 1,
+                "forklift": false,
+                "required_skills": [],
+                "effectiveness_bps": 9500
+              },
+              {
+                "kind": "relocate",
+                "duration": 13,
+                "workers": 2,
+                "forklift": false,
+                "required_skills": [],
+                "effectiveness_bps": 10000
+              }
+            ],
+            "protection_status": "exposed"
+          },
+          {
+            "id": "L12",
+            "category": "cardboard",
+            "description": "Sheltered carton stock",
+            "weight_kg": 700,
+            "location": "Existing shed",
+            "exposure": "low",
+            "condition": "Dry, sheltered",
+            "value_inr": 12600,
+            "vulnerability": 2,
+            "exposed_loss_inr": 0,
+            "restrictions": [],
+            "actions": [],
+            "protection_status": "already_protected"
+          }
+        ],
+        "workers": [
+          {
+            "id": "W1",
+            "name": "Asha",
+            "skills": [
+              "forklift",
+              "bale_handling"
+            ],
+            "available_from": 0,
+            "available_until": 240,
+            "enabled": true
+          },
+          {
+            "id": "W2",
+            "name": "Imran",
+            "skills": [
+              "bale_handling"
+            ],
+            "available_from": 0,
+            "available_until": 240,
+            "enabled": true
+          },
+          {
+            "id": "W3",
+            "name": "Meera",
+            "skills": [
+              "bale_handling"
+            ],
+            "available_from": 0,
+            "available_until": 240,
+            "enabled": true
+          }
+        ],
+        "forklifts": [
+          {
+            "id": "F1",
+            "name": "Forklift 01",
+            "available_from": 0,
+            "available_until": 240,
+            "enabled": false
+          }
+        ],
+        "tarps": [
+          {
+            "id": "T1",
+            "name": "Large tarp",
+            "capacity_kg": 1500,
+            "categories": [
+              "cardboard",
+              "paper",
+              "newsprint"
+            ],
+            "enabled": true
+          },
+          {
+            "id": "T2",
+            "name": "Medium tarp",
+            "capacity_kg": 800,
+            "categories": [
+              "cardboard",
+              "paper",
+              "newsprint"
+            ],
+            "enabled": true
+          },
+          {
+            "id": "T3",
+            "name": "Small tarp",
+            "capacity_kg": 400,
+            "categories": [
+              "paper",
+              "newsprint"
+            ],
+            "enabled": true
+          }
+        ],
+        "storage": [
+          {
+            "id": "S1",
+            "name": "Covered bay A",
+            "capacity_kg": 1500,
+            "categories": [
+              "cardboard",
+              "paper",
+              "newsprint"
+            ],
+            "enabled": true
+          },
+          {
+            "id": "S2",
+            "name": "Covered bay B",
+            "capacity_kg": 700,
+            "categories": [
+              "cardboard",
+              "paper",
+              "newsprint"
+            ],
+            "enabled": true
+          }
+        ],
+        "completed": [
+          {
+            "lot_id": "L02",
+            "action": "cover",
+            "start": 0,
+            "end": 12,
+            "worker_ids": [
+              "W1",
+              "W3"
+            ],
+            "forklift_id": null,
+            "tarp_id": "T2",
+            "storage_id": null,
+            "saved_loss_inr": 5850
+          }
+        ]
+      },
+      "execution": {
+        "schema_version": "1",
+        "execution_backend": "sam",
+        "scenario_sha256": "07ffa1e51a26fdb4cbf36052a8a639f8993fd1e4b0005f79556e6d2523ae6e82",
+        "assumptions": [
+          "Fictional weather, prices, loss estimates and effectiveness; not measured savings.",
+          "Whole lots; one protection action per lot; tarps and bays remain occupied through rain.",
+          "Integer-minute handling durations; no travel/setup or partial/in-progress operations.",
+          "Completion is simulated operator attestation at scheduled times, not physical verification.",
+          "Kilograms scheduled are not kilograms of waste prevented."
+        ],
+        "runtime": {
+          "python": "3.12.15",
+          "ortools": "9.15.6755"
+        }
+      }
+    },
+    "events": [
+      {
+        "id": 5,
+        "at": "2026-10-10T07:22:02.046552+00:00",
+        "kind": "plan_generated",
+        "detail": "35fb6812f315: OPTIMAL, 4 tasks"
+      },
+      {
+        "id": 4,
+        "at": "2026-10-10T07:21:55.315572+00:00",
+        "kind": "disruption_applied",
+        "detail": "Cutoff 35, clock 12, disabled workers [], forklift False"
+      },
+      {
+        "id": 3,
+        "at": "2026-10-10T07:21:50.498140+00:00",
+        "kind": "completion_recorded",
+        "detail": "L02: simulated cover, minute 0\u201312, adb980379c1a"
+      },
+      {
+        "id": 2,
+        "at": "2026-10-10T07:21:37.482565+00:00",
+        "kind": "manager_approved",
+        "detail": "adb980379c1a"
+      },
+      {
+        "id": 1,
+        "at": "2026-10-10T07:18:13.521038+00:00",
+        "kind": "plan_generated",
+        "detail": "adb980379c1a: OPTIMAL, 5 tasks"
+      }
+    ],
+    "compute_backend": "sam"
+  },
+  "history": [
+    {
+      "id": "35fb6812f315",
+      "revision": 2,
+      "state": "draft",
+      "created": "2026-10-10T07:22:02.045093+00:00",
+      "plan": {
+        "execution_backend": "sam",
+        "strategy": "CP-SAT",
+        "solver_status": "OPTIMAL",
+        "tasks": [
+          {
+            "lot_id": "L03",
+            "action": "cover",
+            "start": 12,
+            "end": 26,
+            "worker_ids": [
+              "W1"
+            ],
+            "forklift_id": null,
+            "tarp_id": "T1",
+            "storage_id": null,
+            "saved_loss_inr": 1836
+          },
+          {
+            "lot_id": "L04",
+            "action": "relocate",
+            "start": 12,
+            "end": 22,
+            "worker_ids": [
+              "W2",
+              "W3"
+            ],
+            "forklift_id": null,
+            "tarp_id": null,
+            "storage_id": "S2",
+            "saved_loss_inr": 6300
+          },
+          {
+            "lot_id": "L11",
+            "action": "relocate",
+            "start": 22,
+            "end": 35,
+            "worker_ids": [
+              "W2",
+              "W3"
+            ],
+            "forklift_id": null,
+            "tarp_id": null,
+            "storage_id": "S1",
+            "saved_loss_inr": 7410
+          },
+          {
+            "lot_id": "L07",
+            "action": "cover",
+            "start": 26,
+            "end": 35,
+            "worker_ids": [
+              "W1"
+            ],
+            "forklift_id": null,
+            "tarp_id": "T3",
+            "storage_id": null,
+            "saved_loss_inr": 1275
+          }
+        ],
+        "unprotected_lot_ids": [
+          "L01",
+          "L05",
+          "L06",
+          "L08",
+          "L09",
+          "L10"
+        ],
+        "initial_loss_inr": 54230,
+        "completed_saved_inr": 5850,
+        "planned_saved_inr": 16821,
+        "residual_loss_inr": 31559,
+        "solve_seconds": 0.027,
+        "best_bound_inr": 16821,
+        "validation": {
+          "valid": true,
+          "errors": []
+        }
+      },
+      "comparisons": [
+        {
+          "execution_backend": "sam",
+          "strategy": "Highest value first",
+          "solver_status": "GREEDY",
+          "tasks": [
+            {
+              "lot_id": "L06",
+              "action": "cover",
+              "start": 12,
+              "end": 26,
+              "worker_ids": [
+                "W1",
+                "W2"
+              ],
+              "forklift_id": null,
+              "tarp_id": "T1",
+              "storage_id": null,
+              "saved_loss_inr": 7020
+            },
+            {
+              "lot_id": "L11",
+              "action": "cover",
+              "start": 12,
+              "end": 23,
+              "worker_ids": [
+                "W3"
+              ],
+              "forklift_id": null,
+              "tarp_id": "T3",
+              "storage_id": null,
+              "saved_loss_inr": 7039
+            }
+          ],
+          "unprotected_lot_ids": [
+            "L01",
+            "L03",
+            "L04",
+            "L05",
+            "L07",
+            "L08",
+            "L09",
+            "L10"
+          ],
+          "initial_loss_inr": 54230,
+          "completed_saved_inr": 5850,
+          "planned_saved_inr": 14059,
+          "residual_loss_inr": 34321,
+          "solve_seconds": 0.0,
+          "best_bound_inr": null,
+          "validation": {
+            "valid": true,
+            "errors": []
+          }
+        },
+        {
+          "execution_backend": "sam",
+          "strategy": "Highest loss first",
+          "solver_status": "GREEDY",
+          "tasks": [
+            {
+              "lot_id": "L06",
+              "action": "cover",
+              "start": 12,
+              "end": 26,
+              "worker_ids": [
+                "W1",
+                "W2"
+              ],
+              "forklift_id": null,
+              "tarp_id": "T1",
+              "storage_id": null,
+              "saved_loss_inr": 7020
+            },
+            {
+              "lot_id": "L11",
+              "action": "cover",
+              "start": 12,
+              "end": 23,
+              "worker_ids": [
+                "W3"
+              ],
+              "forklift_id": null,
+              "tarp_id": "T3",
+              "storage_id": null,
+              "saved_loss_inr": 7039
+            }
+          ],
+          "unprotected_lot_ids": [
+            "L01",
+            "L03",
+            "L04",
+            "L05",
+            "L07",
+            "L08",
+            "L09",
+            "L10"
+          ],
+          "initial_loss_inr": 54230,
+          "completed_saved_inr": 5850,
+          "planned_saved_inr": 14059,
+          "residual_loss_inr": 34321,
+          "solve_seconds": 0.0,
+          "best_bound_inr": null,
+          "validation": {
+            "valid": true,
+            "errors": []
+          }
+        },
+        {
+          "execution_backend": "sam",
+          "strategy": "Loss per worker-minute",
+          "solver_status": "GREEDY",
+          "tasks": [
+            {
+              "lot_id": "L04",
+              "action": "relocate",
+              "start": 12,
+              "end": 22,
+              "worker_ids": [
+                "W1",
+                "W2"
+              ],
+              "forklift_id": null,
+              "tarp_id": null,
+              "storage_id": "S1",
+              "saved_loss_inr": 6300
+            },
+            {
+              "lot_id": "L07",
+              "action": "cover",
+              "start": 12,
+              "end": 21,
+              "worker_ids": [
+                "W3"
+              ],
+              "forklift_id": null,
+              "tarp_id": "T1",
+              "storage_id": null,
+              "saved_loss_inr": 1275
+            },
+            {
+              "lot_id": "L11",
+              "action": "relocate",
+              "start": 22,
+              "end": 35,
+              "worker_ids": [
+                "W1",
+                "W2"
+              ],
+              "forklift_id": null,
+              "tarp_id": null,
+              "storage_id": "S2",
+              "saved_loss_inr": 7410
+            }
+          ],
+          "unprotected_lot_ids": [
+            "L01",
+            "L03",
+            "L05",
+            "L06",
+            "L08",
+            "L09",
+            "L10"
+          ],
+          "initial_loss_inr": 54230,
+          "completed_saved_inr": 5850,
+          "planned_saved_inr": 14985,
+          "residual_loss_inr": 33395,
+          "solve_seconds": 0.0,
+          "best_bound_inr": null,
+          "validation": {
+            "valid": true,
+            "errors": []
+          }
+        }
+      ],
+      "scenario": {
+        "id": "monsoon-yard",
+        "name": "Surat Paper Recovery Yard",
+        "weather_label": "SIMULATED \u00b7 heavy rain approaching",
+        "rain_arrival_minute": 45,
+        "safety_buffer_minutes": 10,
+        "deadline": 35,
+        "now_minute": 12,
+        "lots": [
+          {
+            "id": "L01",
+            "category": "cardboard",
+            "description": "Corrugated cardboard",
+            "weight_kg": 800,
+            "location": "East apron",
+            "exposure": "high",
+            "condition": "Dry, loose stack",
+            "value_inr": 14400,
+            "vulnerability": 4,
+            "exposed_loss_inr": 5760,
+            "restrictions": [],
+            "actions": [
+              {
+                "kind": "cover",
+                "duration": 16,
+                "workers": 2,
+                "forklift": false,
+                "required_skills": [],
+                "effectiveness_bps": 8000
+              },
+              {
+                "kind": "relocate",
+                "duration": 22,
+                "workers": 1,
+                "forklift": true,
+                "required_skills": [
+                  "forklift"
+                ],
+                "effectiveness_bps": 10000
+              }
+            ],
+            "protection_status": "exposed"
+          },
+          {
+            "id": "L02",
+            "category": "newsprint",
+            "description": "Sorted newspapers",
+            "weight_kg": 500,
+            "location": "North fence",
+            "exposure": "high",
+            "condition": "Dry, bundled",
+            "value_inr": 10000,
+            "vulnerability": 5,
+            "exposed_loss_inr": 6500,
+            "restrictions": [],
+            "actions": [
+              {
+                "kind": "cover",
+                "duration": 12,
+                "workers": 2,
+                "forklift": false,
+                "required_skills": [],
+                "effectiveness_bps": 9000
+              },
+              {
+                "kind": "relocate",
+                "duration": 16,
+                "workers": 1,
+                "forklift": true,
+                "required_skills": [
+                  "forklift"
+                ],
+                "effectiveness_bps": 10000
+              }
+            ],
+            "protection_status": "exposed"
+          },
+          {
+            "id": "L03",
+            "category": "paper",
+            "description": "Mixed paper",
+            "weight_kg": 600,
+            "location": "Sorting pad",
+            "exposure": "medium",
+            "condition": "Dry, bagged",
+            "value_inr": 7200,
+            "vulnerability": 3,
+            "exposed_loss_inr": 2160,
+            "restrictions": [],
+            "actions": [
+              {
+                "kind": "cover",
+                "duration": 14,
+                "workers": 1,
+                "forklift": false,
+                "required_skills": [],
+                "effectiveness_bps": 8500
+              },
+              {
+                "kind": "relocate",
+                "duration": 18,
+                "workers": 1,
+                "forklift": true,
+                "required_skills": [
+                  "forklift"
+                ],
+                "effectiveness_bps": 10000
+              }
+            ],
+            "protection_status": "exposed"
+          },
+          {
+            "id": "L04",
+            "category": "paper",
+            "description": "White office paper",
+            "weight_kg": 300,
+            "location": "East apron",
+            "exposure": "high",
+            "condition": "Dry, loose bags",
+            "value_inr": 9000,
+            "vulnerability": 5,
+            "exposed_loss_inr": 6300,
+            "restrictions": [],
+            "actions": [
+              {
+                "kind": "cover",
+                "duration": 8,
+                "workers": 1,
+                "forklift": false,
+                "required_skills": [],
+                "effectiveness_bps": 9000
+              },
+              {
+                "kind": "relocate",
+                "duration": 10,
+                "workers": 2,
+                "forklift": false,
+                "required_skills": [],
+                "effectiveness_bps": 10000
+              }
+            ],
+            "protection_status": "exposed"
+          },
+          {
+            "id": "L05",
+            "category": "cardboard",
+            "description": "Dense cardboard bales",
+            "weight_kg": 1200,
+            "location": "Loading lane",
+            "exposure": "high",
+            "condition": "Dry, strapped",
+            "value_inr": 24000,
+            "vulnerability": 4,
+            "exposed_loss_inr": 9600,
+            "restrictions": [
+              "Only certified operator may relocate; heavy bales require forklift"
+            ],
+            "actions": [
+              {
+                "kind": "cover",
+                "duration": 42,
+                "workers": 3,
+                "forklift": false,
+                "required_skills": [
+                  "bale_handling"
+                ],
+                "effectiveness_bps": 7500
+              },
+              {
+                "kind": "relocate",
+                "duration": 48,
+                "workers": 1,
+                "forklift": true,
+                "required_skills": [
+                  "forklift"
+                ],
+                "effectiveness_bps": 10000
+              }
+            ],
+            "protection_status": "exposed"
+          },
+          {
+            "id": "L06",
+            "category": "paper",
+            "description": "Kraft paper rolls",
+            "weight_kg": 650,
+            "location": "West apron",
+            "exposure": "high",
+            "condition": "Dry, palletised",
+            "value_inr": 15600,
+            "vulnerability": 4,
+            "exposed_loss_inr": 7800,
+            "restrictions": [],
+            "actions": [
+              {
+                "kind": "cover",
+                "duration": 14,
+                "workers": 2,
+                "forklift": false,
+                "required_skills": [],
+                "effectiveness_bps": 9000
+              },
+              {
+                "kind": "relocate",
+                "duration": 18,
+                "workers": 1,
+                "forklift": true,
+                "required_skills": [
+                  "forklift"
+                ],
+                "effectiveness_bps": 10000
+              }
+            ],
+            "protection_status": "exposed"
+          },
+          {
+            "id": "L07",
+            "category": "newsprint",
+            "description": "Magazine returns",
+            "weight_kg": 250,
+            "location": "Sorting pad",
+            "exposure": "medium",
+            "condition": "Coated, bundled",
+            "value_inr": 5000,
+            "vulnerability": 2,
+            "exposed_loss_inr": 1500,
+            "restrictions": [],
+            "actions": [
+              {
+                "kind": "cover",
+                "duration": 9,
+                "workers": 1,
+                "forklift": false,
+                "required_skills": [],
+                "effectiveness_bps": 8500
+              },
+              {
+                "kind": "relocate",
+                "duration": 12,
+                "workers": 2,
+                "forklift": false,
+                "required_skills": [],
+                "effectiveness_bps": 10000
+              }
+            ],
+            "protection_status": "exposed"
+          },
+          {
+            "id": "L08",
+            "category": "cardboard",
+            "description": "Flattened carton sheets",
+            "weight_kg": 450,
+            "location": "North fence",
+            "exposure": "high",
+            "condition": "Dry, stacked",
+            "value_inr": 8100,
+            "vulnerability": 4,
+            "exposed_loss_inr": 4050,
+            "restrictions": [],
+            "actions": [
+              {
+                "kind": "cover",
+                "duration": 10,
+                "workers": 2,
+                "forklift": false,
+                "required_skills": [],
+                "effectiveness_bps": 8500
+              },
+              {
+                "kind": "relocate",
+                "duration": 15,
+                "workers": 1,
+                "forklift": true,
+                "required_skills": [
+                  "forklift"
+                ],
+                "effectiveness_bps": 10000
+              }
+            ],
+            "protection_status": "exposed"
+          },
+          {
+            "id": "L09",
+            "category": "paper",
+            "description": "Shredded office paper",
+            "weight_kg": 200,
+            "location": "Bagging area",
+            "exposure": "high",
+            "condition": "Dry, porous sacks",
+            "value_inr": 4000,
+            "vulnerability": 5,
+            "exposed_loss_inr": 2800,
+            "restrictions": [
+              "Move sacks by hand; no safe tarp attachment"
+            ],
+            "actions": [
+              {
+                "kind": "relocate",
+                "duration": 14,
+                "workers": 2,
+                "forklift": false,
+                "required_skills": [],
+                "effectiveness_bps": 10000
+              }
+            ],
+            "protection_status": "exposed"
+          },
+          {
+            "id": "L10",
+            "category": "cardboard",
+            "description": "Wax-coated packaging",
+            "weight_kg": 350,
+            "location": "West apron",
+            "exposure": "low",
+            "condition": "Coated, dry",
+            "value_inr": 3500,
+            "vulnerability": 1,
+            "exposed_loss_inr": 350,
+            "restrictions": [],
+            "actions": [
+              {
+                "kind": "cover",
+                "duration": 10,
+                "workers": 1,
+                "forklift": false,
+                "required_skills": [],
+                "effectiveness_bps": 8000
+              },
+              {
+                "kind": "relocate",
+                "duration": 12,
+                "workers": 2,
+                "forklift": false,
+                "required_skills": [],
+                "effectiveness_bps": 10000
+              }
+            ],
+            "protection_status": "exposed"
+          },
+          {
+            "id": "L11",
+            "category": "paper",
+            "description": "Print-shop offcuts",
+            "weight_kg": 380,
+            "location": "East apron",
+            "exposure": "high",
+            "condition": "Dry, boxed",
+            "value_inr": 11400,
+            "vulnerability": 5,
+            "exposed_loss_inr": 7410,
+            "restrictions": [],
+            "actions": [
+              {
+                "kind": "cover",
+                "duration": 11,
+                "workers": 1,
+                "forklift": false,
+                "required_skills": [],
+                "effectiveness_bps": 9500
+              },
+              {
+                "kind": "relocate",
+                "duration": 13,
+                "workers": 2,
+                "forklift": false,
+                "required_skills": [],
+                "effectiveness_bps": 10000
+              }
+            ],
+            "protection_status": "exposed"
+          },
+          {
+            "id": "L12",
+            "category": "cardboard",
+            "description": "Sheltered carton stock",
+            "weight_kg": 700,
+            "location": "Existing shed",
+            "exposure": "low",
+            "condition": "Dry, sheltered",
+            "value_inr": 12600,
+            "vulnerability": 2,
+            "exposed_loss_inr": 0,
+            "restrictions": [],
+            "actions": [],
+            "protection_status": "already_protected"
+          }
+        ],
+        "workers": [
+          {
+            "id": "W1",
+            "name": "Asha",
+            "skills": [
+              "forklift",
+              "bale_handling"
+            ],
+            "available_from": 0,
+            "available_until": 240,
+            "enabled": true
+          },
+          {
+            "id": "W2",
+            "name": "Imran",
+            "skills": [
+              "bale_handling"
+            ],
+            "available_from": 0,
+            "available_until": 240,
+            "enabled": true
+          },
+          {
+            "id": "W3",
+            "name": "Meera",
+            "skills": [
+              "bale_handling"
+            ],
+            "available_from": 0,
+            "available_until": 240,
+            "enabled": true
+          }
+        ],
+        "forklifts": [
+          {
+            "id": "F1",
+            "name": "Forklift 01",
+            "available_from": 0,
+            "available_until": 240,
+            "enabled": false
+          }
+        ],
+        "tarps": [
+          {
+            "id": "T1",
+            "name": "Large tarp",
+            "capacity_kg": 1500,
+            "categories": [
+              "cardboard",
+              "paper",
+              "newsprint"
+            ],
+            "enabled": true
+          },
+          {
+            "id": "T2",
+            "name": "Medium tarp",
+            "capacity_kg": 800,
+            "categories": [
+              "cardboard",
+              "paper",
+              "newsprint"
+            ],
+            "enabled": true
+          },
+          {
+            "id": "T3",
+            "name": "Small tarp",
+            "capacity_kg": 400,
+            "categories": [
+              "paper",
+              "newsprint"
+            ],
+            "enabled": true
+          }
+        ],
+        "storage": [
+          {
+            "id": "S1",
+            "name": "Covered bay A",
+            "capacity_kg": 1500,
+            "categories": [
+              "cardboard",
+              "paper",
+              "newsprint"
+            ],
+            "enabled": true
+          },
+          {
+            "id": "S2",
+            "name": "Covered bay B",
+            "capacity_kg": 700,
+            "categories": [
+              "cardboard",
+              "paper",
+              "newsprint"
+            ],
+            "enabled": true
+          }
+        ],
+        "completed": [
+          {
+            "lot_id": "L02",
+            "action": "cover",
+            "start": 0,
+            "end": 12,
+            "worker_ids": [
+              "W1",
+              "W3"
+            ],
+            "forklift_id": null,
+            "tarp_id": "T2",
+            "storage_id": null,
+            "saved_loss_inr": 5850
+          }
+        ]
+      },
+      "execution": {
+        "schema_version": "1",
+        "execution_backend": "sam",
+        "scenario_sha256": "07ffa1e51a26fdb4cbf36052a8a639f8993fd1e4b0005f79556e6d2523ae6e82",
+        "assumptions": [
+          "Fictional weather, prices, loss estimates and effectiveness; not measured savings.",
+          "Whole lots; one protection action per lot; tarps and bays remain occupied through rain.",
+          "Integer-minute handling durations; no travel/setup or partial/in-progress operations.",
+          "Completion is simulated operator attestation at scheduled times, not physical verification.",
+          "Kilograms scheduled are not kilograms of waste prevented."
+        ],
+        "runtime": {
+          "python": "3.12.15",
+          "ortools": "9.15.6755"
+        }
+      }
+    },
+    {
+      "id": "adb980379c1a",
+      "revision": 1,
+      "state": "superseded",
+      "created": "2026-10-10T07:18:13.520006+00:00",
+      "plan": {
+        "execution_backend": "sam",
+        "strategy": "CP-SAT",
+        "solver_status": "OPTIMAL",
+        "tasks": [
+          {
+            "lot_id": "L02",
+            "action": "cover",
+            "start": 0,
+            "end": 12,
+            "worker_ids": [
+              "W1",
+              "W3"
+            ],
+            "forklift_id": null,
+            "tarp_id": "T2",
+            "storage_id": null,
+            "saved_loss_inr": 5850
+          },
+          {
+            "lot_id": "L11",
+            "action": "cover",
+            "start": 0,
+            "end": 11,
+            "worker_ids": [
+              "W2"
+            ],
+            "forklift_id": null,
+            "tarp_id": "T3",
+            "storage_id": null,
+            "saved_loss_inr": 7039
+          },
+          {
+            "lot_id": "L05",
+            "action": "relocate",
+            "start": 12,
+            "end": 60,
+            "worker_ids": [
+              "W1"
+            ],
+            "forklift_id": "F1",
+            "tarp_id": null,
+            "storage_id": "S1",
+            "saved_loss_inr": 9600
+          },
+          {
+            "lot_id": "L06",
+            "action": "cover",
+            "start": 12,
+            "end": 26,
+            "worker_ids": [
+              "W2",
+              "W3"
+            ],
+            "forklift_id": null,
+            "tarp_id": "T1",
+            "storage_id": null,
+            "saved_loss_inr": 7020
+          },
+          {
+            "lot_id": "L04",
+            "action": "relocate",
+            "start": 26,
+            "end": 36,
+            "worker_ids": [
+              "W2",
+              "W3"
+            ],
+            "forklift_id": null,
+            "tarp_id": null,
+            "storage_id": "S2",
+            "saved_loss_inr": 6300
+          }
+        ],
+        "unprotected_lot_ids": [
+          "L01",
+          "L03",
+          "L07",
+          "L08",
+          "L09",
+          "L10"
+        ],
+        "initial_loss_inr": 54230,
+        "completed_saved_inr": 0,
+        "planned_saved_inr": 35809,
+        "residual_loss_inr": 18421,
+        "solve_seconds": 0.02,
+        "best_bound_inr": 35809,
+        "validation": {
+          "valid": true,
+          "errors": []
+        }
+      },
+      "comparisons": [
+        {
+          "execution_backend": "sam",
+          "strategy": "Highest value first",
+          "solver_status": "GREEDY",
+          "tasks": [
+            {
+              "lot_id": "L05",
+              "action": "relocate",
+              "start": 0,
+              "end": 48,
+              "worker_ids": [
+                "W1"
+              ],
+              "forklift_id": "F1",
+              "tarp_id": null,
+              "storage_id": "S1",
+              "saved_loss_inr": 9600
+            },
+            {
+              "lot_id": "L06",
+              "action": "cover",
+              "start": 0,
+              "end": 14,
+              "worker_ids": [
+                "W2",
+                "W3"
+              ],
+              "forklift_id": null,
+              "tarp_id": "T1",
+              "storage_id": null,
+              "saved_loss_inr": 7020
+            },
+            {
+              "lot_id": "L01",
+              "action": "cover",
+              "start": 14,
+              "end": 30,
+              "worker_ids": [
+                "W2",
+                "W3"
+              ],
+              "forklift_id": null,
+              "tarp_id": "T2",
+              "storage_id": null,
+              "saved_loss_inr": 4608
+            },
+            {
+              "lot_id": "L11",
+              "action": "relocate",
+              "start": 30,
+              "end": 43,
+              "worker_ids": [
+                "W2",
+                "W3"
+              ],
+              "forklift_id": null,
+              "tarp_id": null,
+              "storage_id": "S2",
+              "saved_loss_inr": 7410
+            },
+            {
+              "lot_id": "L04",
+              "action": "cover",
+              "start": 43,
+              "end": 51,
+              "worker_ids": [
+                "W2"
+              ],
+              "forklift_id": null,
+              "tarp_id": "T3",
+              "storage_id": null,
+              "saved_loss_inr": 5670
+            }
+          ],
+          "unprotected_lot_ids": [
+            "L02",
+            "L03",
+            "L07",
+            "L08",
+            "L09",
+            "L10"
+          ],
+          "initial_loss_inr": 54230,
+          "completed_saved_inr": 0,
+          "planned_saved_inr": 34308,
+          "residual_loss_inr": 19922,
+          "solve_seconds": 0.0,
+          "best_bound_inr": null,
+          "validation": {
+            "valid": true,
+            "errors": []
+          }
+        },
+        {
+          "execution_backend": "sam",
+          "strategy": "Highest loss first",
+          "solver_status": "GREEDY",
+          "tasks": [
+            {
+              "lot_id": "L05",
+              "action": "relocate",
+              "start": 0,
+              "end": 48,
+              "worker_ids": [
+                "W1"
+              ],
+              "forklift_id": "F1",
+              "tarp_id": null,
+              "storage_id": "S1",
+              "saved_loss_inr": 9600
+            },
+            {
+              "lot_id": "L06",
+              "action": "cover",
+              "start": 0,
+              "end": 14,
+              "worker_ids": [
+                "W2",
+                "W3"
+              ],
+              "forklift_id": null,
+              "tarp_id": "T1",
+              "storage_id": null,
+              "saved_loss_inr": 7020
+            },
+            {
+              "lot_id": "L11",
+              "action": "relocate",
+              "start": 14,
+              "end": 27,
+              "worker_ids": [
+                "W2",
+                "W3"
+              ],
+              "forklift_id": null,
+              "tarp_id": null,
+              "storage_id": "S2",
+              "saved_loss_inr": 7410
+            },
+            {
+              "lot_id": "L02",
+              "action": "cover",
+              "start": 27,
+              "end": 39,
+              "worker_ids": [
+                "W2",
+                "W3"
+              ],
+              "forklift_id": null,
+              "tarp_id": "T2",
+              "storage_id": null,
+              "saved_loss_inr": 5850
+            },
+            {
+              "lot_id": "L04",
+              "action": "cover",
+              "start": 39,
+              "end": 47,
+              "worker_ids": [
+                "W2"
+              ],
+              "forklift_id": null,
+              "tarp_id": "T3",
+              "storage_id": null,
+              "saved_loss_inr": 5670
+            }
+          ],
+          "unprotected_lot_ids": [
+            "L01",
+            "L03",
+            "L07",
+            "L08",
+            "L09",
+            "L10"
+          ],
+          "initial_loss_inr": 54230,
+          "completed_saved_inr": 0,
+          "planned_saved_inr": 35550,
+          "residual_loss_inr": 18680,
+          "solve_seconds": 0.0,
+          "best_bound_inr": null,
+          "validation": {
+            "valid": true,
+            "errors": []
+          }
+        },
+        {
+          "execution_backend": "sam",
+          "strategy": "Loss per worker-minute",
+          "solver_status": "GREEDY",
+          "tasks": [
+            {
+              "lot_id": "L04",
+              "action": "relocate",
+              "start": 0,
+              "end": 10,
+              "worker_ids": [
+                "W1",
+                "W2"
+              ],
+              "forklift_id": null,
+              "tarp_id": null,
+              "storage_id": "S1",
+              "saved_loss_inr": 6300
+            },
+            {
+              "lot_id": "L07",
+              "action": "cover",
+              "start": 0,
+              "end": 9,
+              "worker_ids": [
+                "W3"
+              ],
+              "forklift_id": null,
+              "tarp_id": "T3",
+              "storage_id": null,
+              "saved_loss_inr": 1275
+            },
+            {
+              "lot_id": "L11",
+              "action": "relocate",
+              "start": 10,
+              "end": 23,
+              "worker_ids": [
+                "W1",
+                "W2"
+              ],
+              "forklift_id": null,
+              "tarp_id": null,
+              "storage_id": "S2",
+              "saved_loss_inr": 7410
+            },
+            {
+              "lot_id": "L06",
+              "action": "cover",
+              "start": 23,
+              "end": 37,
+              "worker_ids": [
+                "W1",
+                "W2"
+              ],
+              "forklift_id": null,
+              "tarp_id": "T1",
+              "storage_id": null,
+              "saved_loss_inr": 7020
+            },
+            {
+              "lot_id": "L02",
+              "action": "cover",
+              "start": 37,
+              "end": 49,
+              "worker_ids": [
+                "W1",
+                "W2"
+              ],
+              "forklift_id": null,
+              "tarp_id": "T2",
+              "storage_id": null,
+              "saved_loss_inr": 5850
+            }
+          ],
+          "unprotected_lot_ids": [
+            "L01",
+            "L03",
+            "L05",
+            "L08",
+            "L09",
+            "L10"
+          ],
+          "initial_loss_inr": 54230,
+          "completed_saved_inr": 0,
+          "planned_saved_inr": 27855,
+          "residual_loss_inr": 26375,
+          "solve_seconds": 0.0,
+          "best_bound_inr": null,
+          "validation": {
+            "valid": true,
+            "errors": []
+          }
+        }
+      ],
+      "scenario": {
+        "id": "monsoon-yard",
+        "name": "Surat Paper Recovery Yard",
+        "weather_label": "SIMULATED \u00b7 heavy rain approaching",
+        "rain_arrival_minute": 70,
+        "safety_buffer_minutes": 10,
+        "deadline": 60,
+        "now_minute": 0,
+        "lots": [
+          {
+            "id": "L01",
+            "category": "cardboard",
+            "description": "Corrugated cardboard",
+            "weight_kg": 800,
+            "location": "East apron",
+            "exposure": "high",
+            "condition": "Dry, loose stack",
+            "value_inr": 14400,
+            "vulnerability": 4,
+            "exposed_loss_inr": 5760,
+            "restrictions": [],
+            "actions": [
+              {
+                "kind": "cover",
+                "duration": 16,
+                "workers": 2,
+                "forklift": false,
+                "required_skills": [],
+                "effectiveness_bps": 8000
+              },
+              {
+                "kind": "relocate",
+                "duration": 22,
+                "workers": 1,
+                "forklift": true,
+                "required_skills": [
+                  "forklift"
+                ],
+                "effectiveness_bps": 10000
+              }
+            ],
+            "protection_status": "exposed"
+          },
+          {
+            "id": "L02",
+            "category": "newsprint",
+            "description": "Sorted newspapers",
+            "weight_kg": 500,
+            "location": "North fence",
+            "exposure": "high",
+            "condition": "Dry, bundled",
+            "value_inr": 10000,
+            "vulnerability": 5,
+            "exposed_loss_inr": 6500,
+            "restrictions": [],
+            "actions": [
+              {
+                "kind": "cover",
+                "duration": 12,
+                "workers": 2,
+                "forklift": false,
+                "required_skills": [],
+                "effectiveness_bps": 9000
+              },
+              {
+                "kind": "relocate",
+                "duration": 16,
+                "workers": 1,
+                "forklift": true,
+                "required_skills": [
+                  "forklift"
+                ],
+                "effectiveness_bps": 10000
+              }
+            ],
+            "protection_status": "exposed"
+          },
+          {
+            "id": "L03",
+            "category": "paper",
+            "description": "Mixed paper",
+            "weight_kg": 600,
+            "location": "Sorting pad",
+            "exposure": "medium",
+            "condition": "Dry, bagged",
+            "value_inr": 7200,
+            "vulnerability": 3,
+            "exposed_loss_inr": 2160,
+            "restrictions": [],
+            "actions": [
+              {
+                "kind": "cover",
+                "duration": 14,
+                "workers": 1,
+                "forklift": false,
+                "required_skills": [],
+                "effectiveness_bps": 8500
+              },
+              {
+                "kind": "relocate",
+                "duration": 18,
+                "workers": 1,
+                "forklift": true,
+                "required_skills": [
+                  "forklift"
+                ],
+                "effectiveness_bps": 10000
+              }
+            ],
+            "protection_status": "exposed"
+          },
+          {
+            "id": "L04",
+            "category": "paper",
+            "description": "White office paper",
+            "weight_kg": 300,
+            "location": "East apron",
+            "exposure": "high",
+            "condition": "Dry, loose bags",
+            "value_inr": 9000,
+            "vulnerability": 5,
+            "exposed_loss_inr": 6300,
+            "restrictions": [],
+            "actions": [
+              {
+                "kind": "cover",
+                "duration": 8,
+                "workers": 1,
+                "forklift": false,
+                "required_skills": [],
+                "effectiveness_bps": 9000
+              },
+              {
+                "kind": "relocate",
+                "duration": 10,
+                "workers": 2,
+                "forklift": false,
+                "required_skills": [],
+                "effectiveness_bps": 10000
+              }
+            ],
+            "protection_status": "exposed"
+          },
+          {
+            "id": "L05",
+            "category": "cardboard",
+            "description": "Dense cardboard bales",
+            "weight_kg": 1200,
+            "location": "Loading lane",
+            "exposure": "high",
+            "condition": "Dry, strapped",
+            "value_inr": 24000,
+            "vulnerability": 4,
+            "exposed_loss_inr": 9600,
+            "restrictions": [
+              "Only certified operator may relocate; heavy bales require forklift"
+            ],
+            "actions": [
+              {
+                "kind": "cover",
+                "duration": 42,
+                "workers": 3,
+                "forklift": false,
+                "required_skills": [
+                  "bale_handling"
+                ],
+                "effectiveness_bps": 7500
+              },
+              {
+                "kind": "relocate",
+                "duration": 48,
+                "workers": 1,
+                "forklift": true,
+                "required_skills": [
+                  "forklift"
+                ],
+                "effectiveness_bps": 10000
+              }
+            ],
+            "protection_status": "exposed"
+          },
+          {
+            "id": "L06",
+            "category": "paper",
+            "description": "Kraft paper rolls",
+            "weight_kg": 650,
+            "location": "West apron",
+            "exposure": "high",
+            "condition": "Dry, palletised",
+            "value_inr": 15600,
+            "vulnerability": 4,
+            "exposed_loss_inr": 7800,
+            "restrictions": [],
+            "actions": [
+              {
+                "kind": "cover",
+                "duration": 14,
+                "workers": 2,
+                "forklift": false,
+                "required_skills": [],
+                "effectiveness_bps": 9000
+              },
+              {
+                "kind": "relocate",
+                "duration": 18,
+                "workers": 1,
+                "forklift": true,
+                "required_skills": [
+                  "forklift"
+                ],
+                "effectiveness_bps": 10000
+              }
+            ],
+            "protection_status": "exposed"
+          },
+          {
+            "id": "L07",
+            "category": "newsprint",
+            "description": "Magazine returns",
+            "weight_kg": 250,
+            "location": "Sorting pad",
+            "exposure": "medium",
+            "condition": "Coated, bundled",
+            "value_inr": 5000,
+            "vulnerability": 2,
+            "exposed_loss_inr": 1500,
+            "restrictions": [],
+            "actions": [
+              {
+                "kind": "cover",
+                "duration": 9,
+                "workers": 1,
+                "forklift": false,
+                "required_skills": [],
+                "effectiveness_bps": 8500
+              },
+              {
+                "kind": "relocate",
+                "duration": 12,
+                "workers": 2,
+                "forklift": false,
+                "required_skills": [],
+                "effectiveness_bps": 10000
+              }
+            ],
+            "protection_status": "exposed"
+          },
+          {
+            "id": "L08",
+            "category": "cardboard",
+            "description": "Flattened carton sheets",
+            "weight_kg": 450,
+            "location": "North fence",
+            "exposure": "high",
+            "condition": "Dry, stacked",
+            "value_inr": 8100,
+            "vulnerability": 4,
+            "exposed_loss_inr": 4050,
+            "restrictions": [],
+            "actions": [
+              {
+                "kind": "cover",
+                "duration": 10,
+                "workers": 2,
+                "forklift": false,
+                "required_skills": [],
+                "effectiveness_bps": 8500
+              },
+              {
+                "kind": "relocate",
+                "duration": 15,
+                "workers": 1,
+                "forklift": true,
+                "required_skills": [
+                  "forklift"
+                ],
+                "effectiveness_bps": 10000
+              }
+            ],
+            "protection_status": "exposed"
+          },
+          {
+            "id": "L09",
+            "category": "paper",
+            "description": "Shredded office paper",
+            "weight_kg": 200,
+            "location": "Bagging area",
+            "exposure": "high",
+            "condition": "Dry, porous sacks",
+            "value_inr": 4000,
+            "vulnerability": 5,
+            "exposed_loss_inr": 2800,
+            "restrictions": [
+              "Move sacks by hand; no safe tarp attachment"
+            ],
+            "actions": [
+              {
+                "kind": "relocate",
+                "duration": 14,
+                "workers": 2,
+                "forklift": false,
+                "required_skills": [],
+                "effectiveness_bps": 10000
+              }
+            ],
+            "protection_status": "exposed"
+          },
+          {
+            "id": "L10",
+            "category": "cardboard",
+            "description": "Wax-coated packaging",
+            "weight_kg": 350,
+            "location": "West apron",
+            "exposure": "low",
+            "condition": "Coated, dry",
+            "value_inr": 3500,
+            "vulnerability": 1,
+            "exposed_loss_inr": 350,
+            "restrictions": [],
+            "actions": [
+              {
+                "kind": "cover",
+                "duration": 10,
+                "workers": 1,
+                "forklift": false,
+                "required_skills": [],
+                "effectiveness_bps": 8000
+              },
+              {
+                "kind": "relocate",
+                "duration": 12,
+                "workers": 2,
+                "forklift": false,
+                "required_skills": [],
+                "effectiveness_bps": 10000
+              }
+            ],
+            "protection_status": "exposed"
+          },
+          {
+            "id": "L11",
+            "category": "paper",
+            "description": "Print-shop offcuts",
+            "weight_kg": 380,
+            "location": "East apron",
+            "exposure": "high",
+            "condition": "Dry, boxed",
+            "value_inr": 11400,
+            "vulnerability": 5,
+            "exposed_loss_inr": 7410,
+            "restrictions": [],
+            "actions": [
+              {
+                "kind": "cover",
+                "duration": 11,
+                "workers": 1,
+                "forklift": false,
+                "required_skills": [],
+                "effectiveness_bps": 9500
+              },
+              {
+                "kind": "relocate",
+                "duration": 13,
+                "workers": 2,
+                "forklift": false,
+                "required_skills": [],
+                "effectiveness_bps": 10000
+              }
+            ],
+            "protection_status": "exposed"
+          },
+          {
+            "id": "L12",
+            "category": "cardboard",
+            "description": "Sheltered carton stock",
+            "weight_kg": 700,
+            "location": "Existing shed",
+            "exposure": "low",
+            "condition": "Dry, sheltered",
+            "value_inr": 12600,
+            "vulnerability": 2,
+            "exposed_loss_inr": 0,
+            "restrictions": [],
+            "actions": [],
+            "protection_status": "already_protected"
+          }
+        ],
+        "workers": [
+          {
+            "id": "W1",
+            "name": "Asha",
+            "skills": [
+              "forklift",
+              "bale_handling"
+            ],
+            "available_from": 0,
+            "available_until": 240,
+            "enabled": true
+          },
+          {
+            "id": "W2",
+            "name": "Imran",
+            "skills": [
+              "bale_handling"
+            ],
+            "available_from": 0,
+            "available_until": 240,
+            "enabled": true
+          },
+          {
+            "id": "W3",
+            "name": "Meera",
+            "skills": [
+              "bale_handling"
+            ],
+            "available_from": 0,
+            "available_until": 240,
+            "enabled": true
+          }
+        ],
+        "forklifts": [
+          {
+            "id": "F1",
+            "name": "Forklift 01",
+            "available_from": 0,
+            "available_until": 240,
+            "enabled": true
+          }
+        ],
+        "tarps": [
+          {
+            "id": "T1",
+            "name": "Large tarp",
+            "capacity_kg": 1500,
+            "categories": [
+              "cardboard",
+              "paper",
+              "newsprint"
+            ],
+            "enabled": true
+          },
+          {
+            "id": "T2",
+            "name": "Medium tarp",
+            "capacity_kg": 800,
+            "categories": [
+              "cardboard",
+              "paper",
+              "newsprint"
+            ],
+            "enabled": true
+          },
+          {
+            "id": "T3",
+            "name": "Small tarp",
+            "capacity_kg": 400,
+            "categories": [
+              "paper",
+              "newsprint"
+            ],
+            "enabled": true
+          }
+        ],
+        "storage": [
+          {
+            "id": "S1",
+            "name": "Covered bay A",
+            "capacity_kg": 1500,
+            "categories": [
+              "cardboard",
+              "paper",
+              "newsprint"
+            ],
+            "enabled": true
+          },
+          {
+            "id": "S2",
+            "name": "Covered bay B",
+            "capacity_kg": 700,
+            "categories": [
+              "cardboard",
+              "paper",
+              "newsprint"
+            ],
+            "enabled": true
+          }
+        ],
+        "completed": []
+      },
+      "execution": {
+        "schema_version": "1",
+        "execution_backend": "sam",
+        "scenario_sha256": "41ffb9f5864da6d8fbc659fae145508447c7e1ad9f76acb7b0d21637deb40ed7",
+        "assumptions": [
+          "Fictional weather, prices, loss estimates and effectiveness; not measured savings.",
+          "Whole lots; one protection action per lot; tarps and bays remain occupied through rain.",
+          "Integer-minute handling durations; no travel/setup or partial/in-progress operations.",
+          "Completion is simulated operator attestation at scheduled times, not physical verification.",
+          "Kilograms scheduled are not kilograms of waste prevented."
+        ],
+        "runtime": {
+          "python": "3.12.15",
+          "ortools": "9.15.6755"
+        }
+      }
+    }
+  ]
+}

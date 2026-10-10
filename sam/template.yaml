@@ -1,0 +1,21 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: DryStock stateless real CP-SAT compute; local SAM Build It demonstration
+Resources:
+  ProtectionFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Image
+      Architectures: [x86_64]
+      MemorySize: 2048
+      Timeout: 30
+      Events:
+        Optimize:
+          Type: Api
+          Properties:
+            Path: /optimize
+            Method: post
+    Metadata:
+      Dockerfile: sam/Dockerfile
+      DockerContext: ..
+      DockerTag: python312-ortools915-v1

@@ -1,0 +1,7 @@
+*
+!backend/
+!backend/app/
+!backend/app/*.py
+!sam/
+!sam/Dockerfile
+!sam/requirements.txt

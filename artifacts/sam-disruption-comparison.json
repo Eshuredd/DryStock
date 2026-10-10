@@ -1,0 +1,83 @@
+{
+  "event": "disruption.json",
+  "outcomes_match": true,
+  "local": {
+    "CP-SAT": {
+      "status": "OPTIMAL",
+      "additional_inr": 16821,
+      "completed_inr": 5850,
+      "residual_inr": 31559,
+      "scheduled_lots": 4,
+      "unprotected_lots": 6
+    },
+    "Highest value first": {
+      "status": "GREEDY",
+      "additional_inr": 14059,
+      "completed_inr": 5850,
+      "residual_inr": 34321,
+      "scheduled_lots": 2,
+      "unprotected_lots": 8
+    },
+    "Highest loss first": {
+      "status": "GREEDY",
+      "additional_inr": 14059,
+      "completed_inr": 5850,
+      "residual_inr": 34321,
+      "scheduled_lots": 2,
+      "unprotected_lots": 8
+    },
+    "Loss per worker-minute": {
+      "status": "GREEDY",
+      "additional_inr": 14985,
+      "completed_inr": 5850,
+      "residual_inr": 33395,
+      "scheduled_lots": 3,
+      "unprotected_lots": 7
+    }
+  },
+  "sam": {
+    "CP-SAT": {
+      "status": "OPTIMAL",
+      "additional_inr": 16821,
+      "completed_inr": 5850,
+      "residual_inr": 31559,
+      "scheduled_lots": 4,
+      "unprotected_lots": 6
+    },
+    "Highest value first": {
+      "status": "GREEDY",
+      "additional_inr": 14059,
+      "completed_inr": 5850,
+      "residual_inr": 34321,
+      "scheduled_lots": 2,
+      "unprotected_lots": 8
+    },
+    "Highest loss first": {
+      "status": "GREEDY",
+      "additional_inr": 14059,
+      "completed_inr": 5850,
+      "residual_inr": 34321,
+      "scheduled_lots": 2,
+      "unprotected_lots": 8
+    },
+    "Loss per worker-minute": {
+      "status": "GREEDY",
+      "additional_inr": 14985,
+      "completed_inr": 5850,
+      "residual_inr": 33395,
+      "scheduled_lots": 3,
+      "unprotected_lots": 7
+    }
+  },
+  "independent_validation": true,
+  "local_runtime": {
+    "python": "3.14.6",
+    "ortools": "9.15.6755"
+  },
+  "sam_runtime": {
+    "python": "3.12.15",
+    "ortools": "9.15.6755"
+  },
+  "sam_solve_seconds": 0.027,
+  "scenario_sha256": "150a5afb7a4e2517684fafc370471d0d6928252ba3286db3352705a816ca6285"
+}

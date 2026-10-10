@@ -1,0 +1,3 @@
+# Linux wheels installed inside the Amazon Linux 2023 / Python 3.12 image.
+ortools==9.15.6755
+pydantic==2.14.0

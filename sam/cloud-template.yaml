@@ -52,7 +52,6 @@ Resources:
       Architectures: [x86_64]
       MemorySize: 2048
       Timeout: 30
-      ReservedConcurrentExecutions: 2
       Role: !Ref LambdaExecutionRoleArn
       Environment:
         Variables:

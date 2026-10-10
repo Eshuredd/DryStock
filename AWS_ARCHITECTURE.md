@@ -7,7 +7,7 @@ flowchart LR
     Judge[Judge browser: one temporary token per tab] -->|HTTPS| CF[CloudFront default AWS domain]
     CF -->|signed OAC read| S3[Private S3: Next.js static export]
     Judge -->|HTTPS + bearer capability| API[API Gateway HTTP API: throttle 2 rps]
-    API --> Lambda[Lambda Linux image: 2 GB / 30 sec / concurrency 2]
+    API --> Lambda[Lambda Linux image: 2 GB / 30 sec / shared account concurrency]
     Lambda --> Shared[Existing CP-SAT / three baselines / independent validator]
     Lambda -->|conditional counters and atomic CAS transactions| DDB[DynamoDB: session, plans, audit, quotas / four-hour TTL]
     Lambda --> Logs[Own CloudWatch logs: three-day retention]
@@ -25,6 +25,6 @@ Authoritative scenario, revision, latest plan and the most recent 30 audit event
 
 SQLite remains the local development adapter. Shared `workflow.py` validates approval, completion and disruption for both storage implementations; `engine.py` invokes the same optimiser and baselines for local, SAM and cloud paths. The local stateless SAM template is retained. The cloud container adds boto3 and the unchanged fixture; it imports neither FastAPI nor SQLite.
 
-State and history expire after four hours; quota counters have their own expiry. Request, compute and new-session quotas are backend-enforced conditional writes. Failed attempts consume compute quotas. Lambda/API limits bound throughput; they do not form an absolute AWS cost cap. DDB writes can throttle with fixed capacity; the UI reports failures and does not substitute local compute.
+State and history expire after four hours; quota counters have their own expiry. Request, compute and new-session quotas are backend-enforced conditional writes. Failed attempts consume compute quotas. Lambda uses the account's shared unreserved concurrency pool, allowing deployment with an account limit of 10 without a function reservation. DryStock no longer has its own cap of 2 simultaneous executions; other functions' reservations and activity can reduce its available capacity. The account concurrency limit and API throttle bound throughput; they do not form an absolute AWS cost cap. DDB writes can throttle with fixed capacity; the UI reports failures and does not substitute local compute.
 
 Real cloud validation still required: account limits/IAM, ECR upload, stack creation, public HTTPS assets, actual DynamoDB state, invocation IDs/log correlation, browser workflow, cross-visitor isolation, CORS and mobile layout. See [DEPLOYMENT.md](DEPLOYMENT.md) and [IAM access review](sam/IAM_ACCESS.md).

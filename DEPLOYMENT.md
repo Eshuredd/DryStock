@@ -18,7 +18,7 @@ rtk proxy aws lambda get-account-settings --profile drystock-deploy --region ap-
 rtk proxy aws cloudformation describe-stacks --stack-name drystock-demo --profile drystock-deploy --region ap-south-1
 ```
 
-Only a “stack does not exist” response permits creation; AccessDenied or another error must be resolved by the owner. Check that Lambda can reserve two executions while retaining AWS's required unreserved concurrency. These checks have **not** been run with the new profile because it has not been supplied. The permission files are local review candidates, not a verified live IAM grant.
+Only a “stack does not exist” response permits creation; AccessDenied or another error must be resolved by the owner. The Lambda account-limit check is informational: DryStock does not request reserved concurrency, so this configuration supports an account concurrency limit of 10 without requiring at least 102 concurrent executions. It shares the account's unreserved concurrency pool with other functions and no longer has its own cap of 2 simultaneous executions. Available capacity depends on other functions' reservations and current use; exhausted shared capacity can throttle DryStock. These checks have **not** been run with the new profile because it has not been supplied. The permission files are local review candidates, not a verified live IAM grant.
 
 ## Reproducible deployment after access is ready
 
@@ -61,7 +61,7 @@ Then use the **actual public URL** in fresh browser sessions: execute the entire
 
 | Control | Configured bound |
 |---|---|
-| Lambda | 2 GB, timeout 30 seconds, reserved concurrency 2; no provisioned concurrency |
+| Lambda | 2 GB, timeout 30 seconds; shared unreserved account concurrency, no function reservation or provisioned concurrency |
 | Solver | Exactly 5 seconds for the fixed fictional cloud yard; shared engine input bounds remain |
 | HTTP API | 2 requests/second, burst 4; service throttling is best-effort, not a spending cap |
 | DynamoDB | Fixed 5 RCU / 5 WCU, no autoscaling; transactions and larger state items can throttle |
@@ -77,7 +77,7 @@ Budget alerts are **not spending caps** and may be delayed. The account-wide bud
 
 Provisioned DynamoDB capacity can incur ongoing charges while idle. S3/ECR storage and API Gateway/Lambda/CloudFront request/transfer usage can also be charged. Existing account credits/free-tier eligibility are unknown. At the absolute compute-attempt bound, 200 invocations/day × 30 seconds × 2 GB × 30 days is 360,000 GB-seconds/month before failed/other API invocations; this is a usage bound, not an expected bill. Public traffic can still generate gateway/CloudFront charges even when the application rejects requests. Monitor actual billing and remove the demo after judging. [Lambda pricing](https://aws.amazon.com/lambda/pricing/), [API Gateway pricing](https://aws.amazon.com/api-gateway/pricing/), [DynamoDB pricing](https://aws.amazon.com/dynamodb/pricing/).
 
-To disable computation quickly, the owner may set this named function's reserved concurrency to zero. API/static hosting still incur possible request/storage charges. The restricted deployment identity has read-only direct Lambda configuration; a CloudFormation update by its scoped execution role can change concurrency.
+To disable computation quickly, the owner may optionally set this named function's reserved concurrency to zero as an emergency override. This is a separate operational action; the deployment template leaves concurrency unreserved and does not require a reservation. API/static hosting still incur possible request/storage charges. The restricted deployment identity has read-only direct Lambda configuration; a CloudFormation update by its scoped execution role can change concurrency.
 
 ## Safe teardown — proposed, not executed
 

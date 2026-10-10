@@ -8,6 +8,7 @@ from uuid import uuid4
 from .models import Scenario, Plan
 from .scenarios import sample
 from .validator import validate, validate_plan
+from .workflow import approval_valid, completed_scenario, disrupted_scenario
 
 
 class Conflict(Exception):
@@ -90,7 +91,7 @@ class Store:
             if not row or row['state'] != 'draft' or row['revision'] != rev:
                 raise Conflict('Only a current draft can be approved')
             p = Plan.model_validate_json(row['data'])
-            if not validate_plan(s, p).valid:
+            if not approval_valid(s, p):
                 raise Conflict('Plan failed independent validation')
             db.execute("UPDATE plans SET state='approved' WHERE id=?", (pid,))
             self.event(db, 'manager_approved', pid)
@@ -104,15 +105,8 @@ class Store:
             if lot_id in {t.lot_id for t in s.completed}:
                 raise Conflict('Lot already completed')
             p = Plan.model_validate_json(row['data'])
-            task = next((t for t in p.tasks if t.lot_id == lot_id), None)
-            if task is None:
-                raise ValueError('Lot is not scheduled in this plan')
-            # The demo records operator-attested execution at scheduled times. No partial operations.
-            history = validate(s, s.completed + [task], history=True)
-            if not history.valid:
-                raise Conflict('Invalid completion: ' + '; '.join(history.errors))
-            s.completed.append(task)
-            s.now_minute = max(s.now_minute, task.end)
+            s = completed_scenario(s, p, lot_id)
+            task = next(t for t in s.completed if t.lot_id == lot_id)
             db.execute('UPDATE yard SET revision=?, data=? WHERE id=1', (rev + 1, s.model_dump_json()))
             db.execute('UPDATE plans SET revision=? WHERE id=?', (rev + 1, pid))
             self.event(db, 'completion_recorded', f'{lot_id}: simulated {task.action}, minute {task.start}–{task.end}, {pid}')
@@ -120,19 +114,8 @@ class Store:
     def disrupt(self, revision: int, *, deadline: int, now_minute: int, disabled_workers: list[str], forklift_enabled: bool):
         with self.connection() as db:
             s, rev = self.check(db, revision)
-            if not set(disabled_workers) <= {w.id for w in s.workers}:
-                raise ValueError('Unknown worker')
-            if now_minute < s.now_minute:
-                raise ValueError('Scenario clock cannot move backwards')
-            data = s.model_dump()
-            data.update(deadline=deadline, now_minute=now_minute, rain_arrival_minute=deadline + s.safety_buffer_minutes)
-            for w in data['workers']:
-                w['enabled'] = w['id'] not in disabled_workers
-            for f in data['forklifts']:
-                f['enabled'] = forklift_enabled
-            updated = Scenario.model_validate(data)
-            if not validate(updated, updated.completed, history=True).valid:
-                raise ValueError('Change invalidates completed history')
+            updated = disrupted_scenario(s, deadline=deadline, now_minute=now_minute,
+                disabled_workers=disabled_workers, forklift_enabled=forklift_enabled)
             db.execute('UPDATE yard SET revision=?, data=? WHERE id=1', (rev + 1, updated.model_dump_json()))
             db.execute("UPDATE plans SET state='superseded' WHERE state IN ('draft','approved')")
             self.event(db, 'disruption_applied', f'Cutoff {deadline}, clock {now_minute}, disabled workers {disabled_workers}, forklift {forklift_enabled}')

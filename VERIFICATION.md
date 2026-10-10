@@ -1,5 +1,25 @@
 # Verification record
 
+## Phase 3 — preparation and access pause, 10 October 2026
+
+**Deployment: not performed. Website/API URLs: unavailable. Real cloud smoke tests and public browser/isolation checks: not run.** The user explicitly paused cloud deployment pending a new least-privilege `drystock-deploy` identity. No IAM changes, credentials, root use, policy escalation, ECR upload, cloud stack or budget creation occurred. No commit/push occurred.
+
+The existing `ridewatch` profile authenticated in `ap-south-1` but received AccessDenied for `cloudformation:DescribeStacks` on `drystock-demo`, `lambda:GetAccountSettings` and `iam:SimulatePrincipalPolicy`. No further deployment attempt was made with it. The new profile has not been supplied or STS-verified; permissions cannot be represented as granted.
+
+Executed checks:
+
+- Before edits: 62 existing backend tests and Next.js 16.4 production build passed.
+- Current backend: **83 passed, 0 failed**, one upstream Starlette warning. Twenty-one new tests use **Moto**, not real DynamoDB. They cover unpredictable tokens, partition isolation, explicit expiry before TTL deletion, request/compute quotas and leases, CAS approval races, stale revision rejection, full approval/completion/disruption/replanning, resource preservation, new-client persistence, tampered baseline/plan checks, input bounds, CORS and sanitized compute/storage failures. Lease-cleanup failure preserves an already committed success; transaction capacity failures report unavailability rather than a false revision conflict.
+- Frontend API client: **6 passed, 0 failed**, built-in Node test runner. Checks local routing, shared first-session creation, bearer headers, reload retention, GET expiry recovery, no expired mutation replay and external-path rejection.
+- TypeScript, ESLint and ordinary production build passed. Static export build also passed with explicitly fictitious `https://api.example.invalid` configuration to prove export compatibility; it is **not an API endpoint or deployment**. Production deployment will rebuild using actual stack outputs. Local build configuration remains the default.
+- Both `sam/cloud-template.yaml` and owner-only `sam/bootstrap-template.yaml` passed SAM lint. IAM JSON review files were generated locally; no AWS IAM validation/simulation or permission changes were performed.
+- Cloud-compatible Linux container built successfully; actual **local SAM health invocation** returned HTTP 200. [Runtime log](artifacts/phase3/cloud-health-sam.log). This checks handler imports/native packaging only, not a cloud deployment or live DynamoDB workflow.
+- The retained Build It function was rebuilt and both real **local SAM** historical optimiser invocations again matched local outcomes: original 35,809/best 35,550 and disruption 16,821/best 14,985. Historical sample values and objectives were unchanged. Phase 2 evidence is retained; new regression logs are under `artifacts/phase3/`.
+- The original fixed 29-case benchmark was rerun without changing its cases; all 29 OPTIMAL, 14 improvements/15 ties, no time-budget exits. Historical inputs remain unchanged.
+- `sam/Deploy-Cloud.ps1` ran only in default review mode: no AWS calls/provisioning. The `-Provision` path and `sam/cloud_smoke.py` remain **unexecuted**. CloudFormation policy/provider details require authorised live verification.
+
+Prepared implementation: shared local/cloud workflow rules, DynamoDB transactions and hashed session capabilities, stateless cloud API handler, bounded quotas/TTL, configurable static frontend, image/API/DynamoDB/S3/CloudFront SAM template, separated IAM roles and deployment/smoke scripts. Review [IAM package](sam/IAM_ACCESS.md). Pending acceptance: authorised profile, owner bootstrap, live IAM/account limits, real deployment, public browser workflow, two-fresh-browser isolation, CORS/mobile/HTTPS/console checks and recorded cloud invocation evidence. This phase is **prepared but incomplete**, not a completed Ship It deployment.
+
 ## Phase 2 — final verification, 10 October 2026
 
 The sections below this Phase 2 record retain the historical 37-test MVP evidence. Current final results supersede its test counts and compute architecture.

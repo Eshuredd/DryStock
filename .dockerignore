@@ -2,6 +2,12 @@
 !backend/
 !backend/app/
 !backend/app/*.py
+!backend/app/scenarios/
+!backend/app/scenarios/*.py
+!sample-data/
+!sample-data/surat-yard.json
 !sam/
 !sam/Dockerfile
 !sam/requirements.txt
+!sam/Cloud.Dockerfile
+!sam/cloud-requirements.txt

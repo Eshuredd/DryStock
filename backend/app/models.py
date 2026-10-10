@@ -109,7 +109,7 @@ class Validation(BaseModel):
 
 
 class Plan(BaseModel):
-    execution_backend: Literal['local', 'sam'] = 'local'
+    execution_backend: Literal['local', 'sam', 'aws'] = 'local'
     strategy: str
     solver_status: str
     tasks: list[Task]

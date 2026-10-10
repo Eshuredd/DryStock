@@ -3,6 +3,7 @@
 import {useCallback, useEffect, useState} from 'react';
 import type {YardState, SavedPlan, Task} from '../lib/types';
 import {ActionInputs, DemoComparison} from './demo-comparison';
+import {apiFetch, cloudDemo} from '../lib/api';
 
 const money = (v: number) => new Intl.NumberFormat('en-IN', {style: 'currency', currency: 'INR', maximumFractionDigits: 0}).format(v);
 const stamp = (v: string) => new Date(v).toLocaleString('en-IN', {timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', day: '2-digit', month: 'short'});
@@ -32,7 +33,7 @@ export default function Home() {
     setDisabled(state.scenario.workers.filter(w => !w.enabled).map(w => w.id));
   }, []);
   const refresh = useCallback(async () => {
-    try {const r = await fetch('/api/state', {cache: 'no-store'}); if (!r.ok) throw new Error('Backend unavailable. Start FastAPI on port 8000.'); sync(await r.json()); setError('');}
+    try {const r = await apiFetch('/api/state', {cache: 'no-store'}); if (!r.ok) throw new Error('Demo unavailable. Please retry or refresh state.'); sync(await r.json()); setError('');}
     catch (e) {setError((e as Error).message);}
   }, [sync]);
   useEffect(() => {void refresh();}, [refresh]);
@@ -40,7 +41,7 @@ export default function Home() {
     let cancelled = false;
     async function loadHistory() {
       try {
-        const r = await fetch('/api/plans', {cache: 'no-store'});
+        const r = await apiFetch('/api/plans', {cache: 'no-store'});
         if (!r.ok) throw new Error('Could not load plan history');
         const rows = await r.json();
         if (!cancelled) setHistory(rows);
@@ -54,7 +55,7 @@ export default function Home() {
     if (!data || busy) return false;
     setBusy(true); setError(''); setNotice('');
     try {
-      const r = await fetch(path, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({revision: data.revision, ...extra})});
+      const r = await apiFetch(path, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({revision: data.revision, ...extra})});
       const result = await r.json();
       if (!r.ok) throw new Error(typeof result.detail === 'string' ? result.detail : JSON.stringify(result.detail));
       sync(result); setNotice(success); return true;
@@ -87,7 +88,7 @@ export default function Home() {
       <a className="brand" href="/" aria-label="DryStock home"><span className="brand-icon"><Icon name="leaf"/></span>DryStock<span className="brand-dot">.</span></a>
       <div className="yard-label">OPERATIONS WORKSPACE</div>
       <nav aria-label="Workspace navigation">{(['Plan & timeline','Material lots','Compare strategies','Activity'] as Tab[]).map((t, i) => <button key={t} aria-label={t} aria-current={tab === t ? 'page' : undefined} title={t} className={`nav-item ${tab === t ? 'selected' : ''}`} onClick={() => setTab(t)}><span className="nav-symbol">{['◫','▦','↗','◷'][i]}</span>{t}{t === 'Plan & timeline' && <span className="nav-count">{totalTasks}</span>}</button>)}</nav>
-      <div className="sidebar-bottom"><span className="status-dot"/>Local demonstration<p>Bharat Builds Environmental Hacks<br/>Waste & Energy track</p><div className="avatar-row"><span className="avatar">YM</span><div>Yard manager<small>Demo operator · no sign-in</small></div></div></div>
+      <div className="sidebar-bottom"><span className="status-dot"/>{cloudDemo ? 'AWS-hosted demonstration' : 'Local demonstration'}<p>Bharat Builds Environmental Hacks<br/>Waste & Energy track</p><div className="avatar-row"><span className="avatar">YM</span><div>Yard manager<small>Demo operator · no sign-in</small></div></div></div>
     </aside>
 
     <main>
@@ -99,7 +100,7 @@ export default function Home() {
         {!data && !error && <div className="empty">Loading yard and resource availability…</div>}
         {s && <>
           <section className="weather-banner" aria-label="Simulated weather"><div className="weather-icon"><Icon name="rain"/></div><div className="weather-text"><strong>Heavy rain is approaching</strong><span>Simulated forecast · rainfall at minute {s.rain_arrival_minute} · {s.safety_buffer_minutes}-minute handling buffer</span></div><div className="deadline-display"><span>HANDLING WINDOW LEFT</span><strong>{s.deadline-s.now_minute}<small> min</small></strong></div><div className="weather-cutoff"><Icon name="clock"/><span>Cutoff at minute {s.deadline}<small>Scenario clock: {s.now_minute} min</small></span></div></section>
-          <div className="execution-evidence" role="status"><strong>Selected compute: {data.compute_backend === 'sam' ? 'AWS SAM local API' : 'Local Python'}</strong><span>{active ? `Result: ${active.execution?.execution_backend === 'sam' ? 'SAM-backed Lambda-compatible function' : 'local Python optimiser'} · independently checked before saving` : 'No active response yet; failed SAM requests never fall back to local execution.'}</span>{active?.execution?.runtime && <small>Python {active.execution.runtime.python} · OR-Tools {active.execution.runtime.ortools} · scenario {active.execution.scenario_sha256?.slice(0,12)}</small>}</div>
+          <div className="execution-evidence" role="status"><strong>Selected compute: {data.compute_backend === 'aws' ? 'AWS Lambda' : data.compute_backend === 'sam' ? 'AWS SAM local API' : 'Local Python'}</strong><span>{active ? `Result: ${active.execution?.execution_backend === 'aws' ? 'AWS Lambda optimiser' : active.execution?.execution_backend === 'sam' ? 'SAM-backed Lambda-compatible function' : 'local Python optimiser'} · independently checked before saving` : 'No active result yet; compute failures do not save a new plan.'}</span>{active?.execution?.runtime && <small>Python {active.execution.runtime.python} · OR-Tools {active.execution.runtime.ortools} · scenario {active.execution.scenario_sha256?.slice(0,12)}{active.execution.runtime.aws_request_id && ` · invocation ${active.execution.runtime.aws_request_id}`}</small>}</div>
           <div className="stats-grid">
             <section className="stat-card"><span>Estimated loss if exposed</span><strong>{money(initialLoss)}</strong><small>Operator assumptions · before protection</small></section>
             <section className="stat-card green"><span>Estimated avoidable loss addressed</span><strong>{money(savedPlanned)}</strong><small>{upcoming.length} additional scheduled actions · pending execution</small></section>
@@ -128,9 +129,9 @@ export default function Home() {
 
           {tab === 'Compare strategies' && <section className="panel comparison"><div className="panel-heading"><div><h2>Same yard. Same constraints.</h2><p>All strategies use identical compatibility, handling and resource limits.</p></div></div>{!active ? <div className="empty"><h3>Generate a plan to compare outcomes.</h3><p>Three greedy scheduling rules are evaluated alongside CP-SAT.</p></div> : <><div className="comparison-note">Snapshot at plan generation · completed benefit then: {money(active.plan.completed_saved_inr)} · each baseline takes the highest-benefit feasible action for each lot in priority order.</div><div className="table-scroll"><table><thead><tr><th>Scheduling strategy</th><th>Additional avoided loss</th><th>Residual loss</th><th>Scheduled lots</th><th>Valid schedule</th></tr></thead><tbody>{[active.plan, ...active.comparisons].map(p => <tr className={p.strategy === 'CP-SAT' ? 'optimized-row' : ''} key={p.strategy}><td><strong>{p.strategy}</strong><span className="cell-sub">{p.strategy === 'CP-SAT' ? `${p.solver_status} · upper bound ${money(p.best_bound_inr || 0)}` : 'Deterministic greedy scheduling'}</span></td><td>{money(p.planned_saved_inr)}</td><td>{money(p.residual_loss_inr)}</td><td>{p.tasks.length}</td><td><span className="pill success">{p.validation.valid ? 'Passed' : 'Failed'}</span></td></tr>)}</tbody></table></div><div className="comparison-verdict">{(() => {const best = Math.max(...active.comparisons.map(p => p.planned_saved_inr)); const gain = active.plan.planned_saved_inr-best; return gain > 0 ? <><strong>{money(gain)} more estimated loss avoided</strong><p>Compared with the strongest baseline in this scenario{best > 0 ? ` (${(gain/best*100).toFixed(1)}% improvement)` : ''}. This result is specific to the fictional data.</p></> : gain === 0 ? <><strong>The strongest baseline matches this plan.</strong><p>No optimisation advantage in estimated loss avoided for this scenario.</p></> : <><strong>A baseline currently performs better by {money(-gain)}.</strong><p>The solver returned a feasible incumbent without proving optimality. Do not claim an advantage.</p></>;})()}</div><div className="footnote">Objective: minimise assumed preventable material loss. INR benefits are rounded down to whole rupees. An OPTIMAL status proves optimality only under these model assumptions.</div></>}</section>}
 
-          {tab === 'Activity' && <div className="activity-grid"><section className="panel"><div className="panel-heading"><div><h2>Operational audit trail</h2><p>Approvals, completions and scenario revisions persist in SQLite.</p></div></div><div className="events">{data.events.length ? data.events.map(e => <div key={e.id}><span className="event-dot"/><div><strong>{e.kind.replaceAll('_',' ')}</strong><p>{e.detail}</p><small>{stamp(e.at)} IST</small></div></div>) : <div className="empty">No activity yet. Generate your first plan.</div>}</div></section><section className="panel"><div className="panel-heading"><h2>Plan history</h2><span className="subtle">Latest 30</span></div><div className="history-list">{history.map(p => <div key={p.id}><strong>Plan {p.id}</strong><span className="pill">{p.state}</span><p>{p.plan.tasks.length} actions · {money(p.plan.planned_saved_inr)} additional avoided loss at generation</p><small>{stamp(p.created)} IST · {p.plan.solver_status}</small></div>)}{!history.length && <div className="empty">No saved plans.</div>}</div></section></div>}
+          {tab === 'Activity' && <div className="activity-grid"><section className="panel"><div className="panel-heading"><div><h2>Operational audit trail</h2><p>{cloudDemo ? 'This temporary session persists in DynamoDB for four hours.' : 'Approvals, completions and scenario revisions persist in SQLite.'}</p></div></div><div className="events">{data.events.length ? data.events.map(e => <div key={e.id}><span className="event-dot"/><div><strong>{e.kind.replaceAll('_',' ')}</strong><p>{e.detail}</p><small>{stamp(e.at)} IST</small></div></div>) : <div className="empty">No activity yet. Generate your first plan.</div>}</div></section><section className="panel"><div className="panel-heading"><h2>Plan history</h2><span className="subtle">Latest 30</span></div><div className="history-list">{history.map(p => <div key={p.id}><strong>Plan {p.id}</strong><span className="pill">{p.state}</span><p>{p.plan.tasks.length} actions · {money(p.plan.planned_saved_inr)} additional avoided loss at generation</p><small>{stamp(p.created)} IST · {p.plan.solver_status}</small></div>)}{!history.length && <div className="empty">No saved plans.</div>}</div></section></div>}
 
-          <footer><span>DryStock / Weather-aware protection planning<br/><small>Fictional data. Estimated outcomes, not scientifically validated measurements. Local demo; no authentication.</small></span><button className="text-button" disabled={busy} onClick={() => {if (window.confirm('Reset the fictional yard and completion state? Audit history will be retained.')) void mutate('/api/reset', {}, 'Demo yard reset. Audit history retained.');}}>Reset demo yard</button></footer>
+          <footer><span>DryStock / Weather-aware protection planning<br/><small>Fictional data. Estimated outcomes, not scientifically validated measurements. {cloudDemo ? 'Temporary isolated demo session; not production authentication.' : 'Local demo; no authentication.'}</small></span><button className="text-button" disabled={busy} onClick={() => {if (window.confirm('Reset this fictional yard and completion state? Audit history will be retained.')) void mutate('/api/reset', {}, 'Demo yard reset. Audit history retained.');}}>Reset demo yard</button></footer>
         </>}
       </div>
     </main>

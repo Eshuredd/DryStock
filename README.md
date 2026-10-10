@@ -1,5 +1,7 @@
 # DryStock
 
+**Phase 3 status:** cloud-compatible code and scoped IAM review are prepared; cloud provisioning is paused until owner-authorised `drystock-deploy` access is configured. No public cloud URL exists yet. Read [IAM access setup](sam/IAM_ACCESS.md), [deployment guide](DEPLOYMENT.md) and [prepared architecture/status](AWS_ARCHITECTURE.md). The existing local and SAM pathways remain supported.
+
 A working local MVP for weather-aware material protection planning at recycling yards. Built for **Bharat Builds Environmental Hacks — Waste & Energy track, powered by AWS**. Local operation requires no AWS account. There is no deployment, live forecast, authentication or scientifically calibrated damage model.
 
 The central decision is which whole lots to cover or relocate before rain, using limited crews, compatible tarpaulins, forklifts and covered positions. Leaving a lot exposed is always feasible and consumes nothing. Existing recycling software already handles inventory and warehouse operations; DryStock demonstrates a narrower resource-constrained planning problem, rather than claiming an absence of competitors.
@@ -80,6 +82,8 @@ rtk proxy npm.cmd audit
 For other checkouts, substitute the absolute Python path or use `rtk proxy python -m pytest -q` after activating the venv. Tests cover small optima against an independent exhaustive search, baseline equivalence and demonstrated advantage, disabled workers/equipment, availability/skills, cutoff edge cases, resource incompatibility, worker/forklift overlap, tampered benefits, completed-resource preservation, transactional approval/completion/disruption, stale writes, persistent restart, and finishing all tasks. See [VERIFICATION.md](VERIFICATION.md) for the recorded results.
 
 Frontend dependencies are pinned by `frontend/package-lock.json`; exact tested Python dependencies are in `backend/requirements.lock.txt`. `requirements.txt` describes compatible major-version ranges. The tests use Starlette's HTTPX adapter, which currently emits an upstream deprecation warning; tests pass.
+
+Optional cloud-adapter development dependencies: `rtk proxy .\.venv\Scripts\python.exe -m pip install -r backend\requirements-cloud-test.txt`. With them installed, the current suite has 83 passing tests, including 21 cloud tests using local Moto doubles. Without them, the optional cloud tests skip and the local app continues to work. `rtk proxy npm.cmd --prefix frontend run test:api` runs six API-client tests.
 
 ## API
 

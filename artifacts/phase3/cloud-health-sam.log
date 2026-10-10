@@ -1,0 +1,4 @@
+START RequestId: 8376cd6e-2584-47b7-b22b-d68420f4adb2 Version: $LATEST
+END RequestId: 8376cd6e-2584-47b7-b22b-d68420f4adb2
+REPORT RequestId: 8376cd6e-2584-47b7-b22b-d68420f4adb2	Init Duration: 0.13 ms	Duration: 579.19 ms	Billed Duration: 580 ms	Memory Size: 2048 MB	Max Memory Used: 2048 MB	
+{"statusCode": 200, "headers": {"Content-Type": "application/json", "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff"}, "body": "{\"status\": \"ok\", \"mode\": \"simulated\", \"compute_backend\": \"aws\", \"persistence\": \"dynamodb\"}"}

@@ -29,7 +29,7 @@ class ComputeRequest(BaseModel):
 class ComputeResult(BaseModel):
     model_config = ConfigDict(extra='forbid')
     schema_version: Literal['1'] = '1'
-    execution_backend: Literal['local', 'sam']
+    execution_backend: Literal['local', 'sam', 'aws']
     scenario_sha256: str
     plan: Plan
     comparisons: list[Plan]
@@ -84,7 +84,7 @@ def verify_result(s: Scenario, result: ComputeResult) -> ComputeResult:
     return result
 
 
-def execute(request: ComputeRequest, backend: Literal['local', 'sam'] = 'local') -> ComputeResult:
+def execute(request: ComputeRequest, backend: Literal['local', 'sam', 'aws'] = 'local') -> ComputeResult:
     validate_input(request.scenario)
     plan = optimize(request.scenario, time_limit=request.solver_seconds)
     if plan.solver_status not in ('OPTIMAL', 'FEASIBLE'):

@@ -1,0 +1,7 @@
+{
+  "version": "2.0",
+  "rawPath": "/api/health",
+  "headers": {},
+  "requestContext": {"http": {"method": "GET"}},
+  "body": ""
+}

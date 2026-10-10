@@ -1,0 +1,3 @@
+# Optional only for cloud adapter development; existing local requirements remain valid.
+boto3==1.43.111
+moto[dynamodb]==5.2.3

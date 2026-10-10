@@ -1,0 +1,155 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: DryStock bounded anonymous cloud demo; owner-approved bootstrap roles required
+Parameters:
+  LambdaExecutionRoleArn:
+    Type: String
+    AllowedPattern: 'arn:aws:iam::[0-9]{12}:role/drystock-demo-runtime'
+  BudgetEmail:
+    Type: String
+    Default: ''
+  OriginAccessControlId:
+    Type: String
+    Description: DryStock OAC created by the owner-approved bootstrap stack
+Conditions:
+  HasBudgetEmail: !Not [!Equals [!Ref BudgetEmail, '']]
+Resources:
+  Sessions:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: drystock-demo-sessions
+      AttributeDefinitions:
+        - {AttributeName: pk, AttributeType: S}
+        - {AttributeName: sk, AttributeType: S}
+      KeySchema:
+        - {AttributeName: pk, KeyType: HASH}
+        - {AttributeName: sk, KeyType: RANGE}
+      BillingMode: PROVISIONED
+      ProvisionedThroughput: {ReadCapacityUnits: 5, WriteCapacityUnits: 5}
+      TimeToLiveSpecification: {AttributeName: expiresAt, Enabled: true}
+      # Default AWS-owned key keeps encryption at rest without extra KMS permissions/charges.
+      SSESpecification: {SSEEnabled: false}
+      Tags: [{Key: Project, Value: DryStock}, {Key: Environment, Value: demo}]
+  Api:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      Name: drystock-demo-api
+      StageName: '$default'
+      DefaultRouteSettings: {ThrottlingBurstLimit: 4, ThrottlingRateLimit: 2}
+      CorsConfiguration:
+        AllowOrigins: [!Sub 'https://${Distribution.DomainName}']
+        AllowMethods: [GET, POST, OPTIONS]
+        AllowHeaders: [Content-Type, Authorization]
+        MaxAge: 300
+      Tags: {Project: DryStock, Environment: demo}
+      PropagateTags: true
+  CloudFunction:
+    Type: AWS::Serverless::Function
+    DependsOn: FunctionLog
+    Properties:
+      FunctionName: drystock-demo-api
+      PackageType: Image
+      Architectures: [x86_64]
+      MemorySize: 2048
+      Timeout: 30
+      ReservedConcurrentExecutions: 2
+      Role: !Ref LambdaExecutionRoleArn
+      Environment:
+        Variables:
+          DRYSTOCK_TABLE: !Ref Sessions
+          DRYSTOCK_ORIGIN: !Sub 'https://${Distribution.DomainName}'
+      Events:
+        ApiRoute:
+          Type: HttpApi
+          Properties: {ApiId: !Ref Api, Path: '/api/{proxy+}', Method: ANY, PayloadFormatVersion: '2.0'}
+      Tags: {Project: DryStock, Environment: demo}
+    Metadata:
+      Dockerfile: sam/Cloud.Dockerfile
+      DockerContext: ..
+      DockerTag: cloud-python312-ortools915-v1
+  FunctionLog:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: /aws/lambda/drystock-demo-api
+      RetentionInDays: 3
+      Tags: [{Key: Project, Value: DryStock}]
+  SiteBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub 'drystock-demo-site-${AWS::AccountId}-${AWS::Region}'
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      OwnershipControls: {Rules: [{ObjectOwnership: BucketOwnerEnforced}]}
+      BucketEncryption: {ServerSideEncryptionConfiguration: [{ServerSideEncryptionByDefault: {SSEAlgorithm: AES256}}]}
+      Tags: [{Key: Project, Value: DryStock}, {Key: Environment, Value: demo}]
+  Distribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Comment: DryStock temporary fictional demo
+        Enabled: true
+        DefaultRootObject: index.html
+        HttpVersion: http2
+        PriceClass: PriceClass_100
+        Origins:
+          - Id: PrivateS3
+            DomainName: !GetAtt SiteBucket.RegionalDomainName
+            OriginAccessControlId: !Ref OriginAccessControlId
+            S3OriginConfig: {OriginAccessIdentity: ''}
+        DefaultCacheBehavior:
+          TargetOriginId: PrivateS3
+          ViewerProtocolPolicy: redirect-to-https
+          AllowedMethods: [GET, HEAD, OPTIONS]
+          CachedMethods: [GET, HEAD]
+          Compress: true
+          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
+          # AWS managed SecurityHeadersPolicy; no mutable account-wide policy permission.
+          ResponseHeadersPolicyId: 67f7725c-6f97-4210-82d7-5512b31e9d03
+        ViewerCertificate: {CloudFrontDefaultCertificate: true}
+        CustomErrorResponses:
+          - {ErrorCode: 403, ResponseCode: 404, ResponsePagePath: /404.html, ErrorCachingMinTTL: 10}
+          - {ErrorCode: 404, ResponseCode: 404, ResponsePagePath: /404.html, ErrorCachingMinTTL: 10}
+      Tags: [{Key: Project, Value: DryStock}, {Key: Environment, Value: demo}]
+  SiteBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref SiteBucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal: {Service: cloudfront.amazonaws.com}
+            Action: s3:GetObject
+            Resource: !Sub '${SiteBucket.Arn}/*'
+            Condition: {StringEquals: {'AWS:SourceArn': !Sub 'arn:${AWS::Partition}:cloudfront::${AWS::AccountId}:distribution/${Distribution}'}}
+          - Effect: Deny
+            Principal: '*'
+            Action: 's3:*'
+            Resource: [!GetAtt SiteBucket.Arn, !Sub '${SiteBucket.Arn}/*']
+            Condition: {Bool: {'aws:SecureTransport': false}}
+  DemoBudget:
+    Type: AWS::Budgets::Budget
+    Condition: HasBudgetEmail
+    Properties:
+      Budget:
+        BudgetName: drystock-demo
+        BudgetType: COST
+        TimeUnit: MONTHLY
+        BudgetLimit: {Amount: 5, Unit: USD}
+        # Account-wide alert avoids relying on inactive cost-allocation tags.
+        # This is a notification, never a spending cap.
+      NotificationsWithSubscribers:
+        - Notification: {NotificationType: ACTUAL, ComparisonOperator: GREATER_THAN, Threshold: 80, ThresholdType: PERCENTAGE}
+          Subscribers: [{SubscriptionType: EMAIL, Address: !Ref BudgetEmail}]
+        - Notification: {NotificationType: FORECASTED, ComparisonOperator: GREATER_THAN, Threshold: 100, ThresholdType: PERCENTAGE}
+          Subscribers: [{SubscriptionType: EMAIL, Address: !Ref BudgetEmail}]
+Outputs:
+  WebsiteUrl: {Value: !Sub 'https://${Distribution.DomainName}'}
+  ApiUrl: {Value: !Sub 'https://${Api}.execute-api.${AWS::Region}.amazonaws.com'}
+  SiteBucketName: {Value: !Ref SiteBucket}
+  DistributionId: {Value: !Ref Distribution}
+  FunctionName: {Value: !Ref CloudFunction}
+  TableName: {Value: !Ref Sessions}

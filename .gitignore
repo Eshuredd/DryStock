@@ -13,3 +13,4 @@ frontend/*.tsbuildinfo
 .aws-sam/
 sam/__pycache__/
 .dependency-resolution/
+frontend/out/

@@ -1,0 +1,185 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: OWNER REVIEW ONLY. DryStock deployment roles and private artifact storage. Not executed by Codex.
+Parameters:
+  DeploymentPrincipalArn:
+    Type: String
+    Description: Existing account-approved IAM Identity Center role or temporary-credential role ARN; no root principal
+    AllowedPattern: 'arn:aws:iam::[0-9]{12}:role/.+'
+Resources:
+  OriginControl:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties:
+      OriginAccessControlConfig:
+        Name: drystock-demo-s3
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+  Artifacts:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub 'drystock-demo-artifacts-${AWS::AccountId}-${AWS::Region}'
+      PublicAccessBlockConfiguration: {BlockPublicAcls: true, BlockPublicPolicy: true, IgnorePublicAcls: true, RestrictPublicBuckets: true}
+      BucketEncryption: {ServerSideEncryptionConfiguration: [{ServerSideEncryptionByDefault: {SSEAlgorithm: AES256}}]}
+      LifecycleConfiguration: {Rules: [{Id: ExpireArtifacts, Status: Enabled, ExpirationInDays: 14}]}
+      Tags: [{Key: Project, Value: DryStock}]
+  Images:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: drystock-demo
+      ImageTagMutability: IMMUTABLE
+      ImageScanningConfiguration: {ScanOnPush: true}
+      EmptyOnDelete: true
+      LifecyclePolicy:
+        LifecyclePolicyText: '{"rules":[{"rulePriority":1,"description":"Keep five deployment images","selection":{"tagStatus":"any","countType":"imageCountMoreThan","countNumber":5},"action":{"type":"expire"}}]}'
+      RepositoryPolicyText:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: LambdaRead
+            Effect: Allow
+            Principal: {Service: lambda.amazonaws.com}
+            Action: [ecr:BatchGetImage, ecr:GetDownloadUrlForLayer]
+            Condition: {ArnLike: {'aws:SourceArn': !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:drystock-demo-api'}}
+      Tags: [{Key: Project, Value: DryStock}]
+  RuntimeRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: drystock-demo-runtime
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement: [{Effect: Allow, Principal: {Service: lambda.amazonaws.com}, Action: 'sts:AssumeRole'}]
+      Policies:
+        - PolicyName: DryStockRuntime
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: [dynamodb:GetItem, dynamodb:PutItem, dynamodb:UpdateItem, dynamodb:Query]
+                Resource: !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/drystock-demo-sessions'
+              - Effect: Allow
+                Action: [logs:CreateLogStream, logs:PutLogEvents]
+                Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/drystock-demo-api:*'
+      Tags: [{Key: Project, Value: DryStock}]
+  CloudFormationRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: drystock-demo-cloudformation
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement: [{Effect: Allow, Principal: {Service: cloudformation.amazonaws.com}, Action: 'sts:AssumeRole'}]
+      Policies:
+        - PolicyName: DryStockResources
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: [iam:PassRole]
+                Resource: !GetAtt RuntimeRole.Arn
+                Condition: {StringEquals: {'iam:PassedToService': lambda.amazonaws.com}}
+              - Effect: Allow
+                Action: [iam:GetRole]
+                Resource: !GetAtt RuntimeRole.Arn
+              - Effect: Allow
+                Action: [lambda:CreateFunction, lambda:GetFunction, lambda:GetFunctionConfiguration, lambda:UpdateFunctionCode, lambda:UpdateFunctionConfiguration, lambda:DeleteFunction, lambda:AddPermission, lambda:RemovePermission, lambda:GetPolicy, lambda:TagResource, lambda:UntagResource, lambda:ListTags, lambda:PutFunctionConcurrency, lambda:DeleteFunctionConcurrency, lambda:GetFunctionConcurrency]
+                Resource: !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:drystock-demo-api'
+              - Effect: Allow
+                Action: [dynamodb:CreateTable, dynamodb:DescribeTable, dynamodb:UpdateTable, dynamodb:DeleteTable, dynamodb:UpdateTimeToLive, dynamodb:DescribeTimeToLive, dynamodb:TagResource, dynamodb:UntagResource, dynamodb:ListTagsOfResource]
+                Resource: !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/drystock-demo-sessions'
+              - Effect: Allow
+                Action: [logs:CreateLogGroup, logs:DeleteLogGroup, logs:PutRetentionPolicy, logs:DeleteRetentionPolicy, logs:TagResource, logs:UntagResource, logs:ListTagsForResource]
+                Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/drystock-demo-api*'
+              - Effect: Allow
+                Action: [logs:DescribeLogGroups]
+                Resource: '*'
+              - Effect: Allow
+                Action: [s3:CreateBucket, s3:DeleteBucket, s3:GetBucketLocation, s3:ListBucket, s3:GetBucketTagging, s3:PutBucketTagging, s3:GetBucketPolicy, s3:PutBucketPolicy, s3:DeleteBucketPolicy, s3:GetBucketPublicAccessBlock, s3:PutBucketPublicAccessBlock, s3:GetEncryptionConfiguration, s3:PutEncryptionConfiguration, s3:GetBucketOwnershipControls, s3:PutBucketOwnershipControls]
+                Resource: !Sub 'arn:aws:s3:::drystock-demo-site-${AWS::AccountId}-${AWS::Region}'
+              - Effect: Allow
+                Action: [s3:GetObject]
+                Resource: !Sub '${Artifacts.Arn}/*'
+              - Effect: Allow
+                Action: [ecr:BatchGetImage, ecr:GetDownloadUrlForLayer, ecr:GetRepositoryPolicy, ecr:SetRepositoryPolicy]
+                Resource: !GetAtt Images.Arn
+              - Effect: Allow
+                Action: [apigateway:POST]
+                Resource: !Sub 'arn:aws:apigateway:${AWS::Region}::/apis'
+                Condition: {StringEquals: {'apigateway:Request/ApiName': drystock-demo-api, 'aws:RequestTag/Project': DryStock}}
+              - Effect: Allow
+                Action: [apigateway:GET, apigateway:POST, apigateway:PUT, apigateway:PATCH, apigateway:DELETE]
+                Resource: [!Sub 'arn:aws:apigateway:${AWS::Region}::/apis/*', !Sub 'arn:aws:apigateway:${AWS::Region}::/tags/*']
+                Condition: {StringEquals: {'aws:ResourceTag/Project': DryStock}}
+              - Effect: Allow
+                Action: [cloudfront:CreateDistribution]
+                Resource: '*'
+                Condition: {StringEquals: {'aws:RequestTag/Project': DryStock}}
+              - Effect: Allow
+                Action: [cloudfront:GetDistribution, cloudfront:GetDistributionConfig, cloudfront:UpdateDistribution, cloudfront:DeleteDistribution, cloudfront:UntagResource, cloudfront:ListTagsForResource]
+                Resource: !Sub 'arn:aws:cloudfront::${AWS::AccountId}:distribution/*'
+                Condition: {StringEquals: {'aws:ResourceTag/Project': DryStock}}
+              - Effect: Allow
+                Action: [cloudfront:TagResource]
+                Resource: !Sub 'arn:aws:cloudfront::${AWS::AccountId}:distribution/*'
+                Condition:
+                  StringEquals: {'aws:RequestTag/Project': DryStock}
+                  StringEqualsIfExists: {'aws:ResourceTag/Project': DryStock}
+              - Effect: Allow
+                Action: [budgets:ModifyBudget, budgets:ViewBudget]
+                Resource: !Sub 'arn:aws:budgets::${AWS::AccountId}:budget/drystock-demo'
+      Tags: [{Key: Project, Value: DryStock}]
+  DeployRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: drystock-deploy
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal: {AWS: !Ref DeploymentPrincipalArn}
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: DeployOnlyDryStock
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: [cloudformation:CreateStack, cloudformation:UpdateStack, cloudformation:DeleteStack, cloudformation:DescribeStacks, cloudformation:DescribeStackEvents, cloudformation:DescribeStackResources, cloudformation:ListStackResources, cloudformation:GetTemplate, cloudformation:GetTemplateSummary, cloudformation:CreateChangeSet, cloudformation:DescribeChangeSet, cloudformation:ExecuteChangeSet, cloudformation:DeleteChangeSet]
+                Resource: [!Sub 'arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/drystock-demo/*', !Sub 'arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:changeSet/drystock-*/*']
+              - Effect: Allow
+                Action: [cloudformation:ValidateTemplate]
+                Resource: '*'
+              - Effect: Allow
+                Action: [iam:PassRole]
+                Resource: !GetAtt CloudFormationRole.Arn
+                Condition: {StringEquals: {'iam:PassedToService': cloudformation.amazonaws.com}}
+              - Effect: Allow
+                Action: [s3:ListBucket, s3:GetBucketLocation]
+                Resource: [!GetAtt Artifacts.Arn, !Sub 'arn:aws:s3:::drystock-demo-site-${AWS::AccountId}-${AWS::Region}']
+              - Effect: Allow
+                Action: [s3:GetObject, s3:PutObject, s3:DeleteObject]
+                Resource: [!Sub '${Artifacts.Arn}/*', !Sub 'arn:aws:s3:::drystock-demo-site-${AWS::AccountId}-${AWS::Region}/*']
+              - Effect: Allow
+                Action: [ecr:GetAuthorizationToken]
+                Resource: '*'
+              - Effect: Allow
+                Action: [ecr:BatchCheckLayerAvailability, ecr:GetDownloadUrlForLayer, ecr:BatchGetImage, ecr:InitiateLayerUpload, ecr:UploadLayerPart, ecr:CompleteLayerUpload, ecr:PutImage, ecr:DescribeRepositories, ecr:DescribeImages]
+                Resource: !GetAtt Images.Arn
+              - Effect: Allow
+                Action: [cloudfront:GetDistribution, cloudfront:CreateInvalidation, cloudfront:GetInvalidation]
+                Resource: !Sub 'arn:aws:cloudfront::${AWS::AccountId}:distribution/*'
+                Condition: {StringEquals: {'aws:ResourceTag/Project': DryStock}}
+              - Effect: Allow
+                Action: [logs:FilterLogEvents, logs:GetLogEvents, logs:DescribeLogStreams]
+                Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/drystock-demo-api:*'
+              - Effect: Allow
+                Action: [lambda:GetFunction, lambda:GetFunctionConfiguration, lambda:GetFunctionConcurrency]
+                Resource: !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:drystock-demo-api'
+              - Effect: Allow
+                Action: [lambda:GetAccountSettings]
+                Resource: '*'
+      Tags: [{Key: Project, Value: DryStock}]
+Outputs:
+  DeploymentRoleArn: {Value: !GetAtt DeployRole.Arn}
+  CloudFormationRoleArn: {Value: !GetAtt CloudFormationRole.Arn}
+  RuntimeRoleArn: {Value: !GetAtt RuntimeRole.Arn}
+  ArtifactsBucket: {Value: !Ref Artifacts}
+  ImageRepository: {Value: !GetAtt Images.RepositoryUri}
+  OriginAccessControlId: {Value: !GetAtt OriginControl.Id}

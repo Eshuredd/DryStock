@@ -1,0 +1,12 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::071031980923:role/OWNER_APPROVED_SSO_ROLE"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}

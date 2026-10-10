@@ -44,8 +44,16 @@ try {
     & rtk proxy $samCommand package --template-file .aws-sam/cloud-build/template.yaml --image-repository $repository --s3-bucket $artifactBucket --output-template-file .aws-sam/cloud-packaged.yaml --profile $Profile --region $Region
     if ($LASTEXITCODE -ne 0) { throw 'SAM package failed' }
     $type = 'UPDATE'
-    $stackText = & rtk proxy aws cloudformation describe-stacks --stack-name $stackName --profile $Profile --region $Region --no-cli-pager 2>&1
-    if ($LASTEXITCODE -ne 0) {
+    $describeErrorActionPreference = $ErrorActionPreference
+    try {
+        # PowerShell 5.1 treats native stderr as error records; inspect the exit code below.
+        $ErrorActionPreference = 'Continue'
+        $stackText = & rtk proxy aws cloudformation describe-stacks --stack-name $stackName --profile $Profile --region $Region --no-cli-pager 2>&1
+        $stackExitCode = $LASTEXITCODE
+    } finally {
+        $ErrorActionPreference = $describeErrorActionPreference
+    }
+    if ($stackExitCode -ne 0) {
         if (($stackText | Out-String) -match 'does not exist') { $type = 'CREATE' }
         else { throw 'Could not inspect the named stack. Verify DescribeStacks permission before provisioning.' }
     }

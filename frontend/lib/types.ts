@@ -1,0 +1,9 @@
+export type Action = {kind: 'cover' | 'relocate'; duration: number; workers: number; forklift: boolean; required_skills: string[]; effectiveness_bps: number};
+export type Lot = {id: string; category: string; description: string; weight_kg: number; location: string; exposure: string; condition: string; value_inr: number; vulnerability: number; exposed_loss_inr: number; restrictions: string[]; actions: Action[]; protection_status: string};
+export type Task = {lot_id: string; action: 'cover' | 'relocate'; start: number; end: number; worker_ids: string[]; forklift_id: string | null; tarp_id: string | null; storage_id: string | null; saved_loss_inr: number};
+export type Worker = {id: string; name: string; skills: string[]; enabled: boolean; available_from: number; available_until: number};
+export type Resource = {id: string; name: string; capacity_kg: number; categories: string[]; enabled: boolean};
+export type Scenario = {id: string; name: string; weather_label: string; deadline: number; now_minute: number; rain_arrival_minute: number; safety_buffer_minutes: number; lots: Lot[]; workers: Worker[]; forklifts: {id: string; name: string; enabled: boolean}[]; tarps: Resource[]; storage: Resource[]; completed: Task[]};
+export type Plan = {strategy: string; solver_status: string; tasks: Task[]; unprotected_lot_ids: string[]; initial_loss_inr: number; completed_saved_inr: number; planned_saved_inr: number; residual_loss_inr: number; solve_seconds: number; best_bound_inr: number | null; validation: {valid: boolean; errors: string[]}};
+export type SavedPlan = {id: string; revision: number; state: 'draft' | 'approved' | 'superseded'; created: string; plan: Plan; comparisons: Plan[]; scenario: Scenario};
+export type YardState = {scenario: Scenario; revision: number; latest: SavedPlan | null; events: {id: number; at: string; kind: string; detail: string}[]};

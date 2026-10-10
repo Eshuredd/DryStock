@@ -1,0 +1,34 @@
+{
+  "id": "monsoon-yard", "name": "Surat Paper Recovery Yard",
+  "weather_label": "SIMULATED · heavy rain approaching", "rain_arrival_minute": 70,
+  "safety_buffer_minutes": 10, "deadline": 60, "now_minute": 0,
+  "workers": [
+    {"id":"W1","name":"Asha","skills":["forklift","bale_handling"]},
+    {"id":"W2","name":"Imran","skills":["bale_handling"]},
+    {"id":"W3","name":"Meera","skills":["bale_handling"]}
+  ],
+  "forklifts":[{"id":"F1","name":"Forklift 01"}],
+  "tarps":[
+    {"id":"T1","name":"Large tarp","capacity_kg":1500,"categories":["cardboard","paper","newsprint"]},
+    {"id":"T2","name":"Medium tarp","capacity_kg":800,"categories":["cardboard","paper","newsprint"]},
+    {"id":"T3","name":"Small tarp","capacity_kg":400,"categories":["paper","newsprint"]}
+  ],
+  "storage":[
+    {"id":"S1","name":"Covered bay A","capacity_kg":1500,"categories":["cardboard","paper","newsprint"]},
+    {"id":"S2","name":"Covered bay B","capacity_kg":700,"categories":["cardboard","paper","newsprint"]}
+  ],
+  "lots":[
+    {"id":"L01","category":"cardboard","description":"Corrugated cardboard","weight_kg":800,"location":"East apron","exposure":"high","condition":"Dry, loose stack","value_inr":14400,"vulnerability":4,"exposed_loss_inr":5760,"actions":[{"kind":"cover","duration":16,"workers":2,"effectiveness_bps":8000},{"kind":"relocate","duration":22,"workers":1,"forklift":true,"required_skills":["forklift"],"effectiveness_bps":10000}]},
+    {"id":"L02","category":"newsprint","description":"Sorted newspapers","weight_kg":500,"location":"North fence","exposure":"high","condition":"Dry, bundled","value_inr":10000,"vulnerability":5,"exposed_loss_inr":6500,"actions":[{"kind":"cover","duration":12,"workers":2,"effectiveness_bps":9000},{"kind":"relocate","duration":16,"workers":1,"forklift":true,"required_skills":["forklift"],"effectiveness_bps":10000}]},
+    {"id":"L03","category":"paper","description":"Mixed paper","weight_kg":600,"location":"Sorting pad","exposure":"medium","condition":"Dry, bagged","value_inr":7200,"vulnerability":3,"exposed_loss_inr":2160,"actions":[{"kind":"cover","duration":14,"workers":1,"effectiveness_bps":8500},{"kind":"relocate","duration":18,"workers":1,"forklift":true,"required_skills":["forklift"],"effectiveness_bps":10000}]},
+    {"id":"L04","category":"paper","description":"White office paper","weight_kg":300,"location":"East apron","exposure":"high","condition":"Dry, loose bags","value_inr":9000,"vulnerability":5,"exposed_loss_inr":6300,"actions":[{"kind":"cover","duration":8,"workers":1,"effectiveness_bps":9000},{"kind":"relocate","duration":10,"workers":2,"effectiveness_bps":10000}]},
+    {"id":"L05","category":"cardboard","description":"Dense cardboard bales","weight_kg":1200,"location":"Loading lane","exposure":"high","condition":"Dry, strapped","value_inr":24000,"vulnerability":4,"exposed_loss_inr":9600,"restrictions":["Only certified operator may relocate; heavy bales require forklift"],"actions":[{"kind":"cover","duration":42,"workers":3,"required_skills":["bale_handling"],"effectiveness_bps":7500},{"kind":"relocate","duration":48,"workers":1,"forklift":true,"required_skills":["forklift"],"effectiveness_bps":10000}]},
+    {"id":"L06","category":"paper","description":"Kraft paper rolls","weight_kg":650,"location":"West apron","exposure":"high","condition":"Dry, palletised","value_inr":15600,"vulnerability":4,"exposed_loss_inr":7800,"actions":[{"kind":"cover","duration":14,"workers":2,"effectiveness_bps":9000},{"kind":"relocate","duration":18,"workers":1,"forklift":true,"required_skills":["forklift"],"effectiveness_bps":10000}]},
+    {"id":"L07","category":"newsprint","description":"Magazine returns","weight_kg":250,"location":"Sorting pad","exposure":"medium","condition":"Coated, bundled","value_inr":5000,"vulnerability":2,"exposed_loss_inr":1500,"actions":[{"kind":"cover","duration":9,"workers":1,"effectiveness_bps":8500},{"kind":"relocate","duration":12,"workers":2,"effectiveness_bps":10000}]},
+    {"id":"L08","category":"cardboard","description":"Flattened carton sheets","weight_kg":450,"location":"North fence","exposure":"high","condition":"Dry, stacked","value_inr":8100,"vulnerability":4,"exposed_loss_inr":4050,"actions":[{"kind":"cover","duration":10,"workers":2,"effectiveness_bps":8500},{"kind":"relocate","duration":15,"workers":1,"forklift":true,"required_skills":["forklift"],"effectiveness_bps":10000}]},
+    {"id":"L09","category":"paper","description":"Shredded office paper","weight_kg":200,"location":"Bagging area","exposure":"high","condition":"Dry, porous sacks","value_inr":4000,"vulnerability":5,"exposed_loss_inr":2800,"restrictions":["Move sacks by hand; no safe tarp attachment"],"actions":[{"kind":"relocate","duration":14,"workers":2,"effectiveness_bps":10000}]},
+    {"id":"L10","category":"cardboard","description":"Wax-coated packaging","weight_kg":350,"location":"West apron","exposure":"low","condition":"Coated, dry","value_inr":3500,"vulnerability":1,"exposed_loss_inr":350,"actions":[{"kind":"cover","duration":10,"workers":1,"effectiveness_bps":8000},{"kind":"relocate","duration":12,"workers":2,"effectiveness_bps":10000}]},
+    {"id":"L11","category":"paper","description":"Print-shop offcuts","weight_kg":380,"location":"East apron","exposure":"high","condition":"Dry, boxed","value_inr":11400,"vulnerability":5,"exposed_loss_inr":7410,"actions":[{"kind":"cover","duration":11,"workers":1,"effectiveness_bps":9500},{"kind":"relocate","duration":13,"workers":2,"effectiveness_bps":10000}]},
+    {"id":"L12","category":"cardboard","description":"Sheltered carton stock","weight_kg":700,"location":"Existing shed","exposure":"low","condition":"Dry, sheltered","value_inr":12600,"vulnerability":2,"exposed_loss_inr":0,"protection_status":"already_protected","actions":[]}
+  ]
+}

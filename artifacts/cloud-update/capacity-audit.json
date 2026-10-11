@@ -1,0 +1,3665 @@
+{
+  "evidence_type": "offline source measurement and synthetic capacity budget; not AWS load verification",
+  "rounds_per_visitor": 5,
+  "scenario": "unchanged fictional sample",
+  "numeric_item_size": "AWS approximate numeric encoding; UTF-8 string lengths measured",
+  "replay_limitations": "No AWS partitions, adaptive capacity, SDK retries, solver timing, gateway throttling or worst-case custom inputs modeled",
+  "counterfactual": "Only request/compute/lease writes charged as <=1KiB metadata; no implementation or deployment",
+  "requests": [
+    {
+      "label": "session",
+      "rcu": 0,
+      "wcu": 9,
+      "split_counter_wcu": 9,
+      "operations": [
+        {
+          "request": "session",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 1,
+          "item_bytes": [
+            0,
+            46
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "session",
+          "operation": "PutItem",
+          "rcu": 0,
+          "wcu": 8,
+          "item_bytes": [
+            0,
+            7322
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "initial:state",
+      "rcu": 2,
+      "wcu": 8,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "initial:state",
+          "operation": "GetItem",
+          "rcu": 2,
+          "wcu": 0,
+          "item_bytes": [
+            7322
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "initial:state",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 8,
+          "item_bytes": [
+            7322,
+            7322
+          ],
+          "counter_or_lease": true
+        }
+      ]
+    },
+    {
+      "label": "initial:history",
+      "rcu": 3,
+      "wcu": 8,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "initial:history",
+          "operation": "GetItem",
+          "rcu": 2,
+          "wcu": 0,
+          "item_bytes": [
+            7322
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "initial:history",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 8,
+          "item_bytes": [
+            7322,
+            7322
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "initial:history",
+          "operation": "Query",
+          "rcu": 1,
+          "wcu": 0,
+          "item_bytes": [],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "1:generate",
+      "rcu": 2,
+      "wcu": 103,
+      "split_counter_wcu": 70,
+      "operations": [
+        {
+          "request": "1:generate",
+          "operation": "GetItem",
+          "rcu": 2,
+          "wcu": 0,
+          "item_bytes": [
+            7322
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "1:generate",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 8,
+          "item_bytes": [
+            7322,
+            7322
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "1:generate",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 8,
+          "item_bytes": [
+            7322,
+            7336
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "1:generate",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 1,
+          "item_bytes": [
+            0,
+            44
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "1:generate",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 40,
+          "item_bytes": [
+            7336,
+            19728
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "1:generate",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 26,
+          "item_bytes": [
+            0,
+            12372
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "1:generate",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 20,
+          "item_bytes": [
+            19728,
+            19714
+          ],
+          "counter_or_lease": true
+        }
+      ]
+    },
+    {
+      "label": "1:generated:state",
+      "rcu": 5,
+      "wcu": 20,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "1:generated:state",
+          "operation": "GetItem",
+          "rcu": 5,
+          "wcu": 0,
+          "item_bytes": [
+            19714
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "1:generated:state",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 20,
+          "item_bytes": [
+            19714,
+            19714
+          ],
+          "counter_or_lease": true
+        }
+      ]
+    },
+    {
+      "label": "1:generated:history",
+      "rcu": 9,
+      "wcu": 20,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "1:generated:history",
+          "operation": "GetItem",
+          "rcu": 5,
+          "wcu": 0,
+          "item_bytes": [
+            19714
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "1:generated:history",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 20,
+          "item_bytes": [
+            19714,
+            19714
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "1:generated:history",
+          "operation": "Query",
+          "rcu": 4,
+          "wcu": 0,
+          "item_bytes": [
+            12372
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "1:approve",
+      "rcu": 5,
+      "wcu": 86,
+      "split_counter_wcu": 67,
+      "operations": [
+        {
+          "request": "1:approve",
+          "operation": "GetItem",
+          "rcu": 5,
+          "wcu": 0,
+          "item_bytes": [
+            19714
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "1:approve",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 20,
+          "item_bytes": [
+            19714,
+            19714
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "1:approve",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 40,
+          "item_bytes": [
+            19714,
+            19809
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "1:approve",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 26,
+          "item_bytes": [
+            12372,
+            12375
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "1:approved:state",
+      "rcu": 5,
+      "wcu": 20,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "1:approved:state",
+          "operation": "GetItem",
+          "rcu": 5,
+          "wcu": 0,
+          "item_bytes": [
+            19809
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "1:approved:state",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 20,
+          "item_bytes": [
+            19809,
+            19809
+          ],
+          "counter_or_lease": true
+        }
+      ]
+    },
+    {
+      "label": "1:approved:history",
+      "rcu": 9,
+      "wcu": 20,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "1:approved:history",
+          "operation": "GetItem",
+          "rcu": 5,
+          "wcu": 0,
+          "item_bytes": [
+            19809
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "1:approved:history",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 20,
+          "item_bytes": [
+            19809,
+            19809
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "1:approved:history",
+          "operation": "Query",
+          "rcu": 4,
+          "wcu": 0,
+          "item_bytes": [
+            12375
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "1:complete",
+      "rcu": 5,
+      "wcu": 86,
+      "split_counter_wcu": 67,
+      "operations": [
+        {
+          "request": "1:complete",
+          "operation": "GetItem",
+          "rcu": 5,
+          "wcu": 0,
+          "item_bytes": [
+            19809
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "1:complete",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 20,
+          "item_bytes": [
+            19809,
+            19809
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "1:complete",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 40,
+          "item_bytes": [
+            19809,
+            20108
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "1:complete",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 26,
+          "item_bytes": [
+            12375,
+            12375
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "1:completed:state",
+      "rcu": 5,
+      "wcu": 20,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "1:completed:state",
+          "operation": "GetItem",
+          "rcu": 5,
+          "wcu": 0,
+          "item_bytes": [
+            20108
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "1:completed:state",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 20,
+          "item_bytes": [
+            20108,
+            20108
+          ],
+          "counter_or_lease": true
+        }
+      ]
+    },
+    {
+      "label": "1:completed:history",
+      "rcu": 9,
+      "wcu": 20,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "1:completed:history",
+          "operation": "GetItem",
+          "rcu": 5,
+          "wcu": 0,
+          "item_bytes": [
+            20108
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "1:completed:history",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 20,
+          "item_bytes": [
+            20108,
+            20108
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "1:completed:history",
+          "operation": "Query",
+          "rcu": 4,
+          "wcu": 0,
+          "item_bytes": [
+            12375
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "1:disrupt",
+      "rcu": 5,
+      "wcu": 86,
+      "split_counter_wcu": 67,
+      "operations": [
+        {
+          "request": "1:disrupt",
+          "operation": "GetItem",
+          "rcu": 5,
+          "wcu": 0,
+          "item_bytes": [
+            20108
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "1:disrupt",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 20,
+          "item_bytes": [
+            20108,
+            20108
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "1:disrupt",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 40,
+          "item_bytes": [
+            20108,
+            20231
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "1:disrupt",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 26,
+          "item_bytes": [
+            12375,
+            12377
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "1:disrupted:state",
+      "rcu": 5,
+      "wcu": 20,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "1:disrupted:state",
+          "operation": "GetItem",
+          "rcu": 5,
+          "wcu": 0,
+          "item_bytes": [
+            20231
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "1:disrupted:state",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 20,
+          "item_bytes": [
+            20231,
+            20231
+          ],
+          "counter_or_lease": true
+        }
+      ]
+    },
+    {
+      "label": "1:disrupted:history",
+      "rcu": 9,
+      "wcu": 20,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "1:disrupted:history",
+          "operation": "GetItem",
+          "rcu": 5,
+          "wcu": 0,
+          "item_bytes": [
+            20231
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "1:disrupted:history",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 20,
+          "item_bytes": [
+            20231,
+            20231
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "1:disrupted:history",
+          "operation": "Query",
+          "rcu": 4,
+          "wcu": 0,
+          "item_bytes": [
+            12377
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "1:reset",
+      "rcu": 5,
+      "wcu": 86,
+      "split_counter_wcu": 67,
+      "operations": [
+        {
+          "request": "1:reset",
+          "operation": "GetItem",
+          "rcu": 5,
+          "wcu": 0,
+          "item_bytes": [
+            20231
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "1:reset",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 20,
+          "item_bytes": [
+            20231,
+            20231
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "1:reset",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 40,
+          "item_bytes": [
+            20231,
+            7915
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "1:reset",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 26,
+          "item_bytes": [
+            12377,
+            12377
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "1:reset:state",
+      "rcu": 2,
+      "wcu": 8,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "1:reset:state",
+          "operation": "GetItem",
+          "rcu": 2,
+          "wcu": 0,
+          "item_bytes": [
+            7915
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "1:reset:state",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 8,
+          "item_bytes": [
+            7915,
+            7915
+          ],
+          "counter_or_lease": true
+        }
+      ]
+    },
+    {
+      "label": "1:reset:history",
+      "rcu": 6,
+      "wcu": 8,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "1:reset:history",
+          "operation": "GetItem",
+          "rcu": 2,
+          "wcu": 0,
+          "item_bytes": [
+            7915
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "1:reset:history",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 8,
+          "item_bytes": [
+            7915,
+            7915
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "1:reset:history",
+          "operation": "Query",
+          "rcu": 4,
+          "wcu": 0,
+          "item_bytes": [
+            12377
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "2:generate",
+      "rcu": 2,
+      "wcu": 103,
+      "split_counter_wcu": 70,
+      "operations": [
+        {
+          "request": "2:generate",
+          "operation": "GetItem",
+          "rcu": 2,
+          "wcu": 0,
+          "item_bytes": [
+            7915
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "2:generate",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 8,
+          "item_bytes": [
+            7915,
+            7915
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "2:generate",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 8,
+          "item_bytes": [
+            7915,
+            7929
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "2:generate",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 1,
+          "item_bytes": [
+            44,
+            44
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "2:generate",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 40,
+          "item_bytes": [
+            7929,
+            20315
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "2:generate",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 26,
+          "item_bytes": [
+            0,
+            12372
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "2:generate",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 20,
+          "item_bytes": [
+            20315,
+            20301
+          ],
+          "counter_or_lease": true
+        }
+      ]
+    },
+    {
+      "label": "2:generated:state",
+      "rcu": 5,
+      "wcu": 20,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "2:generated:state",
+          "operation": "GetItem",
+          "rcu": 5,
+          "wcu": 0,
+          "item_bytes": [
+            20301
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "2:generated:state",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 20,
+          "item_bytes": [
+            20301,
+            20301
+          ],
+          "counter_or_lease": true
+        }
+      ]
+    },
+    {
+      "label": "2:generated:history",
+      "rcu": 12,
+      "wcu": 20,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "2:generated:history",
+          "operation": "GetItem",
+          "rcu": 5,
+          "wcu": 0,
+          "item_bytes": [
+            20301
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "2:generated:history",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 20,
+          "item_bytes": [
+            20301,
+            20301
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "2:generated:history",
+          "operation": "Query",
+          "rcu": 7,
+          "wcu": 0,
+          "item_bytes": [
+            12372,
+            12377
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "2:approve",
+      "rcu": 5,
+      "wcu": 86,
+      "split_counter_wcu": 67,
+      "operations": [
+        {
+          "request": "2:approve",
+          "operation": "GetItem",
+          "rcu": 5,
+          "wcu": 0,
+          "item_bytes": [
+            20301
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "2:approve",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 20,
+          "item_bytes": [
+            20301,
+            20301
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "2:approve",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 40,
+          "item_bytes": [
+            20301,
+            20396
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "2:approve",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 26,
+          "item_bytes": [
+            12372,
+            12375
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "2:approved:state",
+      "rcu": 5,
+      "wcu": 20,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "2:approved:state",
+          "operation": "GetItem",
+          "rcu": 5,
+          "wcu": 0,
+          "item_bytes": [
+            20396
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "2:approved:state",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 20,
+          "item_bytes": [
+            20396,
+            20396
+          ],
+          "counter_or_lease": true
+        }
+      ]
+    },
+    {
+      "label": "2:approved:history",
+      "rcu": 12,
+      "wcu": 20,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "2:approved:history",
+          "operation": "GetItem",
+          "rcu": 5,
+          "wcu": 0,
+          "item_bytes": [
+            20396
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "2:approved:history",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 20,
+          "item_bytes": [
+            20396,
+            20396
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "2:approved:history",
+          "operation": "Query",
+          "rcu": 7,
+          "wcu": 0,
+          "item_bytes": [
+            12375,
+            12377
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "2:complete",
+      "rcu": 5,
+      "wcu": 88,
+      "split_counter_wcu": 69,
+      "operations": [
+        {
+          "request": "2:complete",
+          "operation": "GetItem",
+          "rcu": 5,
+          "wcu": 0,
+          "item_bytes": [
+            20396
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "2:complete",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 20,
+          "item_bytes": [
+            20396,
+            20396
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "2:complete",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 42,
+          "item_bytes": [
+            20396,
+            20695
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "2:complete",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 26,
+          "item_bytes": [
+            12375,
+            12375
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "2:completed:state",
+      "rcu": 6,
+      "wcu": 21,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "2:completed:state",
+          "operation": "GetItem",
+          "rcu": 6,
+          "wcu": 0,
+          "item_bytes": [
+            20695
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "2:completed:state",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 21,
+          "item_bytes": [
+            20695,
+            20695
+          ],
+          "counter_or_lease": true
+        }
+      ]
+    },
+    {
+      "label": "2:completed:history",
+      "rcu": 13,
+      "wcu": 21,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "2:completed:history",
+          "operation": "GetItem",
+          "rcu": 6,
+          "wcu": 0,
+          "item_bytes": [
+            20695
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "2:completed:history",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 21,
+          "item_bytes": [
+            20695,
+            20695
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "2:completed:history",
+          "operation": "Query",
+          "rcu": 7,
+          "wcu": 0,
+          "item_bytes": [
+            12375,
+            12377
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "2:disrupt",
+      "rcu": 6,
+      "wcu": 89,
+      "split_counter_wcu": 69,
+      "operations": [
+        {
+          "request": "2:disrupt",
+          "operation": "GetItem",
+          "rcu": 6,
+          "wcu": 0,
+          "item_bytes": [
+            20695
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "2:disrupt",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 21,
+          "item_bytes": [
+            20695,
+            20695
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "2:disrupt",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 42,
+          "item_bytes": [
+            20695,
+            20818
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "2:disrupt",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 26,
+          "item_bytes": [
+            12375,
+            12377
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "2:disrupted:state",
+      "rcu": 6,
+      "wcu": 21,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "2:disrupted:state",
+          "operation": "GetItem",
+          "rcu": 6,
+          "wcu": 0,
+          "item_bytes": [
+            20818
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "2:disrupted:state",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 21,
+          "item_bytes": [
+            20818,
+            20818
+          ],
+          "counter_or_lease": true
+        }
+      ]
+    },
+    {
+      "label": "2:disrupted:history",
+      "rcu": 13,
+      "wcu": 21,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "2:disrupted:history",
+          "operation": "GetItem",
+          "rcu": 6,
+          "wcu": 0,
+          "item_bytes": [
+            20818
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "2:disrupted:history",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 21,
+          "item_bytes": [
+            20818,
+            20818
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "2:disrupted:history",
+          "operation": "Query",
+          "rcu": 7,
+          "wcu": 0,
+          "item_bytes": [
+            12377,
+            12377
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "2:reset",
+      "rcu": 6,
+      "wcu": 89,
+      "split_counter_wcu": 69,
+      "operations": [
+        {
+          "request": "2:reset",
+          "operation": "GetItem",
+          "rcu": 6,
+          "wcu": 0,
+          "item_bytes": [
+            20818
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "2:reset",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 21,
+          "item_bytes": [
+            20818,
+            20818
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "2:reset",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 42,
+          "item_bytes": [
+            20818,
+            8503
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "2:reset",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 26,
+          "item_bytes": [
+            12377,
+            12377
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "2:reset:state",
+      "rcu": 3,
+      "wcu": 9,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "2:reset:state",
+          "operation": "GetItem",
+          "rcu": 3,
+          "wcu": 0,
+          "item_bytes": [
+            8503
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "2:reset:state",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 9,
+          "item_bytes": [
+            8503,
+            8503
+          ],
+          "counter_or_lease": true
+        }
+      ]
+    },
+    {
+      "label": "2:reset:history",
+      "rcu": 10,
+      "wcu": 9,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "2:reset:history",
+          "operation": "GetItem",
+          "rcu": 3,
+          "wcu": 0,
+          "item_bytes": [
+            8503
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "2:reset:history",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 9,
+          "item_bytes": [
+            8503,
+            8503
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "2:reset:history",
+          "operation": "Query",
+          "rcu": 7,
+          "wcu": 0,
+          "item_bytes": [
+            12377,
+            12377
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "3:generate",
+      "rcu": 3,
+      "wcu": 108,
+      "split_counter_wcu": 72,
+      "operations": [
+        {
+          "request": "3:generate",
+          "operation": "GetItem",
+          "rcu": 3,
+          "wcu": 0,
+          "item_bytes": [
+            8503
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "3:generate",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 9,
+          "item_bytes": [
+            8503,
+            8503
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "3:generate",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 9,
+          "item_bytes": [
+            8503,
+            8517
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "3:generate",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 1,
+          "item_bytes": [
+            44,
+            44
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "3:generate",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 42,
+          "item_bytes": [
+            8517,
+            20904
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "3:generate",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 26,
+          "item_bytes": [
+            0,
+            12372
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "3:generate",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 21,
+          "item_bytes": [
+            20904,
+            20890
+          ],
+          "counter_or_lease": true
+        }
+      ]
+    },
+    {
+      "label": "3:generated:state",
+      "rcu": 6,
+      "wcu": 21,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "3:generated:state",
+          "operation": "GetItem",
+          "rcu": 6,
+          "wcu": 0,
+          "item_bytes": [
+            20890
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "3:generated:state",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 21,
+          "item_bytes": [
+            20890,
+            20890
+          ],
+          "counter_or_lease": true
+        }
+      ]
+    },
+    {
+      "label": "3:generated:history",
+      "rcu": 16,
+      "wcu": 21,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "3:generated:history",
+          "operation": "GetItem",
+          "rcu": 6,
+          "wcu": 0,
+          "item_bytes": [
+            20890
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "3:generated:history",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 21,
+          "item_bytes": [
+            20890,
+            20890
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "3:generated:history",
+          "operation": "Query",
+          "rcu": 10,
+          "wcu": 0,
+          "item_bytes": [
+            12372,
+            12377,
+            12377
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "3:approve",
+      "rcu": 6,
+      "wcu": 89,
+      "split_counter_wcu": 69,
+      "operations": [
+        {
+          "request": "3:approve",
+          "operation": "GetItem",
+          "rcu": 6,
+          "wcu": 0,
+          "item_bytes": [
+            20890
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "3:approve",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 21,
+          "item_bytes": [
+            20890,
+            20890
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "3:approve",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 42,
+          "item_bytes": [
+            20890,
+            20986
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "3:approve",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 26,
+          "item_bytes": [
+            12372,
+            12375
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "3:approved:state",
+      "rcu": 6,
+      "wcu": 21,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "3:approved:state",
+          "operation": "GetItem",
+          "rcu": 6,
+          "wcu": 0,
+          "item_bytes": [
+            20986
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "3:approved:state",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 21,
+          "item_bytes": [
+            20986,
+            20986
+          ],
+          "counter_or_lease": true
+        }
+      ]
+    },
+    {
+      "label": "3:approved:history",
+      "rcu": 16,
+      "wcu": 21,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "3:approved:history",
+          "operation": "GetItem",
+          "rcu": 6,
+          "wcu": 0,
+          "item_bytes": [
+            20986
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "3:approved:history",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 21,
+          "item_bytes": [
+            20986,
+            20986
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "3:approved:history",
+          "operation": "Query",
+          "rcu": 10,
+          "wcu": 0,
+          "item_bytes": [
+            12375,
+            12377,
+            12377
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "3:complete",
+      "rcu": 6,
+      "wcu": 89,
+      "split_counter_wcu": 69,
+      "operations": [
+        {
+          "request": "3:complete",
+          "operation": "GetItem",
+          "rcu": 6,
+          "wcu": 0,
+          "item_bytes": [
+            20986
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "3:complete",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 21,
+          "item_bytes": [
+            20986,
+            20986
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "3:complete",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 42,
+          "item_bytes": [
+            20986,
+            21286
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "3:complete",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 26,
+          "item_bytes": [
+            12375,
+            12375
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "3:completed:state",
+      "rcu": 6,
+      "wcu": 21,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "3:completed:state",
+          "operation": "GetItem",
+          "rcu": 6,
+          "wcu": 0,
+          "item_bytes": [
+            21286
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "3:completed:state",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 21,
+          "item_bytes": [
+            21286,
+            21286
+          ],
+          "counter_or_lease": true
+        }
+      ]
+    },
+    {
+      "label": "3:completed:history",
+      "rcu": 16,
+      "wcu": 21,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "3:completed:history",
+          "operation": "GetItem",
+          "rcu": 6,
+          "wcu": 0,
+          "item_bytes": [
+            21286
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "3:completed:history",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 21,
+          "item_bytes": [
+            21286,
+            21286
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "3:completed:history",
+          "operation": "Query",
+          "rcu": 10,
+          "wcu": 0,
+          "item_bytes": [
+            12375,
+            12377,
+            12377
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "3:disrupt",
+      "rcu": 6,
+      "wcu": 89,
+      "split_counter_wcu": 69,
+      "operations": [
+        {
+          "request": "3:disrupt",
+          "operation": "GetItem",
+          "rcu": 6,
+          "wcu": 0,
+          "item_bytes": [
+            21286
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "3:disrupt",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 21,
+          "item_bytes": [
+            21286,
+            21286
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "3:disrupt",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 42,
+          "item_bytes": [
+            21286,
+            21410
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "3:disrupt",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 26,
+          "item_bytes": [
+            12375,
+            12377
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "3:disrupted:state",
+      "rcu": 6,
+      "wcu": 21,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "3:disrupted:state",
+          "operation": "GetItem",
+          "rcu": 6,
+          "wcu": 0,
+          "item_bytes": [
+            21410
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "3:disrupted:state",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 21,
+          "item_bytes": [
+            21410,
+            21410
+          ],
+          "counter_or_lease": true
+        }
+      ]
+    },
+    {
+      "label": "3:disrupted:history",
+      "rcu": 16,
+      "wcu": 21,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "3:disrupted:history",
+          "operation": "GetItem",
+          "rcu": 6,
+          "wcu": 0,
+          "item_bytes": [
+            21410
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "3:disrupted:history",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 21,
+          "item_bytes": [
+            21410,
+            21410
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "3:disrupted:history",
+          "operation": "Query",
+          "rcu": 10,
+          "wcu": 0,
+          "item_bytes": [
+            12377,
+            12377,
+            12377
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "3:reset",
+      "rcu": 6,
+      "wcu": 89,
+      "split_counter_wcu": 69,
+      "operations": [
+        {
+          "request": "3:reset",
+          "operation": "GetItem",
+          "rcu": 6,
+          "wcu": 0,
+          "item_bytes": [
+            21410
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "3:reset",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 21,
+          "item_bytes": [
+            21410,
+            21410
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "3:reset",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 42,
+          "item_bytes": [
+            21410,
+            9095
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "3:reset",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 26,
+          "item_bytes": [
+            12377,
+            12377
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "3:reset:state",
+      "rcu": 3,
+      "wcu": 9,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "3:reset:state",
+          "operation": "GetItem",
+          "rcu": 3,
+          "wcu": 0,
+          "item_bytes": [
+            9095
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "3:reset:state",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 9,
+          "item_bytes": [
+            9095,
+            9095
+          ],
+          "counter_or_lease": true
+        }
+      ]
+    },
+    {
+      "label": "3:reset:history",
+      "rcu": 13,
+      "wcu": 9,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "3:reset:history",
+          "operation": "GetItem",
+          "rcu": 3,
+          "wcu": 0,
+          "item_bytes": [
+            9095
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "3:reset:history",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 9,
+          "item_bytes": [
+            9095,
+            9095
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "3:reset:history",
+          "operation": "Query",
+          "rcu": 10,
+          "wcu": 0,
+          "item_bytes": [
+            12377,
+            12377,
+            12377
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "4:generate",
+      "rcu": 3,
+      "wcu": 108,
+      "split_counter_wcu": 72,
+      "operations": [
+        {
+          "request": "4:generate",
+          "operation": "GetItem",
+          "rcu": 3,
+          "wcu": 0,
+          "item_bytes": [
+            9095
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "4:generate",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 9,
+          "item_bytes": [
+            9095,
+            9095
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "4:generate",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 9,
+          "item_bytes": [
+            9095,
+            9109
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "4:generate",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 1,
+          "item_bytes": [
+            44,
+            44
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "4:generate",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 42,
+          "item_bytes": [
+            9109,
+            21496
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "4:generate",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 26,
+          "item_bytes": [
+            0,
+            12372
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "4:generate",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 21,
+          "item_bytes": [
+            21496,
+            21482
+          ],
+          "counter_or_lease": true
+        }
+      ]
+    },
+    {
+      "label": "4:generated:state",
+      "rcu": 6,
+      "wcu": 21,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "4:generated:state",
+          "operation": "GetItem",
+          "rcu": 6,
+          "wcu": 0,
+          "item_bytes": [
+            21482
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "4:generated:state",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 21,
+          "item_bytes": [
+            21482,
+            21482
+          ],
+          "counter_or_lease": true
+        }
+      ]
+    },
+    {
+      "label": "4:generated:history",
+      "rcu": 19,
+      "wcu": 21,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "4:generated:history",
+          "operation": "GetItem",
+          "rcu": 6,
+          "wcu": 0,
+          "item_bytes": [
+            21482
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "4:generated:history",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 21,
+          "item_bytes": [
+            21482,
+            21482
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "4:generated:history",
+          "operation": "Query",
+          "rcu": 13,
+          "wcu": 0,
+          "item_bytes": [
+            12372,
+            12377,
+            12377,
+            12377
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "4:approve",
+      "rcu": 6,
+      "wcu": 91,
+      "split_counter_wcu": 71,
+      "operations": [
+        {
+          "request": "4:approve",
+          "operation": "GetItem",
+          "rcu": 6,
+          "wcu": 0,
+          "item_bytes": [
+            21482
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "4:approve",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 21,
+          "item_bytes": [
+            21482,
+            21482
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "4:approve",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 44,
+          "item_bytes": [
+            21482,
+            21578
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "4:approve",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 26,
+          "item_bytes": [
+            12372,
+            12375
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "4:approved:state",
+      "rcu": 6,
+      "wcu": 22,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "4:approved:state",
+          "operation": "GetItem",
+          "rcu": 6,
+          "wcu": 0,
+          "item_bytes": [
+            21578
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "4:approved:state",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 22,
+          "item_bytes": [
+            21578,
+            21578
+          ],
+          "counter_or_lease": true
+        }
+      ]
+    },
+    {
+      "label": "4:approved:history",
+      "rcu": 19,
+      "wcu": 22,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "4:approved:history",
+          "operation": "GetItem",
+          "rcu": 6,
+          "wcu": 0,
+          "item_bytes": [
+            21578
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "4:approved:history",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 22,
+          "item_bytes": [
+            21578,
+            21578
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "4:approved:history",
+          "operation": "Query",
+          "rcu": 13,
+          "wcu": 0,
+          "item_bytes": [
+            12375,
+            12377,
+            12377,
+            12377
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "4:complete",
+      "rcu": 6,
+      "wcu": 92,
+      "split_counter_wcu": 71,
+      "operations": [
+        {
+          "request": "4:complete",
+          "operation": "GetItem",
+          "rcu": 6,
+          "wcu": 0,
+          "item_bytes": [
+            21578
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "4:complete",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 22,
+          "item_bytes": [
+            21578,
+            21578
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "4:complete",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 44,
+          "item_bytes": [
+            21578,
+            21880
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "4:complete",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 26,
+          "item_bytes": [
+            12375,
+            12376
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "4:completed:state",
+      "rcu": 6,
+      "wcu": 22,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "4:completed:state",
+          "operation": "GetItem",
+          "rcu": 6,
+          "wcu": 0,
+          "item_bytes": [
+            21880
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "4:completed:state",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 22,
+          "item_bytes": [
+            21880,
+            21880
+          ],
+          "counter_or_lease": true
+        }
+      ]
+    },
+    {
+      "label": "4:completed:history",
+      "rcu": 19,
+      "wcu": 22,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "4:completed:history",
+          "operation": "GetItem",
+          "rcu": 6,
+          "wcu": 0,
+          "item_bytes": [
+            21880
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "4:completed:history",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 22,
+          "item_bytes": [
+            21880,
+            21880
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "4:completed:history",
+          "operation": "Query",
+          "rcu": 13,
+          "wcu": 0,
+          "item_bytes": [
+            12376,
+            12377,
+            12377,
+            12377
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "4:disrupt",
+      "rcu": 6,
+      "wcu": 92,
+      "split_counter_wcu": 71,
+      "operations": [
+        {
+          "request": "4:disrupt",
+          "operation": "GetItem",
+          "rcu": 6,
+          "wcu": 0,
+          "item_bytes": [
+            21880
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "4:disrupt",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 22,
+          "item_bytes": [
+            21880,
+            21880
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "4:disrupt",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 44,
+          "item_bytes": [
+            21880,
+            22004
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "4:disrupt",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 26,
+          "item_bytes": [
+            12376,
+            12378
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "4:disrupted:state",
+      "rcu": 6,
+      "wcu": 22,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "4:disrupted:state",
+          "operation": "GetItem",
+          "rcu": 6,
+          "wcu": 0,
+          "item_bytes": [
+            22004
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "4:disrupted:state",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 22,
+          "item_bytes": [
+            22004,
+            22004
+          ],
+          "counter_or_lease": true
+        }
+      ]
+    },
+    {
+      "label": "4:disrupted:history",
+      "rcu": 19,
+      "wcu": 22,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "4:disrupted:history",
+          "operation": "GetItem",
+          "rcu": 6,
+          "wcu": 0,
+          "item_bytes": [
+            22004
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "4:disrupted:history",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 22,
+          "item_bytes": [
+            22004,
+            22004
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "4:disrupted:history",
+          "operation": "Query",
+          "rcu": 13,
+          "wcu": 0,
+          "item_bytes": [
+            12378,
+            12377,
+            12377,
+            12377
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "4:reset",
+      "rcu": 6,
+      "wcu": 92,
+      "split_counter_wcu": 71,
+      "operations": [
+        {
+          "request": "4:reset",
+          "operation": "GetItem",
+          "rcu": 6,
+          "wcu": 0,
+          "item_bytes": [
+            22004
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "4:reset",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 22,
+          "item_bytes": [
+            22004,
+            22004
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "4:reset",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 44,
+          "item_bytes": [
+            22004,
+            9688
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "4:reset",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 26,
+          "item_bytes": [
+            12378,
+            12378
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "4:reset:state",
+      "rcu": 3,
+      "wcu": 10,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "4:reset:state",
+          "operation": "GetItem",
+          "rcu": 3,
+          "wcu": 0,
+          "item_bytes": [
+            9688
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "4:reset:state",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 10,
+          "item_bytes": [
+            9688,
+            9688
+          ],
+          "counter_or_lease": true
+        }
+      ]
+    },
+    {
+      "label": "4:reset:history",
+      "rcu": 16,
+      "wcu": 10,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "4:reset:history",
+          "operation": "GetItem",
+          "rcu": 3,
+          "wcu": 0,
+          "item_bytes": [
+            9688
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "4:reset:history",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 10,
+          "item_bytes": [
+            9688,
+            9688
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "4:reset:history",
+          "operation": "Query",
+          "rcu": 13,
+          "wcu": 0,
+          "item_bytes": [
+            12378,
+            12377,
+            12377,
+            12377
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "5:generate",
+      "rcu": 3,
+      "wcu": 113,
+      "split_counter_wcu": 74,
+      "operations": [
+        {
+          "request": "5:generate",
+          "operation": "GetItem",
+          "rcu": 3,
+          "wcu": 0,
+          "item_bytes": [
+            9688
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "5:generate",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 10,
+          "item_bytes": [
+            9688,
+            9688
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "5:generate",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 10,
+          "item_bytes": [
+            9688,
+            9702
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "5:generate",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 1,
+          "item_bytes": [
+            44,
+            44
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "5:generate",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 44,
+          "item_bytes": [
+            9702,
+            22090
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "5:generate",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 26,
+          "item_bytes": [
+            0,
+            12373
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "5:generate",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 22,
+          "item_bytes": [
+            22090,
+            22076
+          ],
+          "counter_or_lease": true
+        }
+      ]
+    },
+    {
+      "label": "5:generated:state",
+      "rcu": 6,
+      "wcu": 22,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "5:generated:state",
+          "operation": "GetItem",
+          "rcu": 6,
+          "wcu": 0,
+          "item_bytes": [
+            22076
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "5:generated:state",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 22,
+          "item_bytes": [
+            22076,
+            22076
+          ],
+          "counter_or_lease": true
+        }
+      ]
+    },
+    {
+      "label": "5:generated:history",
+      "rcu": 22,
+      "wcu": 22,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "5:generated:history",
+          "operation": "GetItem",
+          "rcu": 6,
+          "wcu": 0,
+          "item_bytes": [
+            22076
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "5:generated:history",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 22,
+          "item_bytes": [
+            22076,
+            22076
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "5:generated:history",
+          "operation": "Query",
+          "rcu": 16,
+          "wcu": 0,
+          "item_bytes": [
+            12373,
+            12378,
+            12377,
+            12377,
+            12377
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "5:approve",
+      "rcu": 6,
+      "wcu": 92,
+      "split_counter_wcu": 71,
+      "operations": [
+        {
+          "request": "5:approve",
+          "operation": "GetItem",
+          "rcu": 6,
+          "wcu": 0,
+          "item_bytes": [
+            22076
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "5:approve",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 22,
+          "item_bytes": [
+            22076,
+            22076
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "5:approve",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 44,
+          "item_bytes": [
+            22076,
+            22172
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "5:approve",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 26,
+          "item_bytes": [
+            12373,
+            12376
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "5:approved:state",
+      "rcu": 6,
+      "wcu": 22,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "5:approved:state",
+          "operation": "GetItem",
+          "rcu": 6,
+          "wcu": 0,
+          "item_bytes": [
+            22172
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "5:approved:state",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 22,
+          "item_bytes": [
+            22172,
+            22172
+          ],
+          "counter_or_lease": true
+        }
+      ]
+    },
+    {
+      "label": "5:approved:history",
+      "rcu": 22,
+      "wcu": 22,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "5:approved:history",
+          "operation": "GetItem",
+          "rcu": 6,
+          "wcu": 0,
+          "item_bytes": [
+            22172
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "5:approved:history",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 22,
+          "item_bytes": [
+            22172,
+            22172
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "5:approved:history",
+          "operation": "Query",
+          "rcu": 16,
+          "wcu": 0,
+          "item_bytes": [
+            12376,
+            12378,
+            12377,
+            12377,
+            12377
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "5:complete",
+      "rcu": 6,
+      "wcu": 92,
+      "split_counter_wcu": 71,
+      "operations": [
+        {
+          "request": "5:complete",
+          "operation": "GetItem",
+          "rcu": 6,
+          "wcu": 0,
+          "item_bytes": [
+            22172
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "5:complete",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 22,
+          "item_bytes": [
+            22172,
+            22172
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "5:complete",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 44,
+          "item_bytes": [
+            22172,
+            22472
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "5:complete",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 26,
+          "item_bytes": [
+            12376,
+            12376
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "5:completed:state",
+      "rcu": 6,
+      "wcu": 22,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "5:completed:state",
+          "operation": "GetItem",
+          "rcu": 6,
+          "wcu": 0,
+          "item_bytes": [
+            22472
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "5:completed:state",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 22,
+          "item_bytes": [
+            22472,
+            22472
+          ],
+          "counter_or_lease": true
+        }
+      ]
+    },
+    {
+      "label": "5:completed:history",
+      "rcu": 22,
+      "wcu": 22,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "5:completed:history",
+          "operation": "GetItem",
+          "rcu": 6,
+          "wcu": 0,
+          "item_bytes": [
+            22472
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "5:completed:history",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 22,
+          "item_bytes": [
+            22472,
+            22472
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "5:completed:history",
+          "operation": "Query",
+          "rcu": 16,
+          "wcu": 0,
+          "item_bytes": [
+            12376,
+            12378,
+            12377,
+            12377,
+            12377
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "5:disrupt",
+      "rcu": 6,
+      "wcu": 94,
+      "split_counter_wcu": 73,
+      "operations": [
+        {
+          "request": "5:disrupt",
+          "operation": "GetItem",
+          "rcu": 6,
+          "wcu": 0,
+          "item_bytes": [
+            22472
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "5:disrupt",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 22,
+          "item_bytes": [
+            22472,
+            22472
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "5:disrupt",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 46,
+          "item_bytes": [
+            22472,
+            22596
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "5:disrupt",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 26,
+          "item_bytes": [
+            12376,
+            12378
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "5:disrupted:state",
+      "rcu": 6,
+      "wcu": 23,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "5:disrupted:state",
+          "operation": "GetItem",
+          "rcu": 6,
+          "wcu": 0,
+          "item_bytes": [
+            22596
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "5:disrupted:state",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 23,
+          "item_bytes": [
+            22596,
+            22596
+          ],
+          "counter_or_lease": true
+        }
+      ]
+    },
+    {
+      "label": "5:disrupted:history",
+      "rcu": 22,
+      "wcu": 23,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "5:disrupted:history",
+          "operation": "GetItem",
+          "rcu": 6,
+          "wcu": 0,
+          "item_bytes": [
+            22596
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "5:disrupted:history",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 23,
+          "item_bytes": [
+            22596,
+            22596
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "5:disrupted:history",
+          "operation": "Query",
+          "rcu": 16,
+          "wcu": 0,
+          "item_bytes": [
+            12378,
+            12378,
+            12377,
+            12377,
+            12377
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "5:reset",
+      "rcu": 6,
+      "wcu": 95,
+      "split_counter_wcu": 73,
+      "operations": [
+        {
+          "request": "5:reset",
+          "operation": "GetItem",
+          "rcu": 6,
+          "wcu": 0,
+          "item_bytes": [
+            22596
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "5:reset",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 23,
+          "item_bytes": [
+            22596,
+            22596
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "5:reset",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 46,
+          "item_bytes": [
+            22596,
+            10280
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "5:reset",
+          "operation": "TransactWriteItems",
+          "rcu": 0,
+          "wcu": 26,
+          "item_bytes": [
+            12378,
+            12378
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    },
+    {
+      "label": "5:reset:state",
+      "rcu": 3,
+      "wcu": 11,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "5:reset:state",
+          "operation": "GetItem",
+          "rcu": 3,
+          "wcu": 0,
+          "item_bytes": [
+            10280
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "5:reset:state",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 11,
+          "item_bytes": [
+            10280,
+            10280
+          ],
+          "counter_or_lease": true
+        }
+      ]
+    },
+    {
+      "label": "5:reset:history",
+      "rcu": 19,
+      "wcu": 11,
+      "split_counter_wcu": 1,
+      "operations": [
+        {
+          "request": "5:reset:history",
+          "operation": "GetItem",
+          "rcu": 3,
+          "wcu": 0,
+          "item_bytes": [
+            10280
+          ],
+          "counter_or_lease": false
+        },
+        {
+          "request": "5:reset:history",
+          "operation": "UpdateItem",
+          "rcu": 0,
+          "wcu": 11,
+          "item_bytes": [
+            10280,
+            10280
+          ],
+          "counter_or_lease": true
+        },
+        {
+          "request": "5:reset:history",
+          "operation": "Query",
+          "rcu": 16,
+          "wcu": 0,
+          "item_bytes": [
+            12378,
+            12378,
+            12377,
+            12377,
+            12377
+          ],
+          "counter_or_lease": false
+        }
+      ]
+    }
+  ],
+  "replays": [
+    {
+      "rate_per_second": 5,
+      "field": "wcu",
+      "visitors": 3,
+      "aggregate_request_spacing_seconds": 2,
+      "duration_seconds": 468.0,
+      "offered_units": 9870,
+      "mean_units_per_second": 21.09,
+      "model_rejected_requests": 81,
+      "first_model_rejection": {
+        "at_seconds": 108.0,
+        "visitor": 1,
+        "request": "2:generate"
+      }
+    },
+    {
+      "rate_per_second": 5,
+      "field": "split_counter_wcu",
+      "visitors": 3,
+      "aggregate_request_spacing_seconds": 2,
+      "duration_seconds": 468.0,
+      "offered_units": 5427,
+      "mean_units_per_second": 11.6,
+      "model_rejected_requests": 25,
+      "first_model_rejection": {
+        "at_seconds": 220.0,
+        "visitor": 3,
+        "request": "3:approve"
+      }
+    },
+    {
+      "rate_per_second": 5,
+      "field": "rcu",
+      "visitors": 3,
+      "aggregate_request_spacing_seconds": 2,
+      "duration_seconds": 468.0,
+      "offered_units": 1914,
+      "mean_units_per_second": 4.09,
+      "model_rejected_requests": 0,
+      "first_model_rejection": null
+    },
+    {
+      "rate_per_second": 25,
+      "field": "wcu",
+      "visitors": 3,
+      "aggregate_request_spacing_seconds": 2,
+      "duration_seconds": 468.0,
+      "offered_units": 9870,
+      "mean_units_per_second": 21.09,
+      "model_rejected_requests": 0,
+      "first_model_rejection": null
+    },
+    {
+      "rate_per_second": 25,
+      "field": "split_counter_wcu",
+      "visitors": 3,
+      "aggregate_request_spacing_seconds": 2,
+      "duration_seconds": 468.0,
+      "offered_units": 5427,
+      "mean_units_per_second": 11.6,
+      "model_rejected_requests": 0,
+      "first_model_rejection": null
+    },
+    {
+      "rate_per_second": 25,
+      "field": "rcu",
+      "visitors": 3,
+      "aggregate_request_spacing_seconds": 2,
+      "duration_seconds": 468.0,
+      "offered_units": 1914,
+      "mean_units_per_second": 4.09,
+      "model_rejected_requests": 0,
+      "first_model_rejection": null
+    },
+    {
+      "rate_per_second": 50,
+      "field": "wcu",
+      "visitors": 3,
+      "aggregate_request_spacing_seconds": 2,
+      "duration_seconds": 468.0,
+      "offered_units": 9870,
+      "mean_units_per_second": 21.09,
+      "model_rejected_requests": 0,
+      "first_model_rejection": null
+    },
+    {
+      "rate_per_second": 50,
+      "field": "split_counter_wcu",
+      "visitors": 3,
+      "aggregate_request_spacing_seconds": 2,
+      "duration_seconds": 468.0,
+      "offered_units": 5427,
+      "mean_units_per_second": 11.6,
+      "model_rejected_requests": 0,
+      "first_model_rejection": null
+    },
+    {
+      "rate_per_second": 50,
+      "field": "rcu",
+      "visitors": 3,
+      "aggregate_request_spacing_seconds": 2,
+      "duration_seconds": 468.0,
+      "offered_units": 1914,
+      "mean_units_per_second": 4.09,
+      "model_rejected_requests": 0,
+      "first_model_rejection": null
+    },
+    {
+      "rate_per_second": 100,
+      "field": "wcu",
+      "visitors": 3,
+      "aggregate_request_spacing_seconds": 2,
+      "duration_seconds": 468.0,
+      "offered_units": 9870,
+      "mean_units_per_second": 21.09,
+      "model_rejected_requests": 0,
+      "first_model_rejection": null
+    },
+    {
+      "rate_per_second": 100,
+      "field": "split_counter_wcu",
+      "visitors": 3,
+      "aggregate_request_spacing_seconds": 2,
+      "duration_seconds": 468.0,
+      "offered_units": 5427,
+      "mean_units_per_second": 11.6,
+      "model_rejected_requests": 0,
+      "first_model_rejection": null
+    },
+    {
+      "rate_per_second": 100,
+      "field": "rcu",
+      "visitors": 3,
+      "aggregate_request_spacing_seconds": 2,
+      "duration_seconds": 468.0,
+      "offered_units": 1914,
+      "mean_units_per_second": 4.09,
+      "model_rejected_requests": 0,
+      "first_model_rejection": null
+    }
+  ],
+  "gateway_rate_stress": {
+    "assumptions": "Four successive cohorts of three visitors; each fresh visitor runs five cycles. Same successful source trace replayed, 2 aggregate requests/sec, full initial five-minute credit. Offered load only; not live responses.",
+    "replays": [
+      {
+        "rate_per_second": 5,
+        "field": "wcu",
+        "visitors": 3,
+        "aggregate_request_spacing_seconds": 0.5,
+        "duration_seconds": 468.0,
+        "offered_units": 39480,
+        "mean_units_per_second": 84.36,
+        "model_rejected_requests": 748,
+        "first_model_rejection": {
+          "at_seconds": 21.5,
+          "visitor": 2,
+          "request": "1:disrupted:history"
+        }
+      },
+      {
+        "rate_per_second": 5,
+        "field": "split_counter_wcu",
+        "visitors": 3,
+        "aggregate_request_spacing_seconds": 0.5,
+        "duration_seconds": 468.0,
+        "offered_units": 21708,
+        "mean_units_per_second": 46.38,
+        "model_rejected_requests": 256,
+        "first_model_rejection": {
+          "at_seconds": 37.0,
+          "visitor": 3,
+          "request": "2:complete"
+        }
+      },
+      {
+        "rate_per_second": 5,
+        "field": "rcu",
+        "visitors": 3,
+        "aggregate_request_spacing_seconds": 0.5,
+        "duration_seconds": 468.0,
+        "offered_units": 7656,
+        "mean_units_per_second": 16.36,
+        "model_rejected_requests": 315,
+        "first_model_rejection": {
+          "at_seconds": 147.5,
+          "visitor": 2,
+          "request": "2:generated:history"
+        }
+      },
+      {
+        "rate_per_second": 25,
+        "field": "wcu",
+        "visitors": 3,
+        "aggregate_request_spacing_seconds": 0.5,
+        "duration_seconds": 468.0,
+        "offered_units": 39480,
+        "mean_units_per_second": 84.36,
+        "model_rejected_requests": 255,
+        "first_model_rejection": {
+          "at_seconds": 127.5,
+          "visitor": 1,
+          "request": "1:approved:state"
+        }
+      },
+      {
+        "rate_per_second": 25,
+        "field": "split_counter_wcu",
+        "visitors": 3,
+        "aggregate_request_spacing_seconds": 0.5,
+        "duration_seconds": 468.0,
+        "offered_units": 21708,
+        "mean_units_per_second": 46.38,
+        "model_rejected_requests": 39,
+        "first_model_rejection": {
+          "at_seconds": 343.0,
+          "visitor": 3,
+          "request": "5:disrupt"
+        }
+      },
+      {
+        "rate_per_second": 25,
+        "field": "rcu",
+        "visitors": 3,
+        "aggregate_request_spacing_seconds": 0.5,
+        "duration_seconds": 468.0,
+        "offered_units": 7656,
+        "mean_units_per_second": 16.36,
+        "model_rejected_requests": 0,
+        "first_model_rejection": null
+      },
+      {
+        "rate_per_second": 50,
+        "field": "wcu",
+        "visitors": 3,
+        "aggregate_request_spacing_seconds": 0.5,
+        "duration_seconds": 468.0,
+        "offered_units": 39480,
+        "mean_units_per_second": 84.36,
+        "model_rejected_requests": 14,
+        "first_model_rejection": {
+          "at_seconds": 433.0,
+          "visitor": 3,
+          "request": "4:complete"
+        }
+      },
+      {
+        "rate_per_second": 50,
+        "field": "split_counter_wcu",
+        "visitors": 3,
+        "aggregate_request_spacing_seconds": 0.5,
+        "duration_seconds": 468.0,
+        "offered_units": 21708,
+        "mean_units_per_second": 46.38,
+        "model_rejected_requests": 0,
+        "first_model_rejection": null
+      },
+      {
+        "rate_per_second": 50,
+        "field": "rcu",
+        "visitors": 3,
+        "aggregate_request_spacing_seconds": 0.5,
+        "duration_seconds": 468.0,
+        "offered_units": 7656,
+        "mean_units_per_second": 16.36,
+        "model_rejected_requests": 0,
+        "first_model_rejection": null
+      },
+      {
+        "rate_per_second": 75,
+        "field": "wcu",
+        "visitors": 3,
+        "aggregate_request_spacing_seconds": 0.5,
+        "duration_seconds": 468.0,
+        "offered_units": 39480,
+        "mean_units_per_second": 84.36,
+        "model_rejected_requests": 0,
+        "first_model_rejection": null
+      },
+      {
+        "rate_per_second": 75,
+        "field": "split_counter_wcu",
+        "visitors": 3,
+        "aggregate_request_spacing_seconds": 0.5,
+        "duration_seconds": 468.0,
+        "offered_units": 21708,
+        "mean_units_per_second": 46.38,
+        "model_rejected_requests": 0,
+        "first_model_rejection": null
+      },
+      {
+        "rate_per_second": 75,
+        "field": "rcu",
+        "visitors": 3,
+        "aggregate_request_spacing_seconds": 0.5,
+        "duration_seconds": 468.0,
+        "offered_units": 7656,
+        "mean_units_per_second": 16.36,
+        "model_rejected_requests": 0,
+        "first_model_rejection": null
+      },
+      {
+        "rate_per_second": 100,
+        "field": "wcu",
+        "visitors": 3,
+        "aggregate_request_spacing_seconds": 0.5,
+        "duration_seconds": 468.0,
+        "offered_units": 39480,
+        "mean_units_per_second": 84.36,
+        "model_rejected_requests": 0,
+        "first_model_rejection": null
+      },
+      {
+        "rate_per_second": 100,
+        "field": "split_counter_wcu",
+        "visitors": 3,
+        "aggregate_request_spacing_seconds": 0.5,
+        "duration_seconds": 468.0,
+        "offered_units": 21708,
+        "mean_units_per_second": 46.38,
+        "model_rejected_requests": 0,
+        "first_model_rejection": null
+      },
+      {
+        "rate_per_second": 100,
+        "field": "rcu",
+        "visitors": 3,
+        "aggregate_request_spacing_seconds": 0.5,
+        "duration_seconds": 468.0,
+        "offered_units": 7656,
+        "mean_units_per_second": 16.36,
+        "model_rejected_requests": 0,
+        "first_model_rejection": null
+      },
+      {
+        "rate_per_second": 125,
+        "field": "wcu",
+        "visitors": 3,
+        "aggregate_request_spacing_seconds": 0.5,
+        "duration_seconds": 468.0,
+        "offered_units": 39480,
+        "mean_units_per_second": 84.36,
+        "model_rejected_requests": 0,
+        "first_model_rejection": null
+      },
+      {
+        "rate_per_second": 125,
+        "field": "split_counter_wcu",
+        "visitors": 3,
+        "aggregate_request_spacing_seconds": 0.5,
+        "duration_seconds": 468.0,
+        "offered_units": 21708,
+        "mean_units_per_second": 46.38,
+        "model_rejected_requests": 0,
+        "first_model_rejection": null
+      },
+      {
+        "rate_per_second": 125,
+        "field": "rcu",
+        "visitors": 3,
+        "aggregate_request_spacing_seconds": 0.5,
+        "duration_seconds": 468.0,
+        "offered_units": 7656,
+        "mean_units_per_second": 16.36,
+        "model_rejected_requests": 0,
+        "first_model_rejection": null
+      }
+    ]
+  }
+}

@@ -1,0 +1,237 @@
+{
+  "checked_at_utc": "2026-10-11T16:55:56.426358+00:00",
+  "profile": "drystock-deploy",
+  "scope": "read-only drystock-demo resources; no capacity, IAM, budget or deployment changes",
+  "stack": {
+    "exit_code": 0,
+    "result": {
+      "Status": "UPDATE_COMPLETE",
+      "Parameters": [
+        {
+          "ParameterKey": "OriginAccessControlId",
+          "ParameterValue": "E1CUHTT7X3PP4S"
+        },
+        {
+          "ParameterKey": "LambdaExecutionRoleArn",
+          "ParameterValue": "arn:aws:iam::071031980923:role/drystock-demo-runtime"
+        },
+        {
+          "ParameterKey": "BudgetEmail",
+          "ParameterValue": ""
+        }
+      ]
+    },
+    "error": null
+  },
+  "resources": {
+    "exit_code": 0,
+    "result": [
+      {
+        "Logical": "Api",
+        "Physical": "x59yh2i1yf",
+        "Type": "AWS::ApiGatewayV2::Api"
+      },
+      {
+        "Logical": "ApiApiGatewayDefaultStage",
+        "Physical": "$default",
+        "Type": "AWS::ApiGatewayV2::Stage"
+      },
+      {
+        "Logical": "CloudFunction",
+        "Physical": "drystock-demo-api",
+        "Type": "AWS::Lambda::Function"
+      },
+      {
+        "Logical": "CloudFunctionApiRoutePermission",
+        "Physical": "drystock-demo-CloudFunctionApiRoutePermission-9zNVtCVxpjd6",
+        "Type": "AWS::Lambda::Permission"
+      },
+      {
+        "Logical": "Distribution",
+        "Physical": "E1JXQZMU0LU0NS",
+        "Type": "AWS::CloudFront::Distribution"
+      },
+      {
+        "Logical": "FunctionLog",
+        "Physical": "/aws/lambda/drystock-demo-api",
+        "Type": "AWS::Logs::LogGroup"
+      },
+      {
+        "Logical": "Sessions",
+        "Physical": "drystock-demo-sessions",
+        "Type": "AWS::DynamoDB::Table"
+      },
+      {
+        "Logical": "SiteBucket",
+        "Physical": "drystock-demo-site-071031980923-ap-south-1",
+        "Type": "AWS::S3::Bucket"
+      },
+      {
+        "Logical": "SiteBucketPolicy",
+        "Physical": "drystock-demo-site-071031980923-ap-south-1",
+        "Type": "AWS::S3::BucketPolicy"
+      }
+    ],
+    "error": null
+  },
+  "template": {
+    "exit_code": 0,
+    "result": {
+      "table_properties": {
+        "TableName": "drystock-demo-sessions",
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "pk",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "sk",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "pk",
+            "KeyType": "HASH"
+          },
+          {
+            "AttributeName": "sk",
+            "KeyType": "RANGE"
+          }
+        ],
+        "BillingMode": "PROVISIONED",
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 5,
+          "WriteCapacityUnits": 5
+        },
+        "TimeToLiveSpecification": {
+          "AttributeName": "expiresAt",
+          "Enabled": true
+        },
+        "SSESpecification": {
+          "SSEEnabled": false
+        },
+        "Tags": [
+          {
+            "Key": "Project",
+            "Value": "DryStock"
+          },
+          {
+            "Key": "Environment",
+            "Value": "demo"
+          }
+        ]
+      },
+      "budget_condition": {
+        "Fn::Not": [
+          {
+            "Fn::Equals": [
+              {
+                "Ref": "BudgetEmail"
+              },
+              ""
+            ]
+          }
+        ]
+      },
+      "budget_definition": {
+        "Type": "AWS::Budgets::Budget",
+        "Condition": "HasBudgetEmail",
+        "Properties": {
+          "Budget": {
+            "BudgetName": "drystock-demo",
+            "BudgetType": "COST",
+            "TimeUnit": "MONTHLY",
+            "BudgetLimit": {
+              "Amount": 5,
+              "Unit": "USD"
+            }
+          },
+          "NotificationsWithSubscribers": [
+            {
+              "Notification": {
+                "NotificationType": "ACTUAL",
+                "ComparisonOperator": "GREATER_THAN",
+                "Threshold": 80,
+                "ThresholdType": "PERCENTAGE"
+              },
+              "Subscribers": [
+                {
+                  "SubscriptionType": "EMAIL",
+                  "Address": {
+                    "Ref": "BudgetEmail"
+                  }
+                }
+              ]
+            },
+            {
+              "Notification": {
+                "NotificationType": "FORECASTED",
+                "ComparisonOperator": "GREATER_THAN",
+                "Threshold": 100,
+                "ThresholdType": "PERCENTAGE"
+              },
+              "Subscribers": [
+                {
+                  "SubscriptionType": "EMAIL",
+                  "Address": {
+                    "Ref": "BudgetEmail"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "Metadata": {
+          "SamResourceId": "DemoBudget"
+        }
+      }
+    }
+  },
+  "lambda": {
+    "exit_code": 0,
+    "result": {
+      "Version": "$LATEST",
+      "LastModified": "2026-10-11T16:02:55.000+0000",
+      "CodeSha256": "90df6d2f32a6c8c90d7ebc7315fba1dd81991b39f0a05940fb99b7ba2afee41d",
+      "State": "Active",
+      "LastUpdateStatus": "Successful"
+    },
+    "error": null
+  },
+  "budget": {
+    "exit_code": 254,
+    "result": null,
+    "error": "aws: [ERROR]: An error occurred (AccessDeniedException) when calling the DescribeBudget operation: User: arn:aws:sts::071031980923:assumed-role/drystock-deploy/botocore-session-1791737126 is not authorized to perform: budgets:ViewBudget on resource: arn:aws:budgets::071031980923:budget/drystock-demo because no identity-based policy allows the budgets:ViewBudget action"
+  },
+  "write_metrics": {
+    "exit_code": 254,
+    "result": null,
+    "error": "aws: [ERROR]: An error occurred (AccessDenied) when calling the GetMetricStatistics operation: User: arn:aws:sts::071031980923:assumed-role/drystock-deploy/botocore-session-1791737126 is not authorized to perform: cloudwatch:GetMetricStatistics because no identity-based policy allows the cloudwatch:GetMetricStatistics action"
+  },
+  "storage_logs": {
+    "exit_code": 0,
+    "result": [
+      {
+        "at": 1791734855885,
+        "message": "{\"event\": \"aws_operation_failed\", \"operation\": \"UpdateItem\", \"code\": \"ProvisionedThroughputExceededException\"}\n"
+      },
+      {
+        "at": 1791734856316,
+        "message": "{\"event\": \"aws_operation_failed\", \"operation\": \"TransactWriteItems\", \"code\": \"ProvisionedThroughputExceededException\"}\n"
+      }
+    ],
+    "error": null
+  },
+  "public_health": {
+    "status": 200,
+    "body": {
+      "status": "ok",
+      "mode": "simulated",
+      "compute_backend": "aws",
+      "persistence": "dynamodb"
+    }
+  },
+  "stack_has_budget_resource": false,
+  "physical_resources_match_previous_deployment": true
+}

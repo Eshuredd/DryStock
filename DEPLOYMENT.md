@@ -1,5 +1,7 @@
 # DryStock deployment
 
+**11 October throttling review:** [Detailed findings and proposed fix](artifacts/cloud-update/THROTTLING.md). Full-item request/lease counters amplify writes; optimisation alone does not make 5 WCU reliable. On-demand on the existing table is proposed for approval, with measured workload costs and provisioned alternatives documented. No infrastructure or application release was made. The stack's optional $5 budget alert is inactive because its email parameter is empty; separately configured account budgets cannot be verified with the authorised profile. Current local checks are 118 backend tests, 50 frontend tests, lint, TypeScript, 18 offline deployment guard cases and a successful static production build. The latest public serial workflow passes; concurrent success after a fix is still pending approval and live verification.
+
 Updated the **existing `drystock-demo` stack in ap-south-1 on 11 October 2026**, from clean local commit `1d5e337`. Both the Lambda backend and Next.js frontend were deployed using only the authorised `drystock-deploy` profile in account `071031980923`. No second application, IAM grants, commit or push was created. RideWatch was not targeted.
 
 - Public website: https://d38gzj2yabm82w.cloudfront.net

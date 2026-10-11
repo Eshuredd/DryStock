@@ -1,5 +1,7 @@
 # Existing DryStock application update — 11 October 2026
 
+**Follow-up throttling review (no new deployment):** see [THROTTLING.md](THROTTLING.md) for measured full-item counter costs, five new local capacity tests, on-demand/provisioned options and verified Mumbai prices. Current checks pass **118 backend / 50 frontend tests**, lint, TypeScript, 18 offline deployment guard cases and a production static export. A fresh public serial generate/approve/complete/disrupt/reload/reset workflow passed. Concurrent AWS reliability remains unverified pending approval of a fix. The stack's optional $5 alert is **not configured** (`BudgetEmail` empty; no budget resource); a separate account alert could not be read because `budgets:ViewBudget` is denied. No capacity, IAM, billing resource or deployment change was made in this review. The original deployment evidence below is preserved.
+
 Deployed clean application source at **`1d5e337`** to the existing `drystock-demo` stack in **ap-south-1**, using only **`drystock-deploy`** in account `071031980923`. Both the backend container and production frontend were updated. No commit, push, new application, IAM expansion or unrelated infrastructure change occurred.
 
 Website: **https://d38gzj2yabm82w.cloudfront.net**. API: **https://x59yh2i1yf.execute-api.ap-south-1.amazonaws.com**.

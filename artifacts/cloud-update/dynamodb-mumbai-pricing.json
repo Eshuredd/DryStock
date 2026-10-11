@@ -1,0 +1,141 @@
+{
+  "source": "https://pricing.us-east-1.amazonaws.com/offers/v1.0/aws/AmazonDynamoDB/current/ap-south-1/index.json",
+  "publicationDate": "2026-09-11T12:44:22Z",
+  "version": "20260911124422",
+  "products": [
+    {
+      "sku": "A5DP2X4YSZ84WEJA",
+      "family": "Amazon DynamoDB PayPerRequest Throughput",
+      "attributes": {
+        "servicecode": "AmazonDynamoDB",
+        "location": "Asia Pacific (Mumbai)",
+        "locationType": "AWS Region",
+        "group": "DDB-WriteUnits",
+        "groupDescription": "DynamoDB PayPerRequest Write Request Units",
+        "usagetype": "APS3-WriteRequestUnits",
+        "operation": "PayPerRequestThroughput",
+        "regionCode": "ap-south-1",
+        "servicename": "Amazon DynamoDB"
+      },
+      "dimensions": [
+        {
+          "rateCode": "A5DP2X4YSZ84WEJA.JRTCKXETXF.6YS6EN2CT7",
+          "description": "$0.71 per million write request units (Asia Pacific (India))",
+          "beginRange": "0",
+          "endRange": "Inf",
+          "unit": "WriteRequestUnits",
+          "pricePerUnit": {
+            "USD": "0.0000007100"
+          },
+          "appliesTo": []
+        }
+      ]
+    },
+    {
+      "sku": "9CAND3JT2R9NWRZ5",
+      "family": "Provisioned IOPS",
+      "attributes": {
+        "servicecode": "AmazonDynamoDB",
+        "location": "Asia Pacific (Mumbai)",
+        "locationType": "AWS Region",
+        "group": "DDB-WriteUnits",
+        "groupDescription": "DynamoDB Provisioned Write Units",
+        "usagetype": "APS3-WriteCapacityUnit-Hrs",
+        "operation": "CommittedThroughput",
+        "regionCode": "ap-south-1",
+        "servicename": "Amazon DynamoDB"
+      },
+      "dimensions": [
+        {
+          "rateCode": "9CAND3JT2R9NWRZ5.JRTCKXETXF.HBHVWY47CM",
+          "description": "$0.00 per hour for 25 units of write capacity for a month (free tier)",
+          "beginRange": "0",
+          "endRange": "18600",
+          "unit": "WriteCapacityUnit-Hrs",
+          "pricePerUnit": {
+            "USD": "0.0000000000"
+          },
+          "appliesTo": []
+        },
+        {
+          "rateCode": "9CAND3JT2R9NWRZ5.JRTCKXETXF.E63J5HTPNN",
+          "description": "$0.00074 per hour for units of write capacity beyond the free tier",
+          "beginRange": "18600",
+          "endRange": "Inf",
+          "unit": "WriteCapacityUnit-Hrs",
+          "pricePerUnit": {
+            "USD": "0.0007400000"
+          },
+          "appliesTo": []
+        }
+      ]
+    },
+    {
+      "sku": "AWKFFAT3BA3CZFU3",
+      "family": "Provisioned IOPS",
+      "attributes": {
+        "servicecode": "AmazonDynamoDB",
+        "location": "Asia Pacific (Mumbai)",
+        "locationType": "AWS Region",
+        "group": "DDB-ReadUnits",
+        "groupDescription": "DynamoDB Provisioned Read Units",
+        "usagetype": "APS3-ReadCapacityUnit-Hrs",
+        "operation": "CommittedThroughput",
+        "regionCode": "ap-south-1",
+        "servicename": "Amazon DynamoDB"
+      },
+      "dimensions": [
+        {
+          "rateCode": "AWKFFAT3BA3CZFU3.JRTCKXETXF.HBHVWY47CM",
+          "description": "$0.00 per hour for 25 units of read capacity for a month (free tier)",
+          "beginRange": "0",
+          "endRange": "18600",
+          "unit": "ReadCapacityUnit-Hrs",
+          "pricePerUnit": {
+            "USD": "0.0000000000"
+          },
+          "appliesTo": []
+        },
+        {
+          "rateCode": "AWKFFAT3BA3CZFU3.JRTCKXETXF.E63J5HTPNN",
+          "description": "$0.000148 per hour for units of read capacity beyond the free tier",
+          "beginRange": "18600",
+          "endRange": "Inf",
+          "unit": "ReadCapacityUnit-Hrs",
+          "pricePerUnit": {
+            "USD": "0.0001480000"
+          },
+          "appliesTo": []
+        }
+      ]
+    },
+    {
+      "sku": "HQZY4ZFUTRDPV7ZE",
+      "family": "Amazon DynamoDB PayPerRequest Throughput",
+      "attributes": {
+        "servicecode": "AmazonDynamoDB",
+        "location": "Asia Pacific (Mumbai)",
+        "locationType": "AWS Region",
+        "group": "DDB-ReadUnits",
+        "groupDescription": "DynamoDB PayPerRequest Read Request Units",
+        "usagetype": "APS3-ReadRequestUnits",
+        "operation": "PayPerRequestThroughput",
+        "regionCode": "ap-south-1",
+        "servicename": "Amazon DynamoDB"
+      },
+      "dimensions": [
+        {
+          "rateCode": "HQZY4ZFUTRDPV7ZE.JRTCKXETXF.6YS6EN2CT7",
+          "description": "$0.1425 per million read request units (Asia Pacific (India))",
+          "beginRange": "0",
+          "endRange": "Inf",
+          "unit": "ReadRequestUnits",
+          "pricePerUnit": {
+            "USD": "0.0000001425"
+          },
+          "appliesTo": []
+        }
+      ]
+    }
+  ]
+}

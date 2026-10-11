@@ -1,6 +1,8 @@
-# DryStock deployment access — owner review, not applied
+# DryStock deployment access
 
-Cloud provisioning is paused at the user's request. The existing `ridewatch` profile authenticated, but AWS denied `cloudformation:DescribeStacks` on the named DryStock stack, `lambda:GetAccountSettings`, and `iam:SimulatePrincipalPolicy`. It has not been modified. No alternate/root credentials, IAM grants, ECR uploads or cloud resource creation were attempted. Account: **071031980923**; deployment Region: **ap-south-1**.
+**Verified 11 October 2026:** `drystock-deploy` authenticates as the approved assumed role in account **071031980923**, region **ap-south-1**. It successfully updated the existing `drystock-demo` backend, uploaded the frontend and invalidated its CloudFront distribution. No IAM policy, trust, role or unrelated application was modified. Use the [deployment guide](../DEPLOYMENT.md) for current update commands and evidence.
+
+Direct DynamoDB DescribeTable, CloudFront GetDistributionConfig, Lambda GetPolicy and API Gateway GetStage calls were denied to the deployment identity. These are recorded verification limits, not instructions to expand access. Live runtime sessions and persistence were tested through the authorised application API. The rendered policy package below remains an owner review reference; it is not evidence that every proposed action is granted in live IAM.
 
 ## Review package
 
@@ -44,11 +46,13 @@ The CloudFormation role has **no IAM policy/role creation or editing**, no user/
 | CloudWatch Logs | Named log group lifecycle/retention and stream read/write; DescribeLogGroups requires `*` |
 | Budgets | View/modify only named budget `drystock-demo`; optional email parameter, US$5 account-wide alert |
 
-The exact action arrays are in the JSON files, including update/rollback/delete operations. Tags are an initial-creation scope, not the same as an exact generated resource ID. After first deployment, the owner should replace distribution/API wildcards with the stack's concrete IDs. Untagged-distribution tagging is needed for creation and is a residual capability the owner should review. API creation/tag propagation and service-dependent actions may require adjustment if AWS returns a provider-specific denial; these policies are linted **but not yet live IAM-tested**. Do not broaden them automatically. [API Gateway IAM reference](https://docs.aws.amazon.com/service-authorization/latest/reference/list_apigatewayv2.html), [CloudFront IAM reference](https://docs.aws.amazon.com/service-authorization/latest/reference/list_cloudfront.html).
+The exact review action arrays are in the JSON files, including update/rollback/delete operations. They are not a complete audit of live policies. The 11 October update verified its required operations using existing permissions; direct administrative inspection restrictions remain. Tags are an initial-creation scope, not the same as an exact generated resource ID. The owner can review residual creation capabilities separately. Do not broaden policies automatically. [API Gateway IAM reference](https://docs.aws.amazon.com/service-authorization/latest/reference/list_apigatewayv2.html), [CloudFront IAM reference](https://docs.aws.amazon.com/service-authorization/latest/reference/list_cloudfront.html).
 
 CloudFormation service-role access can outlive the caller's `PassRole` access for a stack. Limit who can operate this stack and protect the execution role accordingly. [AWS service-role guidance](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-iam-servicerole.html).
 
-## Owner configuration steps
+## Original owner bootstrap reference
+
+The current application's bootstrap and roles already exist. These original setup steps are retained for reference; do not rerun them to update this application.
 
 1. Use the account owner's existing authorised administrative **role**, not root and not RideWatch. Review both `sam/bootstrap-template.yaml` and `sam/cloud-template.yaml`, names, cost controls and trust principal.
 2. The owner creates the bootstrap named `drystock-demo-bootstrap` with that principal and `CAPABILITY_NAMED_IAM`, or creates the same resources/roles manually. This is a proposed owner action; it has not been run. Record the runtime role ARN, CloudFormation role ARN and OAC ID outputs.
@@ -75,4 +79,4 @@ The wizard/login happen locally in your terminal/browser. These commands do not 
 
 An account-approved federation/credential-process tool can supply short-lived credentials to `drystock-deploy`; or configure a separate temporary source profile locally and the same `role_arn`/`source_profile` chain. Use the owner's tool/portal, keep values out of shell command history and chat, and include the temporary session token when the tool requires it. Never create a permanent administrator access key. Credential-provider commands are not invented here because the account's provider has not been supplied.
 
-Once configured, tell Codex that `drystock-deploy` is ready and provide the non-secret OAC output. Codex will run **`aws sts get-caller-identity --profile drystock-deploy`** first, check the named stack and function limits, then resume only the bounded `drystock-demo` deployment. Cloud deployment remains paused until that access is available.
+Access is now configured and STS-verified. Current updates use only `drystock-deploy`, inspect the existing `drystock-demo` stack, and preserve its OAC/runtime role/budget parameters through `UsePreviousValue`. No bootstrap or access expansion is part of the code update.

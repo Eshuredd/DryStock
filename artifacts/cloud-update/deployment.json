@@ -1,0 +1,8 @@
+{
+    "ApiUrl":  "https://x59yh2i1yf.execute-api.ap-south-1.amazonaws.com",
+    "SiteBucketName":  "drystock-demo-site-071031980923-ap-south-1",
+    "FunctionName":  "drystock-demo-api",
+    "WebsiteUrl":  "https://d38gzj2yabm82w.cloudfront.net",
+    "TableName":  "drystock-demo-sessions",
+    "DistributionId":  "E1JXQZMU0LU0NS"
+}

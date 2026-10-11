@@ -1,0 +1,106 @@
+{
+    "Changes":  [
+                    {
+                        "Type":  "Resource",
+                        "ResourceChange":  {
+                                               "Action":  "Modify",
+                                               "LogicalResourceId":  "Api",
+                                               "PhysicalResourceId":  "x59yh2i1yf",
+                                               "ResourceType":  "AWS::ApiGatewayV2::Api",
+                                               "Replacement":  "False",
+                                               "Scope":  [
+                                                             "Properties"
+                                                         ],
+                                               "Details":  [
+                                                               {
+                                                                   "Target":  {
+                                                                                  "Attribute":  "Properties",
+                                                                                  "Name":  "Body",
+                                                                                  "RequiresRecreation":  "Never"
+                                                                              },
+                                                                   "Evaluation":  "Dynamic",
+                                                                   "ChangeSource":  "ResourceAttribute",
+                                                                   "CausingEntity":  "CloudFunction.Arn"
+                                                               }
+                                                           ]
+                                           }
+                    },
+                    {
+                        "Type":  "Resource",
+                        "ResourceChange":  {
+                                               "Action":  "Modify",
+                                               "LogicalResourceId":  "CloudFunction",
+                                               "PhysicalResourceId":  "drystock-demo-api",
+                                               "ResourceType":  "AWS::Lambda::Function",
+                                               "Replacement":  "False",
+                                               "Scope":  [
+                                                             "Properties"
+                                                         ],
+                                               "Details":  [
+                                                               {
+                                                                   "Target":  {
+                                                                                  "Attribute":  "Properties",
+                                                                                  "Name":  "Code",
+                                                                                  "RequiresRecreation":  "Never"
+                                                                              },
+                                                                   "Evaluation":  "Static",
+                                                                   "ChangeSource":  "DirectModification"
+                                                               }
+                                                           ]
+                                           }
+                    }
+                ],
+    "ChangeSetName":  "drystock-1791734464",
+    "ChangeSetId":  "arn:aws:cloudformation:ap-south-1:071031980923:changeSet/drystock-1791734464/360b1d95-b5dd-463a-a204-b4a796ad18bf",
+    "StackId":  "arn:aws:cloudformation:ap-south-1:071031980923:stack/drystock-demo/c87e7b50-c4d0-11f1-b395-02ffc10530e3",
+    "StackName":  "drystock-demo",
+    "Description":  null,
+    "Parameters":  [
+                       {
+                           "ParameterKey":  "OriginAccessControlId",
+                           "ParameterValue":  "E1CUHTT7X3PP4S"
+                       },
+                       {
+                           "ParameterKey":  "LambdaExecutionRoleArn",
+                           "ParameterValue":  "arn:aws:iam::071031980923:role/drystock-demo-runtime"
+                       },
+                       {
+                           "ParameterKey":  "BudgetEmail",
+                           "ParameterValue":  ""
+                       }
+                   ],
+    "CreationTime":  "2026-10-11T16:01:06.657000+00:00",
+    "ExecutionStatus":  "AVAILABLE",
+    "Status":  "CREATE_COMPLETE",
+    "StatusReason":  null,
+    "NotificationARNs":  [
+
+                         ],
+    "RollbackConfiguration":  {
+
+                              },
+    "Capabilities":  [
+                         "CAPABILITY_AUTO_EXPAND"
+                     ],
+    "Tags":  [
+                 {
+                     "Key":  "Project",
+                     "Value":  "DryStock"
+                 },
+                 {
+                     "Key":  "Environment",
+                     "Value":  "demo"
+                 }
+             ],
+    "ParentChangeSetId":  null,
+    "IncludeNestedStacks":  false,
+    "RootChangeSetId":  null,
+    "OnStackFailure":  null,
+    "ImportExistingResources":  null,
+    "StackDriftStatus":  null,
+    "DeploymentMode":  null,
+    "DeploymentConfig":  {
+                             "Mode":  "STANDARD",
+                             "DisableRollback":  false
+                         }
+}

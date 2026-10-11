@@ -1,0 +1,18 @@
+{
+  "website_url": "https://d38gzj2yabm82w.cloudfront.net",
+  "browser": "Codex in-app Chromium browser",
+  "scope": "Actual public website; desktop and 390 x 844 mobile viewport. No physical mobile device or Safari test.",
+  "desktop_viewport_after_restoring_override": {"width": 1280, "document_width": 1265},
+  "mobile_viewport": {"width": 390, "height": 844, "document_width": 375},
+  "horizontal_document_overflow": false,
+  "sample_workflow": ["generate", "approve", "complete L02", "disrupt rain and forklift", "reset", "inspect superseded historical plan"],
+  "desktop_custom_workflow": ["inline blank-field validation", "enter lot, value, loss, skill, worker and tarp capacity", "save", "generate", "approve", "complete browser-paper", "reload", "verify completion persists", "Use sample yard"],
+  "mobile_custom_workflow": ["enter mobile-paper, monetary assumptions, rain at 50 and cutoff at 40, worker and tarp", "save", "generate", "approve", "complete", "reload", "verify completion persists", "Use sample yard", "verify no active plan and default conditions"],
+  "isolation": "A separate new visitor tab retained sample inputs, no active plan, no activity and no saved history while the first tab held a completed custom scenario.",
+  "reset_feedback": "Top-of-workspace progress and success messages visible; no active plan after authoritative refresh.",
+  "console_error_and_warning_logs_captured": [],
+  "observed_service_failure": "Initial sample generation was acknowledged but authoritative refresh encountered the DynamoDB capacity failure. UI disabled stale approval/completion and recovered through explicit Refresh state; mutation was not replayed.",
+  "minor_existing_copy_issue": "The plan summary still says 'sample rain' for custom rain assumptions; the scenario-source badge correctly identifies operator-entered assumptions.",
+  "viewport_override_restored": true,
+  "temporary_isolation_tab_closed": true
+}

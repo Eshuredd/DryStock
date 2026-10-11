@@ -1,0 +1,110 @@
+{
+  "started_at": "2026-10-11T16:09:07.773475+00:00",
+  "api_url": "https://x59yh2i1yf.execute-api.ap-south-1.amazonaws.com",
+  "website_url": "https://d38gzj2yabm82w.cloudfront.net",
+  "checks": [
+    "AWS health, bearer authentication, wrong-origin rejection and scenario CORS preflight",
+    "reset after disrupted: exact sample restored, latest null, GET matches, history superseded and prior epoch",
+    "reset and generation do not affect another session",
+    "server rejects injected completions, loss over value, invalid availability/materials/IDs, excessive lots, unknown fields and bodies over 32 KiB without state mutation",
+    "custom inputs persist; independent validation, approval gate, cross-session and stale-revision checks remain active",
+    "custom arbitrary lot IDs: optimise, approve, complete and reload persist through DynamoDB API",
+    "Use sample yard after custom completion restores exact fixture and separates historical custom results",
+    "20-compute session limit enforced in AWS; reset does not replenish compute quota",
+    "300-request session limit enforced in AWS"
+  ],
+  "invocations": [
+    {
+      "id": "4e788d42-817e-4f7f-8adb-7ffab2f8046f",
+      "scenario_sha256": "41ffb9f5864da6d8fbc659fae145508447c7e1ad9f76acb7b0d21637deb40ed7"
+    },
+    {
+      "id": "f28eb48b-3e75-45b1-ae5b-19b647f21969",
+      "scenario_sha256": "7422210ed2128dfb24a48d6428e0ccec7e31210ae175bea8356a00a90d792cae"
+    },
+    {
+      "id": "bc82603d-62f7-4522-b372-291463c04e21",
+      "scenario_sha256": "663fb50a0bd3c7072eee82b6f4331011d5a9c0cb27859d4547586b0a8d9fac84"
+    },
+    {
+      "id": "4a031995-8e06-4e71-aaf3-9d3484ed4572",
+      "scenario_sha256": "663fb50a0bd3c7072eee82b6f4331011d5a9c0cb27859d4547586b0a8d9fac84"
+    },
+    {
+      "id": "a99ca72d-cd2a-4b0d-9b8c-4f6c6d7df729",
+      "scenario_sha256": "663fb50a0bd3c7072eee82b6f4331011d5a9c0cb27859d4547586b0a8d9fac84"
+    },
+    {
+      "id": "f46370de-4bdb-44a5-826b-5bb60ad2139f",
+      "scenario_sha256": "663fb50a0bd3c7072eee82b6f4331011d5a9c0cb27859d4547586b0a8d9fac84"
+    },
+    {
+      "id": "e9ae42ac-2bb2-46af-ba5c-d2e0ed5ee945",
+      "scenario_sha256": "663fb50a0bd3c7072eee82b6f4331011d5a9c0cb27859d4547586b0a8d9fac84"
+    },
+    {
+      "id": "08c2ce67-ff36-44ef-8be6-ddd15d9946ed",
+      "scenario_sha256": "663fb50a0bd3c7072eee82b6f4331011d5a9c0cb27859d4547586b0a8d9fac84"
+    },
+    {
+      "id": "6fc34f19-8fcd-451a-982e-14b91be186dd",
+      "scenario_sha256": "663fb50a0bd3c7072eee82b6f4331011d5a9c0cb27859d4547586b0a8d9fac84"
+    },
+    {
+      "id": "aa7ffdff-3f2e-42fa-9838-adf726772b4e",
+      "scenario_sha256": "663fb50a0bd3c7072eee82b6f4331011d5a9c0cb27859d4547586b0a8d9fac84"
+    },
+    {
+      "id": "da2ef539-6443-44fb-bfe8-1fb7777181ec",
+      "scenario_sha256": "663fb50a0bd3c7072eee82b6f4331011d5a9c0cb27859d4547586b0a8d9fac84"
+    },
+    {
+      "id": "7377b8f0-8ea6-4aa0-b315-3d60dce70d38",
+      "scenario_sha256": "663fb50a0bd3c7072eee82b6f4331011d5a9c0cb27859d4547586b0a8d9fac84"
+    },
+    {
+      "id": "57652c9e-57c7-46e1-bcb0-9185504d65f2",
+      "scenario_sha256": "663fb50a0bd3c7072eee82b6f4331011d5a9c0cb27859d4547586b0a8d9fac84"
+    },
+    {
+      "id": "9abe7122-4dea-4f21-a947-c674fa447d3c",
+      "scenario_sha256": "663fb50a0bd3c7072eee82b6f4331011d5a9c0cb27859d4547586b0a8d9fac84"
+    },
+    {
+      "id": "3b45679f-6d01-4f4b-82ee-64a4d473de12",
+      "scenario_sha256": "663fb50a0bd3c7072eee82b6f4331011d5a9c0cb27859d4547586b0a8d9fac84"
+    },
+    {
+      "id": "deefee74-92c8-4123-9ffa-f2ab1a2e368a",
+      "scenario_sha256": "663fb50a0bd3c7072eee82b6f4331011d5a9c0cb27859d4547586b0a8d9fac84"
+    },
+    {
+      "id": "171156b7-bd78-4f6a-9d04-efb60b5b453b",
+      "scenario_sha256": "663fb50a0bd3c7072eee82b6f4331011d5a9c0cb27859d4547586b0a8d9fac84"
+    },
+    {
+      "id": "7a47451d-5ce1-40fa-bdb2-9b48491b99f8",
+      "scenario_sha256": "663fb50a0bd3c7072eee82b6f4331011d5a9c0cb27859d4547586b0a8d9fac84"
+    },
+    {
+      "id": "989b395d-21e0-46ff-9acc-c0baabb33d8e",
+      "scenario_sha256": "663fb50a0bd3c7072eee82b6f4331011d5a9c0cb27859d4547586b0a8d9fac84"
+    },
+    {
+      "id": "2b0c2c16-d595-4e36-b956-48aa81e433b5",
+      "scenario_sha256": "663fb50a0bd3c7072eee82b6f4331011d5a9c0cb27859d4547586b0a8d9fac84"
+    },
+    {
+      "id": "b7a8556e-2922-40e5-92eb-7d6e0ecfcd38",
+      "scenario_sha256": "663fb50a0bd3c7072eee82b6f4331011d5a9c0cb27859d4547586b0a8d9fac84"
+    },
+    {
+      "id": "b94c942f-7af5-48e0-878e-f8cd731707d0",
+      "scenario_sha256": "663fb50a0bd3c7072eee82b6f4331011d5a9c0cb27859d4547586b0a8d9fac84"
+    }
+  ],
+  "passed": true,
+  "direct_dynamodb_inspection": "Unavailable: deployment profile denies DescribeTable. Persistence verified through AWS API.",
+  "quota_scope": "Fresh sessions only; shared 100/hour and 200/day limits are not deliberately exhausted.",
+  "finished_at": "2026-10-11T16:21:29.139566+00:00"
+}

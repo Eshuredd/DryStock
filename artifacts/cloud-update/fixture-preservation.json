@@ -1,0 +1,26 @@
+[
+  {
+    "path": "sample-data/surat-yard.json",
+    "unchanged": true
+  },
+  {
+    "path": "artifacts/benchmark.json",
+    "unchanged": true
+  },
+  {
+    "path": "artifacts/phase2/benchmarks.json",
+    "unchanged": true
+  },
+  {
+    "path": "artifacts/phase3/benchmarks.json",
+    "unchanged": true
+  },
+  {
+    "path": "artifacts/phase2/BENCHMARKS.md",
+    "unchanged": true
+  },
+  {
+    "path": "artifacts/phase3/BENCHMARKS.md",
+    "unchanged": true
+  }
+]

@@ -1,0 +1,2 @@
+﻿2026-10-11T16:07:35.885000+00:00 2026/10/11/[$LATEST]6f9a956f64a04832978cb3cd5614c2dd {"event": "aws_operation_failed", "operation": "UpdateItem", "code": "ProvisionedThroughputExceededException"}
+2026-10-11T16:07:36.316000+00:00 2026/10/11/[$LATEST]9c87d6b83ea7487eacc2b79068b8a693 {"event": "aws_operation_failed", "operation": "TransactWriteItems", "code": "ProvisionedThroughputExceededException"}

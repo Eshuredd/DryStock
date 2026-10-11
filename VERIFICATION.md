@@ -1,5 +1,11 @@
 # Verification record
 
+## Existing cloud application update, 11 October 2026
+
+The existing [public DryStock demo](https://d38gzj2yabm82w.cloudfront.net) now includes commit `1d5e337` in both its Lambda backend and Next.js frontend. The code-only processed-template change preserved all nine resource IDs and existing roles, capacities and parameters. Current results: 113 backend tests, 50 frontend tests, 18 deployment-script cases, lint, TypeScript, SAM lint and production static export passed. Live sample/custom API workflows and reset stages passed; overlapping checks exposed real DynamoDB capacity failures, retained in the evidence. See [deployment details](DEPLOYMENT.md) and [the current release report](artifacts/cloud-update/REPORT.md) for final quota/browser results and inspection limitations.
+
+The earlier dated records below are historical verification, including the original access pause; their benchmark results have not been rewritten.
+
 ## Phase 3 — preparation and access pause, 10 October 2026
 
 **Deployment: not performed. Website/API URLs: unavailable. Real cloud smoke tests and public browser/isolation checks: not run.** The user explicitly paused cloud deployment pending a new least-privilege `drystock-deploy` identity. No IAM changes, credentials, root use, policy escalation, ECR upload, cloud stack or budget creation occurred. No commit/push occurred.

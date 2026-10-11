@@ -1,0 +1,92 @@
+[
+    {
+        "LogicalResourceId":  "Api",
+        "PhysicalResourceId":  "x59yh2i1yf",
+        "ResourceType":  "AWS::ApiGatewayV2::Api",
+        "LastUpdatedTimestamp":  "2026-10-10T17:43:20.558000+00:00",
+        "ResourceStatus":  "CREATE_COMPLETE",
+        "DriftInformation":  {
+                                 "StackResourceDriftStatus":  "NOT_CHECKED"
+                             }
+    },
+    {
+        "LogicalResourceId":  "ApiApiGatewayDefaultStage",
+        "PhysicalResourceId":  "$default",
+        "ResourceType":  "AWS::ApiGatewayV2::Stage",
+        "LastUpdatedTimestamp":  "2026-10-10T17:43:22.361000+00:00",
+        "ResourceStatus":  "CREATE_COMPLETE",
+        "DriftInformation":  {
+                                 "StackResourceDriftStatus":  "NOT_CHECKED"
+                             }
+    },
+    {
+        "LogicalResourceId":  "CloudFunction",
+        "PhysicalResourceId":  "drystock-demo-api",
+        "ResourceType":  "AWS::Lambda::Function",
+        "LastUpdatedTimestamp":  "2026-10-11T16:03:10.252000+00:00",
+        "ResourceStatus":  "UPDATE_COMPLETE",
+        "DriftInformation":  {
+                                 "StackResourceDriftStatus":  "NOT_CHECKED"
+                             }
+    },
+    {
+        "LogicalResourceId":  "CloudFunctionApiRoutePermission",
+        "PhysicalResourceId":  "drystock-demo-CloudFunctionApiRoutePermission-9zNVtCVxpjd6",
+        "ResourceType":  "AWS::Lambda::Permission",
+        "LastUpdatedTimestamp":  "2026-10-10T17:43:22.319000+00:00",
+        "ResourceStatus":  "CREATE_COMPLETE",
+        "DriftInformation":  {
+                                 "StackResourceDriftStatus":  "NOT_CHECKED"
+                             }
+    },
+    {
+        "LogicalResourceId":  "Distribution",
+        "PhysicalResourceId":  "E1JXQZMU0LU0NS",
+        "ResourceType":  "AWS::CloudFront::Distribution",
+        "LastUpdatedTimestamp":  "2026-10-10T17:43:03.332000+00:00",
+        "ResourceStatus":  "CREATE_COMPLETE",
+        "DriftInformation":  {
+                                 "StackResourceDriftStatus":  "NOT_CHECKED"
+                             }
+    },
+    {
+        "LogicalResourceId":  "FunctionLog",
+        "PhysicalResourceId":  "/aws/lambda/drystock-demo-api",
+        "ResourceType":  "AWS::Logs::LogGroup",
+        "LastUpdatedTimestamp":  "2026-10-10T17:34:46.196000+00:00",
+        "ResourceStatus":  "CREATE_COMPLETE",
+        "DriftInformation":  {
+                                 "StackResourceDriftStatus":  "NOT_CHECKED"
+                             }
+    },
+    {
+        "LogicalResourceId":  "Sessions",
+        "PhysicalResourceId":  "drystock-demo-sessions",
+        "ResourceType":  "AWS::DynamoDB::Table",
+        "LastUpdatedTimestamp":  "2026-10-10T17:34:50.375000+00:00",
+        "ResourceStatus":  "CREATE_COMPLETE",
+        "DriftInformation":  {
+                                 "StackResourceDriftStatus":  "NOT_CHECKED"
+                             }
+    },
+    {
+        "LogicalResourceId":  "SiteBucket",
+        "PhysicalResourceId":  "drystock-demo-site-071031980923-ap-south-1",
+        "ResourceType":  "AWS::S3::Bucket",
+        "LastUpdatedTimestamp":  "2026-10-10T17:34:52.121000+00:00",
+        "ResourceStatus":  "CREATE_COMPLETE",
+        "DriftInformation":  {
+                                 "StackResourceDriftStatus":  "NOT_CHECKED"
+                             }
+    },
+    {
+        "LogicalResourceId":  "SiteBucketPolicy",
+        "PhysicalResourceId":  "drystock-demo-site-071031980923-ap-south-1",
+        "ResourceType":  "AWS::S3::BucketPolicy",
+        "LastUpdatedTimestamp":  "2026-10-10T17:43:05.554000+00:00",
+        "ResourceStatus":  "CREATE_COMPLETE",
+        "DriftInformation":  {
+                                 "StackResourceDriftStatus":  "NOT_CHECKED"
+                             }
+    }
+]

@@ -1,0 +1,45 @@
+﻿{
+    "Status": "UPDATE_COMPLETE",
+    "Outputs": [
+        {
+            "OutputKey": "FunctionName",
+            "OutputValue": "drystock-demo-api"
+        },
+        {
+            "OutputKey": "TableName",
+            "OutputValue": "drystock-demo-sessions"
+        },
+        {
+            "OutputKey": "ApiUrl",
+            "OutputValue": "https://x59yh2i1yf.execute-api.ap-south-1.amazonaws.com"
+        },
+        {
+            "OutputKey": "WebsiteUrl",
+            "OutputValue": "https://d38gzj2yabm82w.cloudfront.net"
+        },
+        {
+            "OutputKey": "SiteBucketName",
+            "OutputValue": "drystock-demo-site-071031980923-ap-south-1"
+        },
+        {
+            "OutputKey": "DistributionId",
+            "OutputValue": "E1JXQZMU0LU0NS"
+        }
+    ],
+    "Parameters": [
+        {
+            "ParameterKey": "OriginAccessControlId",
+            "ParameterValue": "E1CUHTT7X3PP4S"
+        },
+        {
+            "ParameterKey": "LambdaExecutionRoleArn",
+            "ParameterValue": "arn:aws:iam::071031980923:role/drystock-demo-runtime"
+        },
+        {
+            "ParameterKey": "BudgetEmail",
+            "ParameterValue": ""
+        }
+    ],
+    "RoleARN": "arn:aws:iam::071031980923:role/drystock-demo-cloudformation",
+    "Updated": "2026-10-11T16:02:50.397000+00:00"
+}

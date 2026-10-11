@@ -1,0 +1,33 @@
+{
+  "started_at": "2026-10-11T16:06:39.276725+00:00",
+  "api_url": "https://x59yh2i1yf.execute-api.ap-south-1.amazonaws.com",
+  "website_url": "https://d38gzj2yabm82w.cloudfront.net",
+  "checks": [
+    "AWS health, bearer authentication, wrong-origin rejection and scenario CORS preflight",
+    "reset after generated: exact sample restored, latest null, GET matches, history superseded and prior epoch",
+    "reset after approved: exact sample restored, latest null, GET matches, history superseded and prior epoch",
+    "reset after completed: exact sample restored, latest null, GET matches, history superseded and prior epoch"
+  ],
+  "invocations": [
+    {
+      "id": "57ce978c-19b2-43a3-a447-381cd957af12",
+      "scenario_sha256": "41ffb9f5864da6d8fbc659fae145508447c7e1ad9f76acb7b0d21637deb40ed7"
+    },
+    {
+      "id": "47476896-91c9-41ed-a615-7e028d906164",
+      "scenario_sha256": "41ffb9f5864da6d8fbc659fae145508447c7e1ad9f76acb7b0d21637deb40ed7"
+    },
+    {
+      "id": "25f120e1-2dca-4688-8da3-695050220f41",
+      "scenario_sha256": "41ffb9f5864da6d8fbc659fae145508447c7e1ad9f76acb7b0d21637deb40ed7"
+    },
+    {
+      "id": "ef12636c-354b-4cfc-8c77-daf097a7a6b8",
+      "scenario_sha256": "41ffb9f5864da6d8fbc659fae145508447c7e1ad9f76acb7b0d21637deb40ed7"
+    }
+  ],
+  "passed": false,
+  "direct_dynamodb_inspection": "Unavailable: deployment profile denies DescribeTable. Persistence verified through AWS API.",
+  "quota_scope": "Fresh sessions only; shared 100/hour and 200/day limits are not deliberately exhausted.",
+  "failure": "AssertionError: /api/plans/2171ac1f6f2e/tasks/L11/complete: expected 200, got 503; tokens omitted"
+}

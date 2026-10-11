@@ -1,0 +1,6 @@
+{
+  "http_redirects_to_https": true,
+  "private_s3_anonymous_read": 403,
+  "cloudfront_website_status": 200,
+  "aws_invocations_correlated": 2
+}

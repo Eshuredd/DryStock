@@ -1,95 +1,68 @@
-# DryStock cloud deployment — awaiting authorised access
+# DryStock deployment
 
-**Status: not deployed. No public website or API URL exists for this phase.** Cloud provisioning is paused at the user's explicit request until a separate authorised `drystock-deploy` profile is configured. The existing RideWatch identity has not been escalated. No IAM grants, ECR pushes, CloudFormation stacks or budget were created by this run.
+Updated the **existing `drystock-demo` stack in ap-south-1 on 11 October 2026**, from clean local commit `1d5e337`. Both the Lambda backend and Next.js frontend were deployed using only the authorised `drystock-deploy` profile in account `071031980923`. No second application, IAM grants, commit or push was created. RideWatch was not targeted.
 
-## Scope and access
+- Public website: https://d38gzj2yabm82w.cloudfront.net
+- API: https://x59yh2i1yf.execute-api.ap-south-1.amazonaws.com
+- Lambda: `drystock-demo-api`, version **`$LATEST`**; the existing template does not publish numbered versions or aliases.
+- Resolved container digest / CodeSha256: `90df6d2f32a6c8c90d7ebc7315fba1dd81991b39f0a05940fb99b7ba2afee41d`.
+- CloudFormation change set: `drystock-1791734464`; final status `UPDATE_COMPLETE`.
+- CloudFront invalidation: `I7UXKMW06TND6KRGQI3LC7V10U`, path `/*`, confirmed **Completed** after upload.
 
-Target: account 071031980923, Region `ap-south-1`, application stack **`drystock-demo`**. Frontend: Next.js 16 static export → private S3 → CloudFront HTTPS. Backend: HTTP API Gateway → Linux x86_64 Lambda container using existing OR-Tools/validator → DynamoDB. Owner bootstrap: **`drystock-demo-bootstrap`**, private image/artifact storage and separated roles. No EC2/ECS/RDS/NAT/load balancer is planned.
+The unchanged SAM template and `sam/Cloud.Dockerfile` built the Linux x86_64 Python 3.12 / OR-Tools container. The frontend was exported with `DRYSTOCK_STATIC_EXPORT=1` and the actual API URL, then uploaded to the existing private S3 bucket. Upload used `s3 cp --recursive`, without deleting existing objects.
 
-Review [sam/IAM_ACCESS.md](sam/IAM_ACCESS.md), its exact rendered policies, and [sam/bootstrap-template.yaml](sam/bootstrap-template.yaml). Only the owner operates the bootstrap. Do not use root, expand RideWatch, or attach AdministratorAccess. The CloudFormation execution role cannot create/edit IAM identities. Its runtime role is pre-created with only the named table and log permissions.
+## Resource preservation and change-set review
 
-## Before provisioning
+The deployment script now requires an existing stable stack, preserves **all previous stack parameters**, and has no CREATE fallback. It can prepare a change set separately from execution. Before execution it rejects additions, deletions, replacements (including conditional replacement), permission changes and configuration changes.
 
-The account owner must review the bootstrap and trust principal, create the approved resources/roles, authorise the separate deployment identity and provide the non-secret OAC ID. Configure SSO/temporary credentials locally using the IAM access guide. Then verify:
+This change set contained `CloudFunction.Code` and an API `Body` dependency on `CloudFunction.Arn`, both non-replacing. The first restrictive guard stopped before execution on that API dependency. Comparison of the entire processed current and proposed templates proved that **only the Lambda image URI differs**; the API definition, table, bucket, distribution, roles, permissions and limits are identical. The script permits that exact SAM dependency only with this template proof.
 
-```powershell
-rtk proxy aws sts get-caller-identity --profile drystock-deploy
-rtk proxy aws lambda get-account-settings --profile drystock-deploy --region ap-south-1 --query AccountLimit
-rtk proxy aws cloudformation describe-stacks --stack-name drystock-demo --profile drystock-deploy --region ap-south-1
-```
+All nine logical resources retained their physical IDs after execution. The table remains `drystock-demo-sessions`, bucket `drystock-demo-site-071031980923-ap-south-1`, distribution `E1JXQZMU0LU0NS`, runtime role `drystock-demo-runtime`, and execution role `drystock-demo-cloudformation`. Verification mutated only newly issued test sessions. Existing sessions were not enumerated, reset or migrated through administrator writes; their normal four-hour expiry remains applicable.
 
-Only a “stack does not exist” response permits creation; AccessDenied or another error must be resolved by the owner. The Lambda account-limit check is informational: DryStock does not request reserved concurrency, so this configuration supports an account concurrency limit of 10 without requiring at least 102 concurrent executions. It shares the account's unreserved concurrency pool with other functions and no longer has its own cap of 2 simultaneous executions. Available capacity depends on other functions' reservations and current use; exhausted shared capacity can throttle DryStock. These checks have **not** been run with the new profile because it has not been supplied. The permission files are local review candidates, not a verified live IAM grant.
+Review evidence in [artifacts/cloud-update](artifacts/cloud-update): `change-set.json`, `template-review.json`, resource snapshots, Lambda identity and completed invalidation. Historical benchmark artifacts were not rewritten.
 
-## Reproducible deployment after access is ready
+## Repeat an authorised code update
 
-The script's default is review-only and makes no AWS calls:
-
-```powershell
-rtk proxy powershell -NoProfile -File sam\Deploy-Cloud.ps1
-```
-
-After owner approval and authorised profile setup:
+Default invocation remains read-only and makes no AWS calls:
 
 ```powershell
-rtk proxy powershell -NoProfile -File sam\Deploy-Cloud.ps1 -Provision -OriginAccessControlId <bootstrap-output> -BudgetEmail <approved-alert-email>
+rtk proxy powershell -NoProfile -File sam/Deploy-Cloud.ps1
 ```
 
-Replace bracketed placeholders locally. The approved budget recipient is held in this chat; it is deliberately absent from source. Budget email is a deployment parameter and stays in ignored local parameter files and the new budget configuration. The script accepts only `drystock-deploy`, verifies the account/role, validates/builds the SAM image, logs into ECR through password stdin, packages it, creates a named `drystock-*` change set with `drystock-demo-cloudformation`, executes it, obtains actual outputs, builds the frontend using the returned API endpoint, uploads only its named bucket and invalidates only its distribution. It does not commit or push.
-
-The script is prepared and syntax-checked, **not executed with `-Provision`**. Its update path uses the same stack. It stops on failure; it does not create alternate stacks. An unchanged change set may report no changes; inspect it and skip backend execution before uploading a separately rebuilt frontend. Stack rollbacks, initial API tag permissions and account-level service limits need live checks once access exists.
-
-Frontend build configuration is centralised in `frontend/lib/api.ts` and `next.config.ts`. `DRYSTOCK_STATIC_EXPORT=1` selects static export and disables Next rewrites. `NEXT_PUBLIC_API_BASE_URL` must be a public HTTPS endpoint without credentials/query parameters. It is public configuration, never an AWS secret. For local development, leave both unset; `/api/*` rewrites still use FastAPI/SQLite or SAM local compute.
-
-Cloud Lambda variables: `DRYSTOCK_TABLE` (stack table), `DRYSTOCK_ORIGIN` (exact CloudFront origin), `DRYSTOCK_SAMPLE_PATH=/var/task/sample-data/surat-yard.json` (packaged original fixture). No backend Lambda state is stored on its filesystem. API Gateway CORS permits only that exact frontend origin, GET/POST/OPTIONS and Authorization/Content-Type headers.
-
-DynamoDB encryption uses the default AWS-owned key. `SSEEnabled: false` selects that key; it does **not** mean plaintext storage. This avoids additional KMS permissions/charges. [CloudFormation encryption specification](https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-properties-dynamodb-table-ssespecification.html).
-
-## Verify the real deployed service
-
-After provisioning, `artifacts/phase3/deployment.json` will contain actual `WebsiteUrl`, `ApiUrl`, distribution, bucket, function and table outputs. That file has not been generated by a deployment yet.
+Prepare the same existing application, then review the exact emitted change-set name and evidence:
 
 ```powershell
-rtk proxy .\.venv\Scripts\python.exe sam\cloud_smoke.py --api-url <actual-ApiUrl> --website-url <actual-WebsiteUrl>
-rtk proxy aws logs tail /aws/lambda/drystock-demo-api --since 10m --profile drystock-deploy --region ap-south-1
+rtk proxy powershell -NoProfile -File sam/Deploy-Cloud.ps1 -Provision -PrepareOnly
+rtk proxy powershell -NoProfile -File sam/Deploy-Cloud.ps1 -Provision -ExecuteChangeSet drystock-<emitted-number>
 ```
 
-The smoke script checks actual AWS HTTPS endpoint patterns, two independently issued sessions, cross-session approval rejection, original 35,809/best 35,550, approval/L02/disruption/replanning, revised 16,821/best 14,985, reload persistence, invalid-plan rejection, stale revisions, CORS and independently validated local equivalence. Tokens remain in memory and are not written to evidence. Match returned Lambda invocation IDs to the named CloudWatch log group.
+Do not substitute another profile, account or region. Do not broaden IAM after AccessDenied. The execution step reviews the live set and processed templates again, waits for the stack, compares resource IDs, lints/typechecks/builds the frontend, uploads to the named stack bucket and waits for invalidation. An empty backend change set stops instead of reporting a frontend-only update as a complete backend release. Changes beyond image code require separate infrastructure review.
 
-Then use the **actual public URL** in fresh browser sessions: execute the entire demo, reload, verify a second visitor is unaffected, inspect desktop/mobile/console/network, HTTPS, CORS and absence of localhost dependencies. API smoke tests do not substitute for these browser tests. No real cloud or public browser check is claimed yet.
+## Verification
 
-## Cost and operational controls
+Current automated checks: **113 backend tests**, **50 frontend tests**, **18 offline deployment-script regression cases**, frontend lint, TypeScript checks, SAM template lint and production static export passed. Backend tests emitted one existing upstream Starlette TestClient deprecation warning.
 
-| Control | Configured bound |
-|---|---|
-| Lambda | 2 GB, timeout 30 seconds; shared unreserved account concurrency, no function reservation or provisioned concurrency |
-| Solver | Exactly 5 seconds for the fixed fictional cloud yard; shared engine input bounds remain |
-| HTTP API | 2 requests/second, burst 4; service throttling is best-effort, not a spending cap |
-| DynamoDB | Fixed 5 RCU / 5 WCU, no autoscaling; transactions and larger state items can throttle |
-| Session lifetime | 4 hours, explicit server expiry checks plus TTL on state and history |
-| Per-session use | 300 authenticated requests, 20 optimisation attempts; one 35-second compute lease |
-| Shared use | 100 new sessions/hour; 200 optimisation attempts per UTC day; enforced conditional DynamoDB counters |
-| Request input | 32 KiB maximum; no visitor-uploaded yard scenarios; only fixed sample and permitted disruptions |
-| Logs | 3-day retention; no request bodies, capability tokens or Authorization logging |
-| Storage | Private encrypted S3; build artifacts expire after 14 days; ECR keeps five image versions |
-| Optional budget | Named US$5 monthly account-wide actual/forecast email alerts; no automated budget action |
+The original live cloud smoke test passed: sample benefit ₹35,809 versus strongest baseline ₹35,550, and disrupted benefit ₹16,821 versus ₹14,985. Results retain AWS invocation IDs and pass the independent local output validator; modeled outcomes match the local engine. These are assumed fictional loss estimates, not measured savings.
 
-Budget alerts are **not spending caps** and may be delayed. The account-wide budget also sees other applications; it avoids depending on cost-allocation tags that might not be activated. Project tags are supplied, but this run has not changed billing account settings. If the owner denies Budget permissions, explicitly deploy without `BudgetEmail` and document the missing alert; do not silently claim one exists.
+New live checks cover `/api/scenario`, bearer sessions, CORS preflight/wrong-origin rejection, extra fields, invalid IDs, valid-shaped injected completions, loss exceeding value, incompatible materials, invalid availability, 31 unique lots and the exact 32 KiB request boundary. Reset was checked after generation, approval, completion and disruption. It restores the exact original fixture, defaults and empty completions, returns `latest: null`, agrees with authoritative GET, and retains superseded plans in earlier scenario epochs. Cross-session mutations and stale revisions are rejected. Custom scenarios were saved, independently optimised, approved, completed, reloaded and reset using the AWS API and its DynamoDB adapter. The live 20-computation and 300-request session limits were enforced; reset did not replenish the compute quota.
 
-Provisioned DynamoDB capacity can incur ongoing charges while idle. S3/ECR storage and API Gateway/Lambda/CloudFront request/transfer usage can also be charged. Existing account credits/free-tier eligibility are unknown. At the absolute compute-attempt bound, 200 invocations/day × 30 seconds × 2 GB × 30 days is 360,000 GB-seconds/month before failed/other API invocations; this is a usage bound, not an expected bill. Public traffic can still generate gateway/CloudFront charges even when the application rejects requests. Monitor actual billing and remove the demo after judging. [Lambda pricing](https://aws.amazon.com/lambda/pricing/), [API Gateway pricing](https://aws.amazon.com/api-gateway/pricing/), [DynamoDB pricing](https://aws.amazon.com/dynamodb/pricing/).
-
-To disable computation quickly, the owner may optionally set this named function's reserved concurrency to zero as an emergency override. This is a separate operational action; the deployment template leaves concurrency unreserved and does not require a reservation. API/static hosting still incur possible request/storage charges. The restricted deployment identity has read-only direct Lambda configuration; a CloudFormation update by its scoped execution role can change concurrency.
-
-## Safe teardown — proposed, not executed
-
-Read the **named** stack outputs and confirm its exact site bucket/distribution before deletion. Never enumerate and delete other application buckets. When the user explicitly requests teardown:
+Reproduce only when the existing application's test traffic is authorised:
 
 ```powershell
-rtk proxy aws cloudformation describe-stacks --stack-name drystock-demo --profile drystock-deploy --region ap-south-1
-rtk proxy aws s3 rm s3://drystock-demo-site-071031980923-ap-south-1/ --recursive --profile drystock-deploy --region ap-south-1
-rtk proxy aws cloudformation delete-stack --stack-name drystock-demo --profile drystock-deploy --region ap-south-1
-rtk proxy aws cloudformation wait stack-delete-complete --stack-name drystock-demo --profile drystock-deploy --region ap-south-1
+rtk proxy .venv/Scripts/python.exe sam/cloud_smoke.py --api-url https://x59yh2i1yf.execute-api.ap-south-1.amazonaws.com --website-url https://d38gzj2yabm82w.cloudfront.net --output artifacts/cloud-update/benchmark-smoke.json
+rtk proxy .venv/Scripts/python.exe sam/cloud_usability_smoke.py --api-url https://x59yh2i1yf.execute-api.ap-south-1.amazonaws.com --website-url https://d38gzj2yabm82w.cloudfront.net --quotas
 ```
 
-These commands destroy only DryStock's static assets and stack demo data. Do not run them while judges need the URL. CloudFront deletion can take time. If nonempty storage or a rollback blocks deletion, inspect named stack events; do not issue broad deletion commands.
+Keep tests sequential: each session request charges a conditional counter on the state item, which uses write capacity even for GET. Fresh small scenarios are used for quota testing to limit load. Tokens stay in memory and are absent from evidence.
 
-The bootstrap remains separate. Its owner must empty only the named artifact bucket and delete **`drystock-demo-bootstrap`** using their authorised role if no further deployment is needed; this removes the five retained image versions, OAC and DryStock roles. Keeping the bootstrap leaves storage charges possible. The deployment identity cannot manage that bootstrap, and no teardown has been executed.
+## Operational limits and observed failures
+
+The existing stack retains: 2 GB / 30-second Lambda, five-second solver, API throttle 2 requests/second with burst 4, DynamoDB **5 RCU / 5 WCU**, four-hour sessions, 300 authenticated requests and 20 optimisation attempts per session, 35-second compute lease, shared 100 new sessions/hour and 200 computations/day, 32 KiB inputs and three-day logs. Reset does not replenish quotas. Shared hourly/daily quotas are verified in source/offline conditional-counter tests rather than deliberately exhausted on the live demo. The account reports 1,000 total and unreserved Lambda concurrency; DryStock has no reserved concurrency.
+
+Overlapping sample/API/browser verification **did cause DynamoDB throughput failures**: CloudWatch logged `ProvisionedThroughputExceededException` for `UpdateItem` and `TransactWriteItems`, and the API returned 503. The UI disabled approval/completion until an explicit authoritative refresh recovered. This is a real limitation of the preserved capacity, not a reset failure. No ambiguous mutation was automatically replayed. Partial failed evidence is retained separately from later sequential verification; no throughput or IAM expansion was made.
+
+The deployment profile denies direct `dynamodb:DescribeTable`, `cloudfront:GetDistributionConfig`, `lambda:GetPolicy` and API Gateway `GetStage`. Resource preservation and configured limits were checked through CloudFormation's processed templates and resource IDs; DynamoDB persistence was verified through separate AWS API requests and browser reloads. A direct table scan, live IAM-policy inspection and infrastructure drift audit were therefore **not performed**. Required build/package/change-set/upload/invalidation operations succeeded using existing permissions.
+
+Two initial smoke-probe assertions were corrected: browser preflight requires `Access-Control-Request-*` headers, and the four-hour expiry assertion must use AWS's HTTP Date rather than the slightly offset local clock. These probe failures are retained as first/second-attempt evidence. One manual invalidation read used an incorrect ID and returned NoSuchInvalidation; the recorded deployment ID was then used and confirmed Completed.
+
+See the final [verification report](artifacts/cloud-update/REPORT.md) for public desktop/mobile viewport observations, quota outcomes, screenshots and remaining limitations. A mobile viewport check does not establish physical Android/iOS compatibility. Fictional demo completion, prices, loss estimates and weather remain assumptions; there are no production user accounts or live forecasts.

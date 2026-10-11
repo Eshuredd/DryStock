@@ -1,0 +1,103 @@
+{
+  "api_url": "https://x59yh2i1yf.execute-api.ap-south-1.amazonaws.com",
+  "website_url": "https://d38gzj2yabm82w.cloudfront.net",
+  "real_cloud": true,
+  "http_session_isolation": true,
+  "persistence_reload": true,
+  "cors": true,
+  "stale_revision_rejected": true,
+  "invalid_plan_rejected": true,
+  "results": [
+    {
+      "scenario_sha256": "41ffb9f5864da6d8fbc659fae145508447c7e1ad9f76acb7b0d21637deb40ed7",
+      "invocation_id": "0a996f02-7750-4f05-9ffc-037bbc30306b",
+      "runtime": {
+        "python": "3.12.15",
+        "ortools": "9.15.6755",
+        "aws_request_id": "0a996f02-7750-4f05-9ffc-037bbc30306b",
+        "aws_region": "ap-south-1"
+      },
+      "outcomes": {
+        "CP-SAT": {
+          "status": "OPTIMAL",
+          "additional_inr": 35809,
+          "completed_inr": 0,
+          "residual_inr": 18421,
+          "scheduled_lots": 5,
+          "unprotected_lots": 6
+        },
+        "Highest value first": {
+          "status": "GREEDY",
+          "additional_inr": 34308,
+          "completed_inr": 0,
+          "residual_inr": 19922,
+          "scheduled_lots": 5,
+          "unprotected_lots": 6
+        },
+        "Highest loss first": {
+          "status": "GREEDY",
+          "additional_inr": 35550,
+          "completed_inr": 0,
+          "residual_inr": 18680,
+          "scheduled_lots": 5,
+          "unprotected_lots": 6
+        },
+        "Loss per worker-minute": {
+          "status": "GREEDY",
+          "additional_inr": 27855,
+          "completed_inr": 0,
+          "residual_inr": 26375,
+          "scheduled_lots": 5,
+          "unprotected_lots": 6
+        }
+      },
+      "local_outcomes_match": true
+    },
+    {
+      "scenario_sha256": "07ffa1e51a26fdb4cbf36052a8a639f8993fd1e4b0005f79556e6d2523ae6e82",
+      "invocation_id": "a8f23f16-38f9-4a3b-aad2-2bddad865af8",
+      "runtime": {
+        "python": "3.12.15",
+        "ortools": "9.15.6755",
+        "aws_request_id": "a8f23f16-38f9-4a3b-aad2-2bddad865af8",
+        "aws_region": "ap-south-1"
+      },
+      "outcomes": {
+        "CP-SAT": {
+          "status": "OPTIMAL",
+          "additional_inr": 16821,
+          "completed_inr": 5850,
+          "residual_inr": 31559,
+          "scheduled_lots": 4,
+          "unprotected_lots": 6
+        },
+        "Highest value first": {
+          "status": "GREEDY",
+          "additional_inr": 14059,
+          "completed_inr": 5850,
+          "residual_inr": 34321,
+          "scheduled_lots": 2,
+          "unprotected_lots": 8
+        },
+        "Highest loss first": {
+          "status": "GREEDY",
+          "additional_inr": 14059,
+          "completed_inr": 5850,
+          "residual_inr": 34321,
+          "scheduled_lots": 2,
+          "unprotected_lots": 8
+        },
+        "Loss per worker-minute": {
+          "status": "GREEDY",
+          "additional_inr": 14985,
+          "completed_inr": 5850,
+          "residual_inr": 33395,
+          "scheduled_lots": 3,
+          "unprotected_lots": 7
+        }
+      },
+      "local_outcomes_match": true
+    }
+  ],
+  "browser_workflow": "Not checked by this script; separate public browser verification required"
+}

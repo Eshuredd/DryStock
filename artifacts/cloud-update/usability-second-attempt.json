@@ -1,0 +1,13 @@
+{
+  "started_at": "2026-10-11T16:05:45.356921+00:00",
+  "api_url": "https://x59yh2i1yf.execute-api.ap-south-1.amazonaws.com",
+  "website_url": "https://d38gzj2yabm82w.cloudfront.net",
+  "checks": [
+    "AWS health, bearer authentication, wrong-origin rejection and scenario CORS preflight"
+  ],
+  "invocations": [],
+  "passed": false,
+  "direct_dynamodb_inspection": "Unavailable: deployment profile denies DescribeTable. Persistence verified through AWS API.",
+  "quota_scope": "Fresh sessions only; shared 100/hour and 200/day limits are not deliberately exhausted.",
+  "failure": "AssertionError: "
+}

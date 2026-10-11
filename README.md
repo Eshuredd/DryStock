@@ -1,8 +1,8 @@
 # DryStock
 
-**Phase 3 status:** cloud-compatible code and scoped IAM review are prepared; cloud provisioning is paused until owner-authorised `drystock-deploy` access is configured. No public cloud URL exists yet. Read [IAM access setup](sam/IAM_ACCESS.md), [deployment guide](DEPLOYMENT.md) and [prepared architecture/status](AWS_ARCHITECTURE.md). The existing local and SAM pathways remain supported.
+**Live demo:** [DryStock on AWS](https://d38gzj2yabm82w.cloudfront.net). The existing `drystock-demo` stack in ap-south-1 was updated on 11 October 2026 with both the Lambda backend and static Next.js frontend from `1d5e337`. Read the [verified deployment guide](DEPLOYMENT.md) and [architecture](AWS_ARCHITECTURE.md). Local and SAM pathways remain supported. The fixed 5 RCU / 5 WCU demo table can throttle under overlapping sample workflows; see the recorded verification limitations.
 
-A working local MVP for weather-aware material protection planning at recycling yards. Built for **Bharat Builds Environmental Hacks — Waste & Energy track, powered by AWS**. Local operation requires no AWS account. There is no deployment, live forecast, authentication or scientifically calibrated damage model.
+A working demo for weather-aware material protection planning at recycling yards. Built for **Bharat Builds Environmental Hacks — Waste & Energy track, powered by AWS**. Local operation requires no AWS account. The cloud demo uses isolated temporary bearer sessions; it has no production user accounts, live forecast or scientifically calibrated damage model.
 
 The central decision is which whole lots to cover or relocate before rain, using limited crews, compatible tarpaulins, forklifts and covered positions. Leaving a lot exposed is always feasible and consumes nothing. Existing recycling software already handles inventory and warehouse operations; DryStock demonstrates a narrower resource-constrained planning problem, rather than claiming an absence of competitors.
 

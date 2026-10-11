@@ -1,0 +1,6 @@
+{
+  "exact_32_kib_valid_scenario_accepted": true,
+  "well_formed_independently_valid_completed_work_injection_rejected": true,
+  "31_unique_lots_rejected": true,
+  "invalid_inputs_leave_state_unchanged": true
+}

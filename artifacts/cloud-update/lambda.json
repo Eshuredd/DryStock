@@ -1,0 +1,46 @@
+﻿{
+    "Configuration": {
+        "FunctionName": "drystock-demo-api",
+        "FunctionArn": "arn:aws:lambda:ap-south-1:071031980923:function:drystock-demo-api",
+        "Role": "arn:aws:iam::071031980923:role/drystock-demo-runtime",
+        "CodeSize": 0,
+        "Description": "",
+        "Timeout": 30,
+        "MemorySize": 2048,
+        "LastModified": "2026-10-11T16:02:55.000+0000",
+        "CodeSha256": "90df6d2f32a6c8c90d7ebc7315fba1dd81991b39f0a05940fb99b7ba2afee41d",
+        "Version": "$LATEST",
+        "Environment": {
+            "Variables": {
+                "DRYSTOCK_TABLE": "drystock-demo-sessions",
+                "DRYSTOCK_ORIGIN": "https://d38gzj2yabm82w.cloudfront.net"
+            }
+        },
+        "TracingConfig": {
+            "Mode": "PassThrough"
+        },
+        "RevisionId": "2670eb9d-1135-4b58-9c15-3ebbc73a3b91",
+        "State": "Active",
+        "LastUpdateStatus": "Successful",
+        "PackageType": "Image",
+        "Architectures": [
+            "x86_64"
+        ],
+        "EphemeralStorage": {
+            "Size": 512
+        },
+        "SnapStart": {
+            "ApplyOn": "None",
+            "OptimizationStatus": "Off"
+        },
+        "LoggingConfig": {
+            "LogFormat": "Text",
+            "LogGroup": "/aws/lambda/drystock-demo-api"
+        }
+    },
+    "Code": {
+        "RepositoryType": "ECR",
+        "ImageUri": "071031980923.dkr.ecr.ap-south-1.amazonaws.com/drystock-demo:cloudfunction-90df6d2f32a6-cloud-python312-ortools915-v1",
+        "ResolvedImageUri": "071031980923.dkr.ecr.ap-south-1.amazonaws.com/drystock-demo@sha256:90df6d2f32a6c8c90d7ebc7315fba1dd81991b39f0a05940fb99b7ba2afee41d"
+    }
+}

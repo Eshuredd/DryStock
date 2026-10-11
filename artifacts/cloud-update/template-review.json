@@ -1,0 +1,5 @@
+{
+    "only_image_uri_changed":  true,
+    "new_image":  "071031980923.dkr.ecr.ap-south-1.amazonaws.com/drystock-demo:cloudfunction-90df6d2f32a6-cloud-python312-ortools915-v1",
+    "previous_image":  "071031980923.dkr.ecr.ap-south-1.amazonaws.com/drystock-demo:cloudfunction-da5eafc605d0-cloud-python312-ortools915-v1"
+}

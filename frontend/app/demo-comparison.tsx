@@ -1,30 +1,41 @@
 import type {SavedPlan, Scenario, Task} from '../lib/types';
-
-const money = (n: number) => new Intl.NumberFormat('en-IN', {style:'currency',currency:'INR',maximumFractionDigits:0}).format(n);
-const assignment = (t: Task | undefined) => t ? `${t.action} · ${t.start}–${t.end}m · ${t.worker_ids.join(', ')} · ${[t.forklift_id,t.tarp_id,t.storage_id].filter(Boolean).join(', ')}` : 'Leave exposed';
+import {assignment, comparisonTotals, money} from '../lib/workflow';
 
 export function ActionInputs({scenario,task}: {scenario:Scenario;task:Task}) {
   const lot = scenario.lots.find(l => l.id === task.lot_id);
   const action = lot?.actions.find(a => a.kind === task.action);
   const asset = [...scenario.tarps,...scenario.storage].find(r => r.id === (task.tarp_id || task.storage_id));
   if (!lot || !action) return null;
-  return <details className="action-reasons"><summary>Handling inputs</summary><p>{lot.weight_kg} kg; assumed exposed loss {money(lot.exposed_loss_inr)}. This {action.duration}-minute action has {action.effectiveness_bps/100}% assumed effectiveness.</p><p>Needs {action.workers} worker{action.workers > 1 ? 's' : ''}{action.forklift ? ' and a forklift' : ''}. {asset?.id} accepts {lot.category}, up to {asset?.capacity_kg} kg. Finishes at {task.end}, by cutoff {scenario.deadline}.</p><small>Constraint inputs, not a counterfactual explanation or physical verification.</small></details>;
+  return <details className="action-reasons"><summary>Handling inputs</summary>
+    <p>{lot.weight_kg} kg; assumed exposed loss {money(lot.exposed_loss_inr)}. This {action.duration}-minute action has {action.effectiveness_bps/100}% assumed effectiveness.</p>
+    <p>Needs {action.workers} {action.workers === 1 ? 'worker' : 'workers'}{action.forklift ? ' and a forklift' : ''}. {asset?.name} ({asset?.id}) accepts {lot.category}, up to {asset?.capacity_kg} kg. Finishes at minute {task.end}, by cutoff {scenario.deadline}.</p>
+    <small>Model inputs, not proof of physical protection or an explanation of every alternative.</small>
+  </details>;
 }
 
-export function DemoComparison({scenario,current,history}: {scenario:Scenario;current:SavedPlan|null;history:SavedPlan[]}) {
-  if (!scenario.completed.length) return null;
-  const before = history.find(p => p.id !== current?.id && p.scenario.deadline > scenario.deadline &&
-    scenario.completed.every(c => p.plan.tasks.some(t => JSON.stringify(t) === JSON.stringify(c))));
-  if (!before) return null;
-  const after = [...scenario.completed,...(current?.plan.tasks || [])];
-  const ids = Array.from(new Set([...before.plan.tasks,...after].map(t => t.lot_id)));
-  const reconsidered = before.plan.tasks.filter(t => !scenario.completed.some(c => c.lot_id === t.lot_id));
-  const disabled = scenario.forklifts.filter(f => !f.enabled).map(f => f.name).concat(scenario.workers.filter(w => !w.enabled).map(w => w.name));
-  const best = current ? Math.max(...current.comparisons.map(p => p.planned_saved_inr)) : 0;
-  const gain = current ? current.plan.planned_saved_inr-best : 0;
-  return <section className="panel before-after"><div className="panel-heading"><div><h2>Before and after the disruption</h2><p>Completed work is retained. Every unfinished task is reconsidered in full.</p></div><span className="pill">{before.scenario.deadline} → {scenario.deadline} min cutoff</span></div>
-    <div className="change-summary"><p><strong>Changed:</strong> rain minute {before.scenario.rain_arrival_minute} → {scenario.rain_arrival_minute}; clock {scenario.now_minute}. Unavailable: {disabled.join(', ') || 'none'}.</p><p><strong>Retained:</strong> {scenario.completed.map(t => `${t.lot_id} on ${t.tarp_id || t.storage_id}`).join(', ')} — simulated operator-reported completion.</p><p><strong>Reconsidered:</strong> {reconsidered.map(t => t.lot_id).join(', ')}. {current ? `${money(current.plan.planned_saved_inr)} additional estimated avoidable loss addressed; ${gain > 0 ? `${money(gain)} above the strongest baseline` : gain === 0 ? 'strongest baseline ties' : 'strongest baseline currently better'}.` : 'Generate a revised draft using the selected compute backend.'}</p></div>
-    <div className="plan-pair"><div><strong>Original plan · {before.plan.solver_status}</strong><small>{money(before.plan.planned_saved_inr)} modelled benefit at generation</small></div><div><strong>{current ? 'Revised plan' : 'Revised plan pending'}</strong><small>Completed benefit and additional planned benefit are distinct.</small></div></div>
-    <div className="table-scroll"><table><thead><tr><th>Lot</th><th>Original allocation / timeline</th><th>Revised allocation / timeline</th><th>Difference</th></tr></thead><tbody>{ids.map(id => {const old = before.plan.tasks.find(t => t.lot_id === id); const revised = after.find(t => t.lot_id === id); const done = scenario.completed.some(t => t.lot_id === id); return <tr key={id}><td><strong>{id}</strong></td><td>{assignment(old)}{old && <div className="mini-track"><i style={{marginLeft:`${old.start/before.scenario.deadline*100}%`,width:`${(old.end-old.start)/before.scenario.deadline*100}%`}}/></div>}</td><td>{current || done ? assignment(revised) : 'Awaiting re-optimisation'}{revised && <div className="mini-track"><i style={{marginLeft:`${revised.start/Math.max(scenario.deadline,1)*100}%`,width:`${(revised.end-revised.start)/Math.max(scenario.deadline,1)*100}%`}}/></div>}</td><td><span className={`pill ${done ? 'success' : ''}`}>{done ? 'Retained complete' : !current ? 'Reconsider' : !revised ? 'Left exposed' : !old ? 'Newly scheduled' : assignment(old) === assignment(revised) ? 'Unchanged' : 'Reassigned'}</span></td></tr>;})}</tbody></table></div>
+export function DemoComparison({scenario,current,before}: {scenario:Scenario;current:SavedPlan|null;before:SavedPlan}) {
+  const completed = new Set(scenario.completed.map(t => t.lot_id));
+  const old = [...before.scenario.completed,...before.plan.tasks];
+  const after = [...scenario.completed,...(current?.plan.tasks || []).filter(t => !completed.has(t.lot_id))];
+  const ids = Array.from(new Set([...old,...after].map(t => t.lot_id)));
+  const totals = comparisonTotals(before,current,scenario);
+  const unavailable = scenario.forklifts.filter(f => !f.enabled).map(f => f.name).concat(scenario.workers.filter(w => !w.enabled).map(w => w.name));
+  return <section className="panel before-after" aria-labelledby="changes-heading">
+    <div className="panel-heading"><div><h2 id="changes-heading">Changed conditions</h2><p>Unfinished tasks are reconsidered in full; completed protection is retained.</p></div></div>
+    <div className="change-summary">
+      <p><strong>Handling cutoff:</strong> {before.scenario.deadline} → {scenario.deadline} min. <strong>Simulated rain:</strong> {before.scenario.rain_arrival_minute} → {scenario.rain_arrival_minute} min. <strong>Clock:</strong> {before.scenario.now_minute} → {scenario.now_minute} min.</p>
+      <p><strong>Unavailable:</strong> {unavailable.join(', ') || 'None'}. <strong>Retained simulated completion:</strong> {scenario.completed.length ? scenario.completed.map(t => `${t.lot_id} on ${t.tarp_id || t.storage_id}`).join(', ') : 'None reported'}.</p>
+    </div>
+    <details className="allocation-details"><summary>Before / after estimates and allocations</summary>
+      <p className="detail-copy">Both totals estimate benefit for the same fictional yard, separating reported completion from pending work. The original total stays fixed; its completion split only includes lots in that original schedule. Pending estimates are not measured savings. The historical schedule may no longer be feasible.</p>
+      <div className="plan-pair">
+        <div><strong>Original plan · historical</strong><p>{money(totals.oldTotal)} total estimated benefit</p><small>{money(totals.oldRetained)} reported simulated completion from the original schedule + {money(totals.oldPending)} pending in the original plan</small></div>
+        <div><strong>{current ? 'Revised plan' : 'Revised plan pending'}</strong><p>{totals.newTotal === null ? 'Re-optimise to estimate pending work' : `${money(totals.newTotal)} total estimated benefit`}</p><small>{money(totals.retained)} retained simulated completion{totals.newPending === null ? '' : ` + ${money(totals.newPending)} pending in the revised plan`}</small></div>
+      </div>
+      <div className="table-scroll" tabIndex={0} role="region" aria-label="Before and after allocations, scroll horizontally for all columns"><table><thead><tr><th>Lot</th><th>Original allocation / timeline</th><th>Revised allocation / timeline</th><th>Difference</th></tr></thead><tbody>{ids.map(id => {
+        const prior = old.find(t => t.lot_id === id); const revised = after.find(t => t.lot_id === id); const done = completed.has(id);
+        return <tr key={id}><td><strong>{id}</strong></td><td>{assignment(prior,before.scenario)}</td><td>{current || done ? assignment(revised,scenario) : 'Awaiting re-optimisation'}</td><td><span className={`pill ${done ? 'success' : ''}`}>{done ? 'Retained simulated completion' : !current ? 'Reconsider' : !revised ? 'Left exposed' : !prior ? 'Newly scheduled' : assignment(prior,before.scenario) === assignment(revised,scenario) ? 'Unchanged' : 'Reassigned'}</span></td></tr>;
+      })}</tbody></table></div>
+    </details>
   </section>;
 }

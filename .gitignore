@@ -14,3 +14,4 @@ frontend/*.tsbuildinfo
 sam/__pycache__/
 .dependency-resolution/
 frontend/out/
+docs/

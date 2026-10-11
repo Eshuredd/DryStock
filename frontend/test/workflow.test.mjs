@@ -1,0 +1,102 @@
+/* global URL */
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+import path from 'node:path';
+import {createRequire} from 'node:module';
+import {fileURLToPath} from 'node:url';
+import {renderToStaticMarkup} from 'react-dom/server';
+import {createElement} from 'react';
+import ts from 'typescript';
+
+const require = createRequire(import.meta.url);
+function load(relative) {
+  const filename = fileURLToPath(new URL(relative,import.meta.url));
+  const exports = {};
+  const code = ts.transpileModule(fs.readFileSync(filename,'utf8'), {compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,jsx:ts.JsxEmit.ReactJSX}}).outputText;
+  vm.runInNewContext(code,{exports,Intl,Set,JSON,require: name => name.startsWith('.') ? load(path.relative(path.dirname(fileURLToPath(import.meta.url)),path.resolve(path.dirname(filename),name))+ (name.endsWith('workflow') ? '.ts' : '.tsx')) : require(name)});
+  return exports;
+}
+const {deriveWorkflow,comparisonTotals,assignment} = load('../lib/workflow.ts');
+const {WorkInstructions} = load('../app/work-instructions.tsx');
+const {StrategyComparison} = load('../app/strategy-comparison.tsx');
+const fixture = JSON.parse(fs.readFileSync(new URL('../../sample-data/surat-yard.json',import.meta.url),'utf8'));
+const l02 = {lot_id:'L02',action:'cover',start:0,end:12,worker_ids:['W1','W3'],tarp_id:'T2',forklift_id:null,storage_id:null,saved_loss_inr:5850};
+const l06 = {...l02,lot_id:'L06',start:12,end:26,tarp_id:'T1',saved_loss_inr:7020};
+const scenario = {...fixture,now_minute:0,completed:[],workers:fixture.workers.map(w=>({...w,enabled:true})),forklifts:fixture.forklifts.map(f=>({...f,enabled:true})),lots:fixture.lots.map(l=>({...l,protection_status:l.protection_status || 'exposed'}))};
+const plan = {strategy:'CP-SAT',solver_status:'OPTIMAL',tasks:[l02,l06],initial_loss_inr:54230,completed_saved_inr:0,planned_saved_inr:12870,residual_loss_inr:41360,solve_seconds:.1,best_bound_inr:12870,validation:{valid:true,errors:[]}};
+const original = {id:'original',state:'draft',revision:0,scenario,plan,comparisons:[{...plan,strategy:'Highest loss first',planned_saved_inr:12000}]};
+const state = (latest, s=scenario) => ({compute_backend:'local',revision:0,scenario:s,latest,events:[]});
+
+test('workflow follows generation, approval, completion, disruption and revised approval',()=>{
+  assert.equal(deriveWorkflow(state(null),[]).primaryLabel,'Generate plan');
+  assert.equal(deriveWorkflow(state(original),[]).primaryLabel,'Review and approve');
+  const done = {...scenario,now_minute:12,completed:[l02]};
+  const approved = {...original,state:'approved'};
+  const w = deriveWorkflow(state(approved,done),[]);
+  assert.equal(w.primaryLabel,'View work instructions');
+  assert.equal(w.completedBenefit,5850); assert.equal(w.plannedBenefit,7020);
+  assert.equal(w.tasks.length,2); assert.equal(w.upcoming.length,1);
+  const changed = {...done,deadline:35,rain_arrival_minute:45,forklifts:done.forklifts.map(f=>({...f,enabled:false}))};
+  const superseded = {...original,state:'superseded'};
+  const disrupted = deriveWorkflow(state(superseded,changed),[superseded]);
+  assert.equal(disrupted.primaryLabel,'Re-optimise'); assert.equal(disrupted.plannedBenefit,0);
+  assert.equal(disrupted.completedBenefit,5850); assert.equal(disrupted.active,null);
+  const revised = {...original,id:'revised',scenario:changed,plan:{...plan,tasks:[l06],planned_saved_inr:7020,completed_saved_inr:5850}};
+  assert.equal(deriveWorkflow(state(revised,changed),[revised,superseded]).primaryLabel,'Review and approve revised plan');
+  assert.equal(deriveWorkflow(state({...revised,state:'approved'},changed),[revised,superseded]).stateLabel,'Approved');
+  const moreDone={...changed,completed:[l02,{...l06,lot_id:'L07'}]};
+  assert.equal(deriveWorkflow(state({...revised,state:'approved'},moreDone),[revised,superseded]).previous.id,'original');
+  const laterClock={...changed,now_minute:13};
+  const next={...revised,id:'next',scenario:laterClock};
+  assert.equal(deriveWorkflow(state(next,laterClock),[next,{...revised,state:'superseded'},superseded]).previous.id,'revised');
+});
+test('reset and ordinary completion do not create a disruption summary',()=>{
+  const history=[{...original,state:'superseded',scenario:{...scenario,deadline:35}}];
+  assert.equal(deriveWorkflow(state(null),history).primaryLabel,'Generate plan');
+  assert.equal(deriveWorkflow(state(original,{...scenario,now_minute:12,completed:[l02]}),[original]).previous,undefined);
+  const old={...original,state:'superseded',created:'2026-10-11T06:00:00Z'};
+  const reset={...state(old),events:[{kind:'demo_reset',at:'2026-10-11T06:01:00Z'}]};
+  assert.equal(deriveWorkflow(reset,[old]).primaryLabel,'Generate plan');
+  assert.equal(deriveWorkflow(reset,[old]).previous,undefined);
+});
+test('before/after totals compare retained plus pending, without duplicate completion',()=>{
+  const done={...scenario,completed:[l02]};
+  const revised={...original,plan:{...plan,tasks:[l06]}};
+  const totals=comparisonTotals(original,revised,done);
+  assert.equal(totals.retained,5850); assert.equal(totals.oldPending,7020);
+  assert.equal(totals.oldTotal,12870); assert.equal(totals.newTotal,12870);
+  assert.equal(comparisonTotals(original,null,done).newTotal,null);
+  const already={...original,scenario:done,plan:{...plan,tasks:[l06]}};
+  assert.equal(comparisonTotals(already,revised,done).oldTotal,12870);
+  const newlyCompleted={...l06,lot_id:'L07',saved_loss_inr:1275};
+  const later=comparisonTotals(original,revised,{...done,completed:[l02,newlyCompleted]});
+  assert.equal(later.oldTotal,12870); // New completion cannot inflate the historical plan.
+  assert.equal(later.retained,7125); assert.equal(later.oldRetained,5850);
+});
+test('allocation explanations use crew names',()=>{
+  assert.match(assignment(l02,scenario),/Asha, Meera/);
+  assert.doesNotMatch(assignment(l02,scenario),/W1|W3/);
+});
+test('desktop and mobile completion controls stay gated until approval',()=>{
+  const props={scenario,tasks:[l02],approved:false,busy:false,pending:null,onComplete:()=>{},feedback:()=>null};
+  const draft=renderToStaticMarkup(createElement(WorkInstructions,props));
+  assert.equal((draft.match(/disabled=""/g)||[]).length,2);
+  assert.match(draft,/Approve the current draft before recording completion/);
+  const approved=renderToStaticMarkup(createElement(WorkInstructions,{...props,approved:true}));
+  assert.doesNotMatch(approved,/disabled=""/);
+  assert.match(approved,/mobile-work/); assert.match(approved,/Record L02 simulated completion/);
+  const done=renderToStaticMarkup(createElement(WorkInstructions,{...props,approved:true,scenario:{...scenario,completed:[l02]}}));
+  assert.doesNotMatch(done,/Record L02 simulated completion/);
+  assert.match(done,/Reported complete \(simulated\)/);
+});
+test('comparison verdict precedes table and preserves tie/better-baseline cases',()=>{
+  const html=renderToStaticMarkup(createElement(StrategyComparison,{current:original}));
+  assert(html.indexOf('more estimated loss avoided')<html.indexOf('<table'));
+  assert.match(html,/not measured savings or a general performance claim/);
+  const tie={...original,comparisons:[{...plan,strategy:'Highest loss first'}]};
+  assert.match(renderToStaticMarkup(createElement(StrategyComparison,{current:tie})),/strongest baseline matches/);
+  const better={...original,comparisons:[{...plan,strategy:'Highest loss first',planned_saved_inr:14000}]};
+  assert.match(renderToStaticMarkup(createElement(StrategyComparison,{current:better})),/Do not claim an advantage/);
+});

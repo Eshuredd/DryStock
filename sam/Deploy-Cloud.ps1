@@ -65,12 +65,39 @@ try {
     )
     [System.IO.File]::WriteAllText((Join-Path $taskRoot '.aws-sam/cloud-parameters.json'), ($parameters | ConvertTo-Json), [System.Text.UTF8Encoding]::new($false))
     $null = AwsJson @('cloudformation','create-change-set','--stack-name',$stackName,'--change-set-name',$changeSet,'--change-set-type',$type,'--template-body','file://.aws-sam/cloud-packaged.yaml','--parameters','file://.aws-sam/cloud-parameters.json','--role-arn',$cfRole,'--capabilities','CAPABILITY_AUTO_EXPAND','--tags','Key=Project,Value=DryStock','Key=Environment,Value=demo')
-    & rtk proxy aws cloudformation wait change-set-create-complete --stack-name $stackName --change-set-name $changeSet --profile $Profile --region $Region
-    if ($LASTEXITCODE -ne 0) { throw 'Change set did not become ready. Inspect it; do not create another stack.' }
-    $null = AwsJson @('cloudformation','execute-change-set','--stack-name',$stackName,'--change-set-name',$changeSet)
-    $waiter = if ($type -eq 'CREATE') { 'stack-create-complete' } else { 'stack-update-complete' }
-    & rtk proxy aws cloudformation wait $waiter --stack-name $stackName --profile $Profile --region $Region
-    if ($LASTEXITCODE -ne 0) { throw 'Stack did not complete. Inspect stack events for the exact failure.' }
+    $waitErrorActionPreference = $ErrorActionPreference
+    try {
+        # Capture native stderr on PowerShell 5.1 so a failed waiter can be diagnosed.
+        $ErrorActionPreference = 'Continue'
+        $changeSetWaitText = & rtk proxy aws cloudformation wait change-set-create-complete --stack-name $stackName --change-set-name $changeSet --profile $Profile --region $Region 2>&1
+        $changeSetWaitExitCode = $LASTEXITCODE
+    } finally {
+        $ErrorActionPreference = $waitErrorActionPreference
+    }
+    $skipStackUpdate = $false
+    if ($changeSetWaitExitCode -ne 0) {
+        $details = AwsJson @('cloudformation','describe-change-set','--stack-name',$stackName,'--change-set-name',$changeSet)
+        $reason = [string]$details.StatusReason
+        $waitFailure = ($changeSetWaitText | Out-String).Trim()
+        $emptyReason = $reason -ceq 'No updates are to be performed.' -or
+            $reason -ceq "The submitted information didn't contain changes. Submit different information to create a change set."
+        # Only a terminal FAILED waiter plus a confirmed empty UPDATE is harmless.
+        # Permission errors/timeouts must still stop, even if an old empty set is describable.
+        $terminalFailure = $waitFailure -match '(?s)Waiter ChangeSetCreateComplete failed:.*terminal failure state:.*"FAILED"'
+        if ($type -eq 'UPDATE' -and $details.Status -eq 'FAILED' -and $emptyReason -and -not $details.Changes -and $terminalFailure) {
+            $skipStackUpdate = $true
+            Write-Host "No infrastructure changes: $reason Continuing with frontend validation and upload."
+        } else {
+            if (-not $reason) { $reason = 'No StatusReason returned.' }
+            throw "Change set '$changeSet' did not become ready ($($details.Status)): $reason Waiter: $waitFailure"
+        }
+    }
+    if (-not $skipStackUpdate) {
+        $null = AwsJson @('cloudformation','execute-change-set','--stack-name',$stackName,'--change-set-name',$changeSet)
+        $waiter = if ($type -eq 'CREATE') { 'stack-create-complete' } else { 'stack-update-complete' }
+        & rtk proxy aws cloudformation wait $waiter --stack-name $stackName --profile $Profile --region $Region
+        if ($LASTEXITCODE -ne 0) { throw 'Stack did not complete. Inspect stack events for the exact failure.' }
+    }
     $stack = AwsJson @('cloudformation','describe-stacks','--stack-name',$stackName)
     $outputs = @{}
     foreach ($entry in $stack.Stacks[0].Outputs) { $outputs[$entry.OutputKey] = $entry.OutputValue }

@@ -3,9 +3,9 @@ import type {Scenario, Task} from '../lib/types';
 import {ActionInputs} from './demo-comparison';
 import {money} from '../lib/workflow';
 
-export function WorkInstructions({scenario,tasks,approved,busy,pending,onComplete,feedback}: {
+export function WorkInstructions({scenario,tasks,approved,busy,pending,onComplete,feedback,children,reviewing=false,authorityReason}: {
   scenario: Scenario; tasks: Task[]; approved: boolean; busy: boolean; pending: string | null;
-  onComplete: (task: Task) => void; feedback: (scope: string) => ReactNode;
+  onComplete: (task: Task) => void; feedback: (scope: string) => ReactNode; children?: ReactNode; reviewing?: boolean; authorityReason?: string;
 }) {
   const completed = new Set(scenario.completed.map(t => t.lot_id));
   const names = (task: Task) => task.worker_ids.map(id => scenario.workers.find(w => w.id === id)?.name || 'Unknown crew member').join(', ');
@@ -23,13 +23,14 @@ export function WorkInstructions({scenario,tasks,approved,busy,pending,onComplet
           onClick={() => onComplete(task)} aria-label={`Record ${task.lot_id} simulated completion`}>
           {pending === scope ? 'Recording simulated completion…' : 'Record simulated completion'}
         </button>
-        {!approved && <small id={`${prefix}-${task.lot_id}-reason`}>Approve the current draft before recording completion.</small>}
+        {!approved && <small id={`${prefix}-${task.lot_id}-reason`}>{authorityReason || 'Approve the current draft before recording completion.'}</small>}
       </>}
       {feedback(scope)}
     </div>;
   };
   return <section className="panel work-panel" id="work-instructions" tabIndex={-1} aria-labelledby="work-heading">
-    <div className="panel-heading"><div><h2 id="work-heading">Work instructions</h2><p>Report simulated execution at the scheduled times; this does not verify real work.</p></div><span className="pill">{scenario.completed.length} / {tasks.length} reported complete</span></div>
+    <div className="panel-heading"><div><h2 id="work-heading">{authorityReason ? 'Cached assignments — not confirmed' : approved ? 'Work instructions' : reviewing ? 'Review assignments' : 'Retained simulated work'}</h2><p>{authorityReason || (approved ? 'Report simulated execution at the scheduled times; this does not verify real work.' : reviewing ? 'Review lot, crew, resource and timing before approving below.' : 'Completed protection is retained. Generate a new draft before approving additional work.')}</p></div><span className="pill">{scenario.completed.length} / {tasks.length} reported complete</span></div>
+    {!tasks.length && <p className="detail-copy">No assignments in this plan. Approval records a zero-action decision and does not confirm physical protection.</p>}
     <div className="desktop-work table-scroll" tabIndex={0} role="region" aria-label="Work instructions table">
       <table><thead><tr><th>Lot / action</th><th>Window</th><th>Assigned crew</th><th>Resources / estimate</th><th>Simulated reporting</th></tr></thead>
         <tbody>{tasks.map(task => <tr key={task.lot_id} data-lot={task.lot_id}>
@@ -45,5 +46,6 @@ export function WorkInstructions({scenario,tasks,approved,busy,pending,onComplet
       {status(task,'mobile')}<ActionInputs scenario={scenario} task={task}/>
     </article>)}</div>
     <p className="footnote">Demo assumption: a reported action occurred at its scheduled start/end. Its protection resource stays allocated. Unfinished actions restart in full on replanning; partial work is outside this MVP.</p>
+    {children}
   </section>;
 }

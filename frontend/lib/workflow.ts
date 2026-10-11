@@ -28,12 +28,44 @@ export function deriveWorkflow(data: YardState, history: SavedPlan[]) {
   const revised = Boolean(previous);
   const stateLabel = active ? active.state === 'approved' ? 'Approved' : revised ? 'Revised draft — awaiting approval' : 'Draft — awaiting approval'
     : latest?.state === 'superseded' ? 'Superseded — re-optimisation required' : 'No plan';
-  const primaryLabel = active?.state === 'draft' ? revised ? 'Review and approve revised plan' : 'Review and approve'
+  const primaryLabel = active?.plan.tasks.length === 0 ? 'Change conditions' : active?.state === 'draft' ? 'Review assignments'
     : active?.state === 'approved' ? 'View work instructions' : latest?.state === 'superseded' ? 'Re-optimise' : 'Generate plan';
   return {active, completed, upcoming, initialLoss, completedBenefit, plannedBenefit,
     residual: initialLoss - completedBenefit - plannedBenefit, previous, revised, stateLabel, primaryLabel,
     tasks: [...scenario.completed, ...upcoming].sort((a,b) => a.start-b.start || a.lot_id.localeCompare(b.lot_id)),
     unprotected: scenario.lots.filter(l => l.protection_status === 'exposed' && !completed.has(l.id) && !upcoming.some(t => t.lot_id === l.id))};
+}
+
+export type View = 'Plan & timeline' | 'Material lots' | 'Compare strategies' | 'Activity';
+const viewKeys = {'Plan & timeline':'plan', 'Material lots':'lots', 'Compare strategies':'compare', Activity:'activity'} as const;
+export function viewFromQuery(query: string): View {
+  const key = new URLSearchParams(query).get('view');
+  return (Object.keys(viewKeys) as View[]).find(view => viewKeys[view] === key) || 'Plan & timeline';
+}
+// Construct only public view/search parameters; never copy session state into a URL.
+export function viewHref(view: View, search = '') {
+  const query = new URLSearchParams({view:viewKeys[view]});
+  if (view === 'Material lots' && search) query.set('q',search);
+  return `/?${query}`;
+}
+
+export function validateScenarioTimes(cutoff: string, clock: string, minimum: number) {
+  const errors: {deadline?: string; elapsed?: string} = {};
+  const integer = (value: string) => /^\d+$/.test(value.trim()) && Number.isSafeInteger(Number(value)) ? Number(value) : null;
+  const deadline = integer(cutoff), elapsed = integer(clock);
+  if (deadline === null || deadline < minimum || deadline > 230) errors.deadline = `Enter a whole-number cutoff from minute ${minimum} to 230.`;
+  if (elapsed === null || elapsed < minimum || elapsed > 230 || (!errors.deadline && deadline !== null && elapsed > deadline)) {
+    errors.elapsed = `Enter a whole-number elapsed time from minute ${minimum} to ${errors.deadline ? 'the valid cutoff' : deadline}.`;
+  }
+  return {errors, values: Object.keys(errors).length || deadline === null || elapsed === null ? null : {deadline, now_minute:elapsed}};
+}
+
+export function zeroActionExplanation(scenario: Scenario) {
+  const pending = scenario.lots.filter(l => l.protection_status === 'exposed' && !scenario.completed.some(t => t.lot_id === l.id));
+  if (!pending.length) return 'No eligible exposed lots remain in this scenario.';
+  if (!scenario.workers.some(w => w.enabled)) return 'No crew are available.';
+  if (scenario.now_minute >= scenario.deadline) return 'The scenario clock has reached the handling cutoff.';
+  return 'No additional actions were selected under the current handling and resource limits. A more specific cause is not provided by this result.';
 }
 
 export function assignment(task: Task | undefined, scenario: Scenario) {

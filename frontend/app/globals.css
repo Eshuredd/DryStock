@@ -1,7 +1,7 @@
 @import "tailwindcss";
 @theme {--font-sans: "Segoe UI", Arial, sans-serif;}
 
-:root {--ink:#21352b;--muted:#52644f;--green:#276746;--line:#dce4d7;--surface:#fff;}
+:root {--ink:#21352b;--muted:#52644f;--green:#276746;--line:#dce4d7;--surface:#fff;--control-border:#52644f;}
 * {box-sizing:border-box}
 body {margin:0;background:#f6f7f2;color:var(--ink);font:14px/1.5 "Segoe UI",Arial,sans-serif}
 button,input {font:inherit}
@@ -120,7 +120,26 @@ td strong {color:#304c37}
 .scenario-controls form>p {color:var(--muted);margin-bottom:16px}
 .scenario-fields {display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:16px}
 .field label {display:block;margin-bottom:6px;font-size:14px;color:#304c37}
-input[type=number],.search-label input {border:1px solid #899f7f;border-radius:4px;padding:10px;background:#fff;color:var(--ink);width:100%;font-size:16px;min-height:44px}
+input[type=number],.search-label input {border:1px solid var(--control-border);border-radius:4px;padding:10px;background:#fff;color:var(--ink);width:100%;font-size:16px;min-height:44px}
+input:disabled {border-color:#bdc9b8;background:#edf0e9}
+.field-error {color:#723724;font-size:14px;margin-top:6px}
+.field-error:empty {display:none}
+.approval-actions {padding:16px 20px}
+.approval-actions p {color:var(--muted);margin-bottom:12px}
+.zero-action p {margin-top:8px}
+.mobile-lots {display:none}
+.lot-card {padding:18px 20px;border-top:1px solid var(--line);overflow-wrap:anywhere}
+.lot-card-heading {display:flex;gap:8px 16px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.lot-card-heading h3 {margin:0}
+.lot-card p {color:var(--muted);margin-top:6px}
+.lot-card>details>summary {padding-inline:0;text-decoration:underline;text-underline-offset:3px}
+.lot-details .action-option {min-width:0}
+.historical-content {padding:0 0 12px;overflow-wrap:anywhere}
+.historical-content h3 {margin-top:16px}
+.historical-task {padding:12px 0;border-top:1px solid var(--line)}
+.historical-content .panel {margin-top:16px}
+.historical-plan>summary {padding-inline:0}
+@media(max-width:767px) {.desktop-lots {display:none}.mobile-lots {display:block}}
 .field small {margin-top:6px}
 .checkbox-row {display:flex;align-items:center;gap:10px;font-size:14px;color:#304c37;min-height:44px}
 input[type=checkbox] {accent-color:#276746;width:20px;height:20px}

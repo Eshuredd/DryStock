@@ -47,7 +47,7 @@ def response(status, body, origin=''):
         headers.update({'Access-Control-Allow-Origin': origin, 'Vary': 'Origin'})
     if status == 429:
         headers['Retry-After'] = '60'
-    return {'statusCode': status, 'headers': headers, 'body': json.dumps(body)}
+    return {'statusCode': status, 'headers': headers, 'body': '' if status == 204 else json.dumps(body)}
 
 
 def handler(event, context):
@@ -61,6 +61,14 @@ def handler(event, context):
             return response(403, {'detail': 'Origin is not allowed'})
         method = event['requestContext']['http']['method']
         path = event.get('rawPath', '')
+        if method == 'OPTIONS' and path.startswith('/api/'):
+            preflight = response(204, None, origin)
+            preflight['headers'].update({
+                'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+                'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+                'Access-Control-Max-Age': '300',
+            })
+            return preflight
         raw = event.get('body') or ''
         if len(raw.encode()) > 32768:
             return response(413, {'detail': 'Request exceeds 32 KiB'}, origin)

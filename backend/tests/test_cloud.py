@@ -2,6 +2,7 @@
 import copy
 import json
 from types import SimpleNamespace
+from unittest.mock import Mock
 import pytest
 pytest.importorskip('moto', reason='Install backend/requirements-cloud-test.txt for optional cloud tests')
 import boto3
@@ -173,6 +174,47 @@ def test_request_size_cors_and_no_public_scenario_upload(cloud):
     assert call('/api/sessions', body={'padding': 'x' * 40000})[0] == 413
     assert call('/api/sessions', headers={'origin': 'https://evil.example'})[0] == 403
     assert call('/api/sessions', headers={'origin': 'https://example.cloudfront.net'})[0] == 201
+
+
+@pytest.mark.parametrize('path, raw_body', [
+    ('/api/sessions', ''),
+    ('/api/state', ''),
+    ('/api/sessions', 'not JSON'),
+])
+def test_allowed_preflight_needs_no_token_body_or_storage(monkeypatch, path, raw_body):
+    origin = 'https://example.cloudfront.net'
+    monkeypatch.setenv('DRYSTOCK_ORIGIN', origin)
+    get_store = Mock(side_effect=AssertionError('Preflight must not access DynamoDB'))
+    monkeypatch.setattr(cloud_handler, 'get_store', get_store)
+    event = {'rawPath': path, 'requestContext': {'http': {'method': 'OPTIONS'}},
+             'headers': {'origin': origin, 'access-control-request-method': 'POST',
+                         'access-control-request-headers': 'content-type,authorization'},
+             'body': raw_body}
+
+    result = cloud_handler.handler(event, None)
+
+    assert result['statusCode'] == 204
+    assert result['body'] == ''
+    assert result['headers']['Access-Control-Allow-Origin'] == origin
+    assert result['headers']['Vary'] == 'Origin'
+    assert result['headers']['Access-Control-Allow-Methods'] == 'GET, POST, OPTIONS'
+    assert result['headers']['Access-Control-Allow-Headers'] == 'Content-Type, Authorization'
+    assert result['headers']['Access-Control-Max-Age'] == '300'
+    get_store.assert_not_called()
+
+
+def test_disallowed_preflight_origin_is_rejected_without_storage(monkeypatch):
+    monkeypatch.setenv('DRYSTOCK_ORIGIN', 'https://example.cloudfront.net')
+    get_store = Mock(side_effect=AssertionError('Rejected origins must not access DynamoDB'))
+    monkeypatch.setattr(cloud_handler, 'get_store', get_store)
+    event = {'rawPath': '/api/sessions', 'requestContext': {'http': {'method': 'OPTIONS'}},
+             'headers': {'origin': 'https://evil.example'}}
+
+    result = cloud_handler.handler(event, None)
+
+    assert result['statusCode'] == 403
+    assert 'Access-Control-Allow-Origin' not in result['headers']
+    get_store.assert_not_called()
 
 
 def test_quota_and_concurrent_compute_guard(cloud):

@@ -20,6 +20,25 @@ const deferred = () => {let resolve,reject;const promise=new Promise((yes,no)=>{
 const tick = () => new Promise(resolve=>setImmediate(resolve));
 const approve = {kind:'approve',scope:'approval',path:'/api/plans/A/approve',planId:'A',success:'Manager approval recorded.'};
 const complete = {kind:'complete',scope:'complete-L02',path:'/api/plans/A/tasks/L02/complete',planId:'A',lotId:'L02',success:'L02 simulated completion recorded.'};
+
+test('reset waits for authoritative state and removes completion execution authority',async()=>{
+  const current={...yard('A','approved',1,[task]),scenario_epoch:0};
+  const restored={...yard(),revision:2,latest:null,scenario_epoch:1,input_source:'sample'};
+  const h=await setup(current,async()=>response(restored));
+  const read=deferred();h.setGet(()=>read.promise);
+  const result=h.controller.mutate({kind:'reset',scope:'reset',path:'/api/reset',success:'Sample restored; no active plan.'});
+  await tick();assert.equal(canExecute(h.controller.getSnapshot()),false);
+  read.resolve(response(restored));assert.equal(await result,true);
+  const s=h.controller.getSnapshot();assert.equal(s.data.latest,null);assert.equal(s.data.scenario.completed.length,0);
+  assert.match(scopedFeedback(s,'reset').message,/no active plan/);
+});
+
+test('reset success is not claimed when another client changes the acknowledged scenario',async()=>{
+  const restored={...yard(),revision:1,latest:null};
+  const h=await setup(yard(),async()=>response(restored));h.setCurrent(yard('B','draft',2));
+  assert.equal(await h.controller.mutate({kind:'reset',scope:'reset',path:'/api/reset',success:'Sample restored.'}),false);
+  assert.match(h.controller.getSnapshot().feedback.message,/Plan changed/);
+});
 async function setup(initial=yard(),post=async()=>response(yard('A','approved'))) {
   const calls=[];let current=initial,get=async()=>response(current);
   const controller=createAuthorityController(async(path,options={})=>{

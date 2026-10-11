@@ -3,6 +3,33 @@ import type {SavedPlan, Scenario, Task, YardState} from './types';
 export const money = (value: number) => new Intl.NumberFormat('en-IN', {style: 'currency', currency: 'INR', maximumFractionDigits: 0}).format(value);
 export const benefit = (tasks: Task[]) => tasks.reduce((sum, task) => sum + task.saved_loss_inr, 0);
 
+export function computeLabel(value: unknown) {
+  return value === 'aws' ? 'AWS Lambda' : value === 'sam' ? 'AWS SAM local API' : value === 'local' ? 'Local Python' : null;
+}
+
+// Compare saved generation estimates, never mix in later reported completion.
+export function strategyEstimates(current: SavedPlan) {
+  const p = current.plan;
+  const valid = (v: typeof p) => v?.validation?.valid &&
+    [v.initial_loss_inr,v.completed_saved_inr,v.planned_saved_inr,v.residual_loss_inr].every(n=>Number.isFinite(n) && n >= 0) &&
+    v.residual_loss_inr === v.initial_loss_inr-v.completed_saved_inr-v.planned_saved_inr;
+  if (!valid(p)) return null;
+  const baselines = (Array.isArray(current.comparisons) ? current.comparisons : []).filter(v=>valid(v) &&
+    v.initial_loss_inr === p.initial_loss_inr && v.completed_saved_inr === p.completed_saved_inr);
+  const best = baselines.reduce<typeof p | null>((chosen,v)=>!chosen || v.residual_loss_inr < chosen.residual_loss_inr ? v : chosen,null);
+  const difference = best ? best.residual_loss_inr-p.residual_loss_inr : null;
+  const percent = best && best.residual_loss_inr > 0 && difference !== null ? difference/best.residual_loss_inr*100 : null;
+  const series = [{name:'No additional protection',value:p.initial_loss_inr-p.completed_saved_inr},
+    ...(best ? [{name:`Strongest baseline · ${best.strategy}`,value:best.residual_loss_inr}] : []),
+    {name:'DryStock plan',value:p.residual_loss_inr}];
+  return {baselines,best,difference,percent,series,maximum:Math.max(...series.map(v=>v.value)),retained:p.completed_saved_inr};
+}
+
+export function taskResources(task: Task, scenario: Scenario) {
+  return [scenario.forklifts.find(r=>r.id === task.forklift_id)?.name,
+    scenario.tarps.find(r=>r.id === task.tarp_id)?.name,scenario.storage.find(r=>r.id === task.storage_id)?.name].filter(Boolean).join(', ') || 'Resource name unavailable';
+}
+
 export function conditionsChanged(before: Scenario, after: Scenario) {
   return before.deadline !== after.deadline || before.now_minute !== after.now_minute || before.rain_arrival_minute !== after.rain_arrival_minute ||
     before.workers.some(w => after.workers.find(a => a.id === w.id)?.enabled !== w.enabled) ||
@@ -11,8 +38,9 @@ export function conditionsChanged(before: Scenario, after: Scenario) {
 
 export function deriveWorkflow(data: YardState, history: SavedPlan[]) {
   const scenario = data.scenario;
-  const resetAt = data.events.find(e => e.kind === 'demo_reset')?.at;
-  const afterReset = (plan: SavedPlan) => !resetAt || Date.parse(plan.created) > Date.parse(resetAt);
+  const resetAt = data.events.find(e => e.kind === 'demo_reset' || e.kind === 'scenario_entered')?.at;
+  const afterReset = (plan: SavedPlan) => data.scenario_epoch !== undefined && plan.scenario_epoch !== undefined
+    ? plan.scenario_epoch === data.scenario_epoch : !resetAt || Date.parse(plan.created) > Date.parse(resetAt);
   const latest = data.latest && afterReset(data.latest) ? data.latest : null;
   const active = latest?.state !== 'superseded' ? latest : null;
   const completed = new Set(scenario.completed.map(t => t.lot_id));
@@ -49,12 +77,12 @@ export function viewHref(view: View, search = '') {
   return `/?${query}`;
 }
 
-export function validateScenarioTimes(cutoff: string, clock: string, minimum: number) {
+export function validateScenarioTimes(cutoff: string, clock: string, minimum: number, maximum = 230) {
   const errors: {deadline?: string; elapsed?: string} = {};
   const integer = (value: string) => /^\d+$/.test(value.trim()) && Number.isSafeInteger(Number(value)) ? Number(value) : null;
   const deadline = integer(cutoff), elapsed = integer(clock);
-  if (deadline === null || deadline < minimum || deadline > 230) errors.deadline = `Enter a whole-number cutoff from minute ${minimum} to 230.`;
-  if (elapsed === null || elapsed < minimum || elapsed > 230 || (!errors.deadline && deadline !== null && elapsed > deadline)) {
+  if (deadline === null || deadline < minimum || deadline > maximum) errors.deadline = `Enter a whole-number cutoff from minute ${minimum} to ${maximum}.`;
+  if (elapsed === null || elapsed < minimum || elapsed > maximum || (!errors.deadline && deadline !== null && elapsed > deadline)) {
     errors.elapsed = `Enter a whole-number elapsed time from minute ${minimum} to ${errors.deadline ? 'the valid cutoff' : deadline}.`;
   }
   return {errors, values: Object.keys(errors).length || deadline === null || elapsed === null ? null : {deadline, now_minute:elapsed}};

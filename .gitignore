@@ -5,6 +5,7 @@ __pycache__/
 *.sqlite3-*
 frontend/node_modules/
 frontend/.next/
+frontend/.next-local-*/
 frontend/next-env.d.ts
 frontend/*.tsbuildinfo
 .env*
@@ -15,3 +16,4 @@ sam/__pycache__/
 .dependency-resolution/
 frontend/out/
 docs/
+demo-video/

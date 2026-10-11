@@ -18,7 +18,8 @@ function load(relative) {
   vm.runInNewContext(code,{exports,Intl,Set,JSON,URLSearchParams,require: name => name.startsWith('.') ? load(path.relative(path.dirname(fileURLToPath(import.meta.url)),path.resolve(path.dirname(filename),name))+ (name.endsWith('workflow') ? '.ts' : '.tsx')) : require(name)});
   return exports;
 }
-const {deriveWorkflow,comparisonTotals,assignment,validateScenarioTimes,viewFromQuery,viewHref,zeroActionExplanation} = load('../lib/workflow.ts');
+const {deriveWorkflow,comparisonTotals,assignment,validateScenarioTimes,viewFromQuery,viewHref,zeroActionExplanation,strategyEstimates,computeLabel} = load('../lib/workflow.ts');
+const {CrewSchedule} = load('../app/crew-schedule.tsx');
 const {WorkInstructions} = load('../app/work-instructions.tsx');
 const {StrategyComparison} = load('../app/strategy-comparison.tsx');
 const {LotInventory} = load('../app/lot-inventory.tsx');
@@ -28,8 +29,22 @@ const l02 = {lot_id:'L02',action:'cover',start:0,end:12,worker_ids:['W1','W3'],t
 const l06 = {...l02,lot_id:'L06',start:12,end:26,tarp_id:'T1',saved_loss_inr:7020};
 const scenario = {...fixture,now_minute:0,completed:[],workers:fixture.workers.map(w=>({...w,enabled:true})),forklifts:fixture.forklifts.map(f=>({...f,enabled:true})),lots:fixture.lots.map(l=>({...l,restrictions:l.restrictions || [],actions:l.actions.map(a=>({...a,required_skills:a.required_skills || []})),protection_status:l.protection_status || 'exposed'}))};
 const plan = {strategy:'CP-SAT',solver_status:'OPTIMAL',tasks:[l02,l06],initial_loss_inr:54230,completed_saved_inr:0,planned_saved_inr:12870,residual_loss_inr:41360,solve_seconds:.1,best_bound_inr:12870,validation:{valid:true,errors:[]}};
-const original = {id:'original',state:'draft',revision:0,scenario,plan,comparisons:[{...plan,strategy:'Highest loss first',planned_saved_inr:12000}]};
+const original = {id:'original',state:'draft',revision:0,scenario,plan,comparisons:[{...plan,strategy:'Highest loss first',planned_saved_inr:12000,residual_loss_inr:42230}]};
 const state = (latest, s=scenario) => ({compute_backend:'local',revision:0,scenario:s,latest,events:[]});
+
+test('scenario generations exclude prior results even after reset audit leaves the latest-30 window',()=>{
+  const old={...original,state:'superseded',scenario_epoch:0};
+  const fresh={...original,id:'new',scenario_epoch:1};
+  const s={...state(fresh),scenario_epoch:1};
+  const w=deriveWorkflow(s,[old]);assert.equal(w.previous,undefined);assert.equal(w.active.id,'new');
+  const restored=deriveWorkflow({...state(old),scenario_epoch:1},[old]);
+  assert.equal(restored.active,null);assert.equal(restored.previous,undefined);assert.equal(restored.stateLabel,'No plan');
+});
+
+test('condition edits honor the custom safety buffer',()=>{
+  assert(validateScenarioTimes('240','0',0,240).values);
+  assert(validateScenarioTimes('201','0',0,200).errors.deadline);
+});
 
 test('workflow follows generation, approval, completion, disruption and revised approval',()=>{
   assert.equal(deriveWorkflow(state(null),[]).primaryLabel,'Generate plan');
@@ -99,8 +114,45 @@ test('comparison verdict precedes table and preserves tie/better-baseline cases'
   assert.match(html,/not measured savings or a general performance claim/);
   const tie={...original,comparisons:[{...plan,strategy:'Highest loss first'}]};
   assert.match(renderToStaticMarkup(createElement(StrategyComparison,{current:tie})),/strongest baseline matches/);
-  const better={...original,comparisons:[{...plan,strategy:'Highest loss first',planned_saved_inr:14000}]};
+  const better={...original,comparisons:[{...plan,strategy:'Highest loss first',planned_saved_inr:14000,residual_loss_inr:40230}]};
   assert.match(renderToStaticMarkup(createElement(StrategyComparison,{current:better})),/Do not claim an advantage/);
+});
+
+test('comparison uses strongest matching residual and retains completed benefit equally',()=>{
+  const snapshot={...original,plan:{...plan,completed_saved_inr:5850,planned_saved_inr:7020},comparisons:[
+    {...plan,strategy:'Weak',completed_saved_inr:5850,planned_saved_inr:6000,residual_loss_inr:42380},
+    {...plan,strategy:'Strong',completed_saved_inr:5850,planned_saved_inr:6500,residual_loss_inr:41880},
+    {...plan,strategy:'Wrong retained',planned_saved_inr:20000,residual_loss_inr:34230}]};
+  const e=strategyEstimates(snapshot);
+  assert.equal(e.best.strategy,'Strong');assert.equal(e.series[0].value,48380);
+  assert.equal(e.series[2].value,41360);assert.equal(e.difference,520);
+  assert.equal(e.percent,520/41880*100);assert.equal(e.baselines.length,2);
+  // Later completion does not enter the saved comparison calculation.
+  assert.equal(strategyEstimates({...snapshot,scenario:{...scenario,completed:[l02,l06]}}).series[0].value,48380);
+});
+
+test('comparison handles zero, equality, worse, missing and invalid estimates honestly',()=>{
+  const zero={...plan,initial_loss_inr:0,completed_saved_inr:0,planned_saved_inr:0,residual_loss_inr:0,tasks:[]};
+  const e=strategyEstimates({...original,plan:zero,comparisons:[{...zero,strategy:'Zero'}]});
+  assert.equal(e.maximum,0);assert.equal(e.percent,null);assert.equal(e.difference,0);
+  assert.equal(strategyEstimates({...original,comparisons:[]}).best,null);
+  assert.equal(strategyEstimates({...original,comparisons:undefined}).difference,null);
+  assert.equal(strategyEstimates({...original,plan:{...plan,residual_loss_inr:NaN}}),null);
+  const worse=strategyEstimates({...original,comparisons:[{...plan,strategy:'Better',planned_saved_inr:14000,residual_loss_inr:40230}]});
+  assert.equal(worse.difference,-1130);assert(worse.percent<0);
+  const html=renderToStaticMarkup(createElement(StrategyComparison,{current:{...original,comparisons:[]}}));
+  assert.match(html,/Baseline comparison unavailable/);assert.doesNotMatch(html,/Infinity|NaN/);
+  assert.match(html,/No additional protection/);assert.match(html,/accessible table/);
+});
+
+test('schedule uses real windows, named tools and a separate simulated completion status',()=>{
+  const s={...scenario,deadline:35,completed:[l02]};
+  const html=renderToStaticMarkup(createElement(CrewSchedule,{scenario:s,tasks:[l06,l02]}));
+  assert.match(html,/Cutoff: minute 35/);assert.match(html,/Reported complete \(simulated\)/);
+  assert.match(html,/Pending scheduled work/);assert.match(html,/0–12 min/);assert.match(html,/12–26 min/);
+  assert(html.indexOf('<ol')<html.lastIndexOf('Crew:'));
+  assert.match(html,/left:0%;width:34.285/);assert.match(html,/left:34.285/);
+  assert.equal(computeLabel(undefined),null);assert.equal(computeLabel('aws'),'AWS Lambda');assert.equal(computeLabel('local'),'Local Python');
 });
 
 test('numeric drafts reject empty, fractional and out-of-range inputs before mutation',()=>{

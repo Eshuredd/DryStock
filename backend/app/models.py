@@ -1,8 +1,12 @@
 from typing import Literal
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
-class Action(BaseModel):
+class InputModel(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+
+
+class Action(InputModel):
     kind: Literal['cover', 'relocate']
     duration: int = Field(ge=1, le=240)
     workers: int = Field(ge=1, le=10)
@@ -11,7 +15,7 @@ class Action(BaseModel):
     effectiveness_bps: int = Field(ge=1, le=10000)
 
 
-class Lot(BaseModel):
+class Lot(InputModel):
     id: str
     category: str
     description: str
@@ -35,7 +39,7 @@ class Lot(BaseModel):
         return self
 
 
-class Worker(BaseModel):
+class Worker(InputModel):
     id: str
     name: str
     skills: list[str] = Field(default_factory=list)
@@ -44,7 +48,7 @@ class Worker(BaseModel):
     enabled: bool = True
 
 
-class Resource(BaseModel):
+class Resource(InputModel):
     id: str
     name: str
     capacity_kg: int = Field(gt=0)
@@ -52,7 +56,7 @@ class Resource(BaseModel):
     enabled: bool = True
 
 
-class Forklift(BaseModel):
+class Forklift(InputModel):
     id: str
     name: str
     available_from: int = Field(default=0, ge=0)
@@ -60,7 +64,7 @@ class Forklift(BaseModel):
     enabled: bool = True
 
 
-class Task(BaseModel):
+class Task(InputModel):
     lot_id: str
     action: Literal['cover', 'relocate']
     start: int = Field(ge=0)
@@ -72,7 +76,7 @@ class Task(BaseModel):
     saved_loss_inr: int = Field(ge=0)
 
 
-class Scenario(BaseModel):
+class Scenario(InputModel):
     id: str = 'monsoon-yard'
     name: str = 'Surat Paper Recovery Yard'
     weather_label: str = 'SIMULATED · approaching heavy rain'

@@ -62,6 +62,33 @@ def test_tokens_isolation_reset_and_history(cloud):
     assert call('/api/reset', a, {'revision': 0})[0] == 200
     assert store.load(b)['state']['revision'] == 0
     assert store.load(a)['state']['revision'] == 1
+    assert store.load(a)['state']['latest'] is None
+    assert store.history(store.load(a))[0]['state'] == 'superseded'
+
+
+def test_custom_inputs_reset_and_arbitrary_lot_completion_in_local_cloud_double(cloud):
+    store, _ = cloud
+    a, b = session(), session()
+    scenario=sample().model_dump()
+    scenario['lots']=scenario['lots'][:1]
+    scenario['lots'][0]['id']='operator-load'
+    for resource in scenario['tarps']+scenario['storage']:
+        resource['categories']=['cardboard']
+    status,s=call('/api/scenario',a,{'revision':0,'scenario':scenario})
+    assert status==200 and s['input_source']=='custom' and s['latest'] is None
+    assert store.load(b)['state']['scenario']==sample().model_dump()
+    assert call('/api/scenario',a,{'revision':0,'scenario':scenario})[0]==409
+    status,s=call('/api/plans',a,{'revision':1})
+    assert status==200 and s['latest']['plan']['validation']['valid']
+    pid=s['latest']['id']
+    assert call(f'/api/plans/{pid}/approve',a,{'revision':1})[0]==200
+    status,s=call(f'/api/plans/{pid}/tasks/operator-load/complete',a,{'revision':1})
+    assert status==200 and len(s['scenario']['completed'])==1
+    assert call('/api/scenario',a,{'revision':2,'scenario':scenario})[0]==409
+    status,s=call('/api/reset',a,{'revision':2})
+    assert status==200 and s['latest'] is None and s['scenario']==sample().model_dump()
+    history=store.history(store.load(a))
+    assert len(history)==1 and history[0]['state']=='superseded'
 
 
 def test_expiry_enforced_before_ttl_removal(cloud):

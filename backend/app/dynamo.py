@@ -63,6 +63,7 @@ class DynamoStore:
         token = secrets.token_urlsafe(32)
         pk, expires = session_key(token), int(self.clock()) + self.ttl
         state = {'scenario': sample().model_dump(), 'revision': 0, 'latest': None, 'events': [],
+                 'scenario_epoch': 0, 'input_source': 'sample',
                  'compute_backend': 'aws', 'persistence': 'dynamodb', 'expires_at': expires}
         self.client.put_item(TableName=self.table, Item={**self.key(pk), 'version': {'N': '0'},
             'expiresAt': {'N': str(expires)}, 'requests': {'N': '0'}, 'computes': {'N': '0'},
@@ -126,12 +127,12 @@ class DynamoStore:
             raise ValueError('Demo state exceeds its storage limit')
         plan_key = loaded['plan_key']
         writes = []
-        if new_plan:
+        if new_plan or state['latest'] is None:
             if loaded['state']['latest']:
                 old = copy.deepcopy(loaded['state']['latest'])
                 old['state'] = 'superseded'
                 writes.append(self.plan_put(pk, plan_key, old, state['expires_at']))
-            plan_key = f"PLAN#{version + 1:012d}#{state['latest']['id']}"
+            plan_key = f"PLAN#{version + 1:012d}#{state['latest']['id']}" if new_plan else ''
         if state['latest']:
             writes.append(self.plan_put(pk, plan_key, state['latest'], state['expires_at']))
         writes.insert(0, {'Update': {'TableName': self.table, 'Key': self.key(pk),
@@ -162,6 +163,7 @@ class DynamoStore:
         state = copy.deepcopy(loaded['state'])
         pid = uuid4().hex[:12]
         state['latest'] = {'id': pid, 'revision': revision, 'state': 'draft',
+                           'scenario_epoch': state.get('scenario_epoch', 0),
             'created': datetime.fromtimestamp(self.clock(), timezone.utc).isoformat(),
             'plan': result.plan.model_dump(), 'comparisons': [p.model_dump() for p in result.comparisons],
             'scenario': scenario.model_dump(), 'execution': result.model_dump(exclude={'plan', 'comparisons'})}
@@ -208,10 +210,21 @@ class DynamoStore:
     def reset(self, loaded, revision):
         self.check(loaded, revision)
         state = copy.deepcopy(loaded['state'])
-        state.update(scenario=sample().model_dump(), revision=revision + 1)
-        if state['latest']:
-            state['latest']['state'] = 'superseded'
+        state.update(scenario=sample().model_dump(), revision=revision + 1, latest=None,
+                     scenario_epoch=state.get('scenario_epoch', 0) + 1, input_source='sample')
         self.event(state, 'demo_reset', 'Only this temporary fictional session reset')
+        return self.commit(loaded, state)
+
+    def replace_scenario(self, loaded, revision, scenario):
+        from .scenario_input import validate_custom
+        current = self.check(loaded, revision)
+        validate_custom(scenario)
+        if current.completed:
+            raise RevisionConflict('Reset simulated completed work before replacing scenario inputs')
+        state = copy.deepcopy(loaded['state'])
+        state.update(scenario=scenario.model_dump(), revision=revision + 1, latest=None,
+                     scenario_epoch=state.get('scenario_epoch', 0) + 1, input_source='custom')
+        self.event(state, 'scenario_entered', 'Custom operator assumptions saved only in this demo session')
         return self.commit(loaded, state)
 
     def history(self, loaded):

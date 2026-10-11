@@ -28,7 +28,19 @@ class Store:
             columns = {r['name'] for r in db.execute('PRAGMA table_info(plans)')}
             if 'execution' not in columns:
                 db.execute("ALTER TABLE plans ADD COLUMN execution TEXT NOT NULL DEFAULT '{}'")
-            db.execute('INSERT OR IGNORE INTO yard VALUES (1, 0, ?)', (sample().model_dump_json(),))
+            if 'epoch' not in columns:
+                db.execute('ALTER TABLE plans ADD COLUMN epoch INTEGER NOT NULL DEFAULT 0')
+            yard_columns = {r['name'] for r in db.execute('PRAGMA table_info(yard)')}
+            if 'epoch' not in yard_columns:
+                db.execute('ALTER TABLE yard ADD COLUMN epoch INTEGER NOT NULL DEFAULT 0')
+                db.execute("ALTER TABLE yard ADD COLUMN input_source TEXT NOT NULL DEFAULT 'sample'")
+            db.execute('INSERT OR IGNORE INTO yard(id,revision,data) VALUES (1, 0, ?)', (sample().model_dump_json(),))
+            # Upgrade resets from older databases without relying on the bounded UI audit list.
+            if 'epoch' not in columns:
+                reset = db.execute("SELECT at FROM events WHERE kind='demo_reset' ORDER BY id DESC LIMIT 1").fetchone()
+                if reset:
+                    db.execute('UPDATE yard SET epoch=1 WHERE id=1')
+                    db.execute('UPDATE plans SET epoch=1 WHERE created>?', (reset['at'],))
 
     @contextmanager
     def connection(self):
@@ -56,13 +68,15 @@ class Store:
             return None
         return {'id': row['id'], 'revision': row['revision'], 'state': row['state'], 'created': row['created'],
                 'plan': json.loads(row['data']), 'comparisons': json.loads(row['comparisons']), 'scenario': json.loads(row['scenario']),
-                'execution': json.loads(row['execution'])}
+                'execution': json.loads(row['execution']), 'scenario_epoch': row['epoch']}
 
     def state(self):
         with self.connection() as db:
             s, rev = self.yard(db)
-            row = db.execute('SELECT * FROM plans ORDER BY rowid DESC LIMIT 1').fetchone()
+            meta = db.execute('SELECT epoch,input_source FROM yard WHERE id=1').fetchone()
+            row = db.execute('SELECT * FROM plans WHERE epoch=? ORDER BY rowid DESC LIMIT 1', (meta['epoch'],)).fetchone()
             return {'scenario': s.model_dump(), 'revision': rev, 'latest': self.plan_row(row),
+                    'scenario_epoch': meta['epoch'], 'input_source': meta['input_source'],
                     'events': [dict(e) for e in db.execute('SELECT * FROM events ORDER BY id DESC LIMIT 30')]}
 
     def check(self, db, revision):
@@ -78,9 +92,10 @@ class Store:
                 raise ValueError('Cannot save invalid plan or baseline summary')
             db.execute("UPDATE plans SET state='superseded' WHERE state IN ('draft','approved')")
             pid = uuid4().hex[:12]
-            db.execute('INSERT INTO plans VALUES (?,?,?,?,?,?,?,?)', (pid, rev, 'draft', plan.model_dump_json(),
+            epoch = db.execute('SELECT epoch FROM yard WHERE id=1').fetchone()['epoch']
+            db.execute('INSERT INTO plans(id,revision,state,data,comparisons,created,scenario,execution,epoch) VALUES (?,?,?,?,?,?,?,?,?)', (pid, rev, 'draft', plan.model_dump_json(),
                        json.dumps([p.model_dump() for p in comparisons]), datetime.now(timezone.utc).isoformat(), s.model_dump_json(),
-                       json.dumps(execution or {'execution_backend': plan.execution_backend})))
+                       json.dumps(execution or {'execution_backend': plan.execution_backend}), epoch))
             self.event(db, 'plan_generated', f'{pid}: {plan.solver_status}, {len(plan.tasks)} tasks')
             return pid
 
@@ -123,9 +138,20 @@ class Store:
     def reset(self, revision: int):
         with self.connection() as db:
             _, rev = self.check(db, revision)
-            db.execute('UPDATE yard SET revision=?, data=? WHERE id=1', (rev + 1, sample().model_dump_json()))
+            db.execute("UPDATE yard SET revision=?, data=?, epoch=epoch+1,input_source='sample' WHERE id=1", (rev + 1, sample().model_dump_json()))
             db.execute("UPDATE plans SET state='superseded' WHERE state IN ('draft','approved')")
             self.event(db, 'demo_reset', 'Fictional sample restored; previous plans retained in history')
+
+    def replace_scenario(self, revision: int, scenario: Scenario):
+        from .scenario_input import validate_custom
+        validate_custom(scenario)
+        with self.connection() as db:
+            current, rev = self.check(db, revision)
+            if current.completed:
+                raise Conflict('Reset simulated completed work before replacing scenario inputs')
+            db.execute("UPDATE yard SET revision=?,data=?,epoch=epoch+1,input_source='custom' WHERE id=1", (rev + 1, scenario.model_dump_json()))
+            db.execute("UPDATE plans SET state='superseded' WHERE state IN ('draft','approved')")
+            self.event(db, 'scenario_entered', 'Custom operator assumptions saved for this demo session; previous plans moved to history')
 
     def history(self):
         with self.connection() as db:

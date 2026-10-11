@@ -35,7 +35,15 @@ Set-Location frontend
 rtk proxy npm.cmd run dev
 ```
 
-The Next.js server forwards `/api/*` to FastAPI. Set `BACKEND_URL` to change that upstream. SQLite defaults to `backend/drystock.sqlite3`; set `DRYSTOCK_DB` to change its path. Services bind to loopback; the demo has no authentication.
+The Next.js server forwards `/api/*` to FastAPI. Set `BACKEND_URL` to change that upstream. SQLite defaults to `backend/drystock.sqlite3`; set `DRYSTOCK_DB` to change its path. Services bind to loopback. Browser tabs receive a four-hour demo capability and a separate SQLite yard under `<database-stem>.sessions/`; reload retains that tab's session. Sessions allow 300 requests and 20 plan generations; reset does not replenish quotas. This isolates demonstrations, rather than providing production user authentication. Anonymous local API calls retain the original SQLite yard for development compatibility; custom inputs require a session.
+
+## Choose planning inputs
+
+**Use sample yard** restores the unchanged fictional Surat fixture, clears simulated work, restores default conditions and leaves no active plan. **Generate plan** remains the one-click sample demonstration. Earlier plans and audit events stay in Activity as historical snapshots; reset feedback appears above the workspace after an authoritative state refresh.
+
+**Enter your own scenario** opens a guided editor for weather deadlines, material lots, total values and estimated exposed losses (rupees per lot), handling times (minutes), crew counts and required skills, worker/forklift availability, and tarp/bay capacities (kg) and compatible material codes. Start with empty inputs or explicitly copy the current yard. Defaults and monetary estimates are assumptions, not measured savings or fetched prices/weather. Protection benefit is computed from entered exposed loss and assumed loss reduction.
+
+Save inputs before generating a draft. Both the form and server validate inputs. Limits are 30 lots, 6 workers, 3 forklifts, 6 tarps, 6 bays and 32 KiB per request. A custom save supersedes prior plans and is isolated to this demo session; it never rewrites the sample or benchmark files. Completed work cannot be supplied through the editor or API. Reset before replacing inputs after simulated completion; Change conditions and replanning retain the existing completed work and its occupied resources.
 
 ## Demonstrate the workflow
 
@@ -67,7 +75,7 @@ Weather, yard identity, material prices, expected losses and effectiveness are f
 
 Completion records are explicitly **simulated, operator-attested execution at scheduled times**, not proof of real work or a live dispatch system. Multiple overlapping tasks can be recorded in either order because their attested intervals are fixed. The clock advances to the latest recorded finish. Approval remains valid for recording remaining tasks from that same schedule. Replanning restarts every unfinished task in full at/after the clock; there are no partial or in-progress operations in this MVP. Before operational use, add actual start/finish capture, in-progress locks and remaining work, delay handling, inspections and evidence.
 
-Other limits: whole lots, one lot per protection resource, a single rain event, deterministic durations, no travel/setup between tasks, no rainfall uncertainty, no weather-adjusted residual damage, no resource failure recovery for *already completed* protection, and no arbitrary editable yard configuration in the UI. The JSON fixture can be changed before initialisation or a demo reset; planning modules also accept typed custom scenarios programmatically. FastAPI's `/api/validate` supports independent validation of supplied scenarios and tasks.
+Other limits: whole lots, one lot per protection resource, a single rain event, deterministic durations, no travel/setup between tasks, no rainfall uncertainty, no weather-adjusted residual damage, no resource failure recovery for *already completed* protection, and no forklift weight-capacity model (tarps and bays have kg capacities). Custom scenarios are bounded demo inputs, not an operational dispatch system. FastAPI's `/api/validate` supports independent validation of supplied scenarios and tasks.
 
 ## Tests and verification
 
@@ -91,6 +99,8 @@ Optional cloud-adapter development dependencies: `rtk proxy .\.venv\Scripts\pyth
 |---|---|
 | `GET /api/health` | Local health / simulated mode |
 | `GET /api/state` | Scenario, revision, latest plan and recent audit events |
+| `POST /api/sessions` | Create isolated four-hour demo capability; body `{}` |
+| `POST /api/scenario` | Validate and save session-only `{revision, scenario}`; no supplied completions |
 | `POST /api/plans` | Optimise + compare, save a draft; body `{ "revision": 0 }` |
 | `POST /api/plans/{id}/approve` | Approve current validated draft with revision |
 | `POST /api/plans/{id}/tasks/{lot}/complete` | Record scheduled simulated completion with revision |

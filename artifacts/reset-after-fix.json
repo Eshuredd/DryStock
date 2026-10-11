@@ -1,0 +1,33 @@
+{
+  "http_status": 200,
+  "before_reset": {
+    "revision": 5,
+    "completed": 1,
+    "deadline": 35
+  },
+  "after_reset": {
+    "revision": 6,
+    "completed": 0,
+    "deadline": 60,
+    "clock": 0,
+    "latest": null
+  },
+  "fresh_get_equals_response": true,
+  "persisted_equals_initial": true,
+  "history": [
+    [
+      "ef911b432c6e",
+      "superseded"
+    ],
+    [
+      "00a2067dc647",
+      "superseded"
+    ]
+  ],
+  "reset_event": {
+    "id": 10,
+    "at": "2026-10-11T15:36:36.862407+00:00",
+    "kind": "demo_reset",
+    "detail": "Fictional sample restored; previous plans retained in history"
+  }
+}

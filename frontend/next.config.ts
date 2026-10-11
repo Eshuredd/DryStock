@@ -9,6 +9,7 @@ if (staticExport) {
   }
 }
 const config: NextConfig = staticExport ? {output: 'export', trailingSlash: true} : {
+  ...(process.env.DRYSTOCK_TEST_DIST ? {distDir:process.env.DRYSTOCK_TEST_DIST} : {}),
   async rewrites() {
     return [{source: '/api/:path*', destination: `${process.env.BACKEND_URL || 'http://127.0.0.1:8000'}/api/:path*`}];
   }

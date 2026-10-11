@@ -10,6 +10,7 @@ from .dynamo import DynamoStore, SessionExpired, RevisionConflict, QuotaExceeded
 from .engine import ComputeRequest, execute, SolverUnavailable, InvalidResult
 from .models import Plan
 from .validator import validate_plan
+from .scenario_input import ScenarioInput
 
 _store = None
 
@@ -99,6 +100,9 @@ def handler(event, context):
         if path == '/api/disruptions':
             request = Disruption.model_validate(body)
             return response(200, store.disrupt(loaded, **request.model_dump()), origin)
+        if path == '/api/scenario':
+            request = ScenarioInput.model_validate(body)
+            return response(200, store.replace_scenario(loaded, request.revision, request.scenario), origin)
         if path == '/api/validate':
             request = PlanCheck.model_validate(body)
             s = store.check(loaded, request.revision)
@@ -126,7 +130,7 @@ def handler(event, context):
         match = re.fullmatch(r'/api/plans/([a-f0-9]{12})/approve', path)
         if match:
             return response(200, store.approve(loaded, match[1], request.revision), origin)
-        match = re.fullmatch(r'/api/plans/([a-f0-9]{12})/tasks/(L\d{2})/complete', path)
+        match = re.fullmatch(r'/api/plans/([a-f0-9]{12})/tasks/([A-Za-z0-9][A-Za-z0-9_-]{0,31})/complete', path)
         if match:
             return response(200, store.complete(loaded, match[1], match[2], request.revision), origin)
         return response(404, {'detail': 'Route not found'}, origin)

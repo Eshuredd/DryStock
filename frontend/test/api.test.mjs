@@ -18,13 +18,24 @@ function client(base, fetchImpl, storage = new Map()) {
 const json = (data, status=200) => new Response(JSON.stringify(data), {status});
 const session = {token: 'test-capability', expires_at: Math.floor(Date.now()/1000)+14400};
 
-test('local requests preserve relative proxy and have no session requirement', async () => {
+test('local requests create an isolated per-tab session using only the relative proxy', async () => {
   const calls = [];
-  const api = client('', async (...args) => {calls.push(args); return json({});});
+  const api = client('', async (url,options) => {calls.push([url,options]); return json(url.endsWith('/sessions') ? session : {});});
   assert.equal(api.cloudDemo, false);
   await api.apiFetch('/api/state');
-  assert.equal(calls.length, 1);
-  assert.equal(calls[0][0], '/api/state');
+  assert.equal(calls.length, 2);
+  assert.equal(calls[0][0], '/api/sessions');
+  assert.equal(calls[1][0], '/api/state');
+  assert.equal(calls[1][1].headers.get('Authorization'), 'Bearer test-capability');
+});
+
+test('local and cloud capabilities use separate storage keys',async()=>{
+  const storage=new Map([['drystock-demo-session-v1',JSON.stringify(session)]]);
+  const calls=[];
+  await client('',async url=>{calls.push(url);return json(url.endsWith('/sessions')?{...session,token:'local-token'}:{});},storage).apiFetch('/api/state');
+  assert.equal(calls[0],'/api/sessions');
+  assert.equal(JSON.parse(storage.get('drystock-local-session-v1')).token,'local-token');
+  assert.equal(JSON.parse(storage.get('drystock-demo-session-v1')).token,session.token);
 });
 test('cloud session creation is shared across simultaneous first requests', async () => {
   const calls = [];

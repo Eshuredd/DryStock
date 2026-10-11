@@ -1,7 +1,7 @@
 // Public endpoint configuration only. No AWS credentials or capability tokens in URLs.
 export const apiBase = (process.env.NEXT_PUBLIC_API_BASE_URL || '').replace(/\/$/, '');
 export const cloudDemo = Boolean(apiBase);
-const sessionKey = 'drystock-demo-session-v1';
+const sessionKey = cloudDemo ? 'drystock-demo-session-v1' : 'drystock-local-session-v1';
 let sessionPromise: Promise<string> | null = null;
 
 function cachedToken() {
@@ -32,7 +32,6 @@ async function sessionToken(): Promise<string> {
 
 export async function apiFetch(path: string, options: RequestInit = {}): Promise<Response> {
   if (!path.startsWith('/api/')) throw new Error('Invalid API path');
-  if (!cloudDemo) return fetch(path, options);
   const headers = new Headers(options.headers);
   headers.set('Authorization', `Bearer ${await sessionToken()}`);
   let response = await fetch(apiBase + path, {...options, headers, cache: 'no-store'});

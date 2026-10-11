@@ -1,0 +1,51 @@
+{
+  "date": "2026-10-11",
+  "timezone": "Asia/Calcutta",
+  "local_preview": "http://127.0.0.1:3016 (production build, updated loopback backend on 8015, dedicated audit/demo database)",
+  "scope": "Current local checkout at C:/Users/eshum/OneDrive/Desktop/TransitShift; origin is Eshuredd/DryStock. No GitHub fetch, AWS website access, cloud service access, commit, push or deployment.",
+  "baseline_local_changes_preserved": [".gitignore", "frontend/app/page.tsx", "frontend/app/globals.css", "frontend/app/demo-comparison.tsx", "frontend/app/strategy-comparison.tsx", "frontend/lib/workflow.ts", "frontend/test/workflow.test.mjs", "frontend/app/crew-schedule.tsx", ".vscode/"],
+  "reset_investigation": {
+    "reproduction": "Dedicated local SQLite database and FastAPI on 127.0.0.1:8015. Generated, approved, recorded L02 complete, disrupted to cutoff 35 with forklift unavailable and W2 disabled, then reset.",
+    "before_fix": "HTTP 200. Persisted scenario exactly matched initial sample, completed work was empty, clock was 0 and cutoff was 60. Fresh GET matched POST response. API latest still contained the historical superseded plan.",
+    "actual_cause": "No backend failure to restore the fixture was reproduced. Feedback was scoped to the reset button at the bottom of the page, making the outcome easy to miss. The backend continued presenting a superseded historical plan as latest. The current uncommitted UI already filtered that plan using a recent demo_reset event, so immediate UI reset was partly handled; this filtering depended on a bounded 30-event audit window and could revive obsolete results later. Resetting an already-default yard also looks identical apart from this understated feedback.",
+    "fix": "Persist scenario generations independently of bounded audit history. Return latest:null after reset and custom scenario replacement. Preserve superseded plans in history. Display reset progress/success near the page heading, move to the plan view and scroll to the visible confirmation. Continue waiting for authoritative GET state before enabling operations.",
+    "after_fix": "HTTP 200, exact sample restored, completed empty, default conditions, latest:null, fresh GET and persisted state match. Old plans retained as superseded history.",
+    "evidence": ["artifacts/reset-before-fix.json", "artifacts/reset-after-fix.json", "artifacts/reset_audit.py", "artifacts/local-reset-ui.png"]
+  },
+  "input_audit": {
+    "before": "Predefined fixture supplied lots, values/losses, handling options, crew and skills, forklifts, tarps and bays. UI only edited cutoff, elapsed time, worker availability and collective forklift availability. No custom scenario entry route or guided editor.",
+    "after": "Use sample yard preserves the fixture and one-click generation. Enter your own scenario starts a guided form or explicitly copies current inputs. Inputs include material lots, total rupee values, estimated exposed losses, durations, crew requirements, required skills, loss-reduction percentages, worker/forklift availability, tarp/bay kg capacities and material compatibility, rain arrival, safety buffer, cutoff and elapsed time. Labels separate assumed inputs from calculated estimates. Inline validation and server-side bounded validation apply.",
+    "isolation": "Per-browser-tab capability in sessionStorage; separate SQLite yards under database-stem.sessions; four-hour expiry, 300 requests, 20 generations, 100 new sessions/hour and 32 KiB POST limit. Legacy anonymous local API remains available for compatibility, but cannot save custom scenarios. Local/cloud capability storage keys are separate.",
+    "safety": "Custom input cannot supply completed work. Scenario replacement is rejected once simulated completions exist; explicit reset is required. Approval/revision checks, resource scheduling constraints, retained protection, solver budget, generation quotas and independent plan/baseline validation remain in place. Local cloud-adapter changes were exercised using Moto doubles only."
+  },
+  "files_modified_or_added_by_this_task": [
+    ".gitignore", "README.md",
+    "backend/app/main.py", "backend/app/models.py", "backend/app/store.py", "backend/app/local_sessions.py", "backend/app/scenario_input.py", "backend/app/dynamo.py", "backend/app/cloud_handler.py",
+    "backend/tests/test_scenario_input.py", "backend/tests/test_cloud.py",
+    "frontend/app/page.tsx", "frontend/app/globals.css", "frontend/app/scenario-editor.tsx",
+    "frontend/lib/api.ts", "frontend/lib/types.ts", "frontend/lib/workflow.ts", "frontend/lib/scenario-input.ts",
+    "frontend/test/api.test.mjs", "frontend/test/authority.test.mjs", "frontend/test/workflow.test.mjs", "frontend/test/scenario-input.test.mjs",
+    "frontend/next.config.ts", "frontend/eslint.config.mjs",
+    "artifacts/reset_audit.py", "artifacts/reset-before-fix.json", "artifacts/reset-after-fix.json", "artifacts/local-reset-ui.png", "artifacts/local-usability-report.json"
+  ],
+  "verification": {
+    "backend": "113 passed; pytest backend/tests -q. Includes reset at initial/draft/approved/completed/disrupted/replanned stages, persistence/restart, stale writes, old plan rejection, audit-window rollover, legacy migration, invalid custom inputs, forged completion, body/compute/request limits, session isolation, full custom workflow and local Moto adapter tests.",
+    "frontend": "50 passed; npm test. Includes reset reconciliation and execution gating, generation-based history filtering, custom safety-buffer bounds, per-session API behavior and custom form validation.",
+    "lint": "npm run lint passed with zero warnings. Temporary independent Next build directories are excluded alongside the usual .next output.",
+    "typescript": "npm run typecheck passed; production build also completed its TypeScript check.",
+    "production_build": "npm run build passed in .next-local-build with local proxy 127.0.0.1:8015 and public/cloud API unset. Separate output avoids changing the user's running development server output.",
+    "browser": "Local 3015: sample generate/approve/complete/disrupt/reset; top-of-page reset feedback, no plan, original risk/conditions, retained history. Custom input blocks exposed loss above value, saves a lot/worker/skills/handling/tarp scenario, persists on reload, produces validated results and can approve/complete/reset. Copy-current path supports edited rain/buffer/cutoff, comma-entered skills, forklift availability and bay capacity/compatibility and produces a validated revised plan. Mobile width 390: content width 375, no horizontal overflow. Production preview 3016 also tested locally.",
+    "preserved_files": "Original sample fixture and historical phase2/phase3 benchmark JSON/Markdown plus artifacts/benchmark.json match Git HEAD after normalizing Windows line endings. Benchmark outputs were not rewritten.",
+    "diff_check": "git diff --check passed. Temporary Next type-path additions were removed from frontend/tsconfig.json; its contents match HEAD. The user's existing local frontend/backend processes were not stopped.",
+    "warning": "Existing upstream Starlette TestClient httpx deprecation warning; all backend tests pass."
+  },
+  "remaining_limitations": [
+    "Demo assumptions only: no live forecasts, calibrated loss model or proof of real completion.",
+    "Whole lots, deterministic integer-minute durations, one rain event, one lot per tarp/bay; no partial/in-progress work or travel/setup times.",
+    "Forklifts are scheduled by availability; forklift weight capacity is not represented. Kg capacity and compatibility are enforced for tarps and bays.",
+    "Replacing inputs after completed simulated work requires reset. Condition disruptions and replanning retain completed work and resources.",
+    "Session expiry/quotas apply; reset does not replenish quotas. Unsaved form edits are not retained across reload. Expired SQLite session files are inaccessible but are not automatically deleted.",
+    "The user's already-running original backend must be restarted to load new routes. The separate local preview uses the updated backend without stopping those original processes.",
+    "No AWS-hosted behavior was tested; local adapter compatibility was checked with local doubles only."
+  ]
+}
